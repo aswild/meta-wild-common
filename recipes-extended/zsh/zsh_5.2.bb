@@ -2,7 +2,7 @@
 # Adapted from the recipe in meta-openembedded/meta-oe
 
 DESCRIPTION = "zsh shell"
-LICENSE = "BSD"
+LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=b7bc853894664be455a922db9805288e"
 
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.gz"
