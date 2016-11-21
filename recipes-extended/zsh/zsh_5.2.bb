@@ -14,7 +14,6 @@ SRC_URI[sha256sum] = "fa924c534c6633c219dcffdcd7da9399dabfb63347f88ce6ddcd5bb441
 DEPENDS = " \
     bison-native \
     groff-native \
-    yodl-native \
     ncurses \
     libcap \
     libpcre \
