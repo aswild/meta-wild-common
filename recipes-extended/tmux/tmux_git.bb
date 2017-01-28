@@ -5,8 +5,8 @@ DEPENDS = "ncurses libevent"
 LIC_FILES_CHKSUM = "file://COPYING;md5=f7d9aab84ec6567139a4755c48d147fb"
 
 SRC_URI = "git://github.com/tmux/tmux"
-SRCREV = "9a4b45dc0fdefead3fe9d471e144da78163860d0"
-PV = "2.2"
+SRCREV = "52869ed182482c26163799a7215139f4d81b6fca"
+PV = "2.3"
 
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
