@@ -10,10 +10,9 @@ SRC_URI = "git://github.com/aswild/the_silver_searcher;branch=master"
 SRCREV = "${AUTOREV}"
 PV = "1.0.2+${SRCPV}"
 
-inherit autotools pkgconfig
+inherit autotools-brokensep pkgconfig
 
 S = "${WORKDIR}/git"
-B = "${S}"
 
 EXTRA_OECONF = " \
     --disable-silent-rules \

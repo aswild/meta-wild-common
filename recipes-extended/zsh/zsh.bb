@@ -5,9 +5,10 @@ DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=b7bc853894664be455a922db9805288e"
 
+PV = "5.3.1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.gz"
-SRC_URI[md5sum] = "e79e3edfc133e2091456ca0be6f2ecb5"
-SRC_URI[sha256sum] = "fa924c534c6633c219dcffdcd7da9399dabfb63347f88ce6ddcd5bb441215937"
+SRC_URI[md5sum] = "d583fbca0c2410bf9542ce8a651c26ca"
+SRC_URI[sha256sum] = "3d94a590ff3c562ecf387da78ac356d6bea79b050a9ef81e3ecb9f8ee513040e"
 
 #S = "${WORKDIR}/zsh-zsh-${PV}"
 
