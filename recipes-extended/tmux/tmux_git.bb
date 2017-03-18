@@ -23,8 +23,8 @@ inherit autotools pkgconfig
 # --with-libtool-sysroot is broken in tmux, so prepend staging dir
 # to all paths manually
 #python __anonymous() {
-#    opts = d.getVar("CONFIGUREOPTS", True).split()
-#    prefix = d.getVar("D", True)
+#    opts = d.getVar("CONFIGUREOPTS").split()
+#    prefix = d.getVar("D")
 #    if prefix[-1] == "/":
 #        prefix = prefix[:-1]
 #
