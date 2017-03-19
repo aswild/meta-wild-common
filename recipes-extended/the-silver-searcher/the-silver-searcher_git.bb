@@ -10,7 +10,7 @@ SRC_URI = "git://github.com/aswild/the_silver_searcher;branch=master"
 SRCREV = "${AUTOREV}"
 PV = "1.0.2+${SRCPV}"
 
-inherit autotools-brokensep pkgconfig
+inherit autotools pkgconfig
 
 S = "${WORKDIR}/git"
 
@@ -21,5 +21,6 @@ EXTRA_OECONF = " \
 
 FILES_${PN} = " \
     ${bindir}/ag \
-    ${datadir}/* \
+    ${datadir}/the_silver_searcher/completions/ag.bashcomp.sh \
+    ${datadir}/zsh/site-functions/_the_silver_searcher \
 "
