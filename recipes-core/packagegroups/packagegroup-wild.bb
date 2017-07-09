@@ -54,7 +54,7 @@ RDEPENDS_${PN}-utils = " \
 "
 
 PACKAGES += "${PN}-network-utils"
-RDEPENDS_${PN}-utils = " \
+RDEPENDS_${PN}-network-utils = " \
     bridge-utils \
     ebtables \
     iptables \
