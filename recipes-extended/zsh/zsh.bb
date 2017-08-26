@@ -3,14 +3,12 @@
 
 DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
-LIC_FILES_CHKSUM = "file://LICENCE;md5=b7bc853894664be455a922db9805288e"
+LIC_FILES_CHKSUM = "file://LICENCE;md5=1a4c4cda3e8096d2fd483ff2f4514fec"
 
-PV = "5.3.1"
+PV = "5.4.1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.gz"
-SRC_URI[md5sum] = "d583fbca0c2410bf9542ce8a651c26ca"
-SRC_URI[sha256sum] = "3d94a590ff3c562ecf387da78ac356d6bea79b050a9ef81e3ecb9f8ee513040e"
-
-#S = "${WORKDIR}/zsh-zsh-${PV}"
+SRC_URI[md5sum] = "98ab8636a3c7960942e0ae6f91ae01ae"
+SRC_URI[sha256sum] = "c447b832cae866f5045a1e963f9beb7231502527122242e33226db073c001ce2"
 
 DEPENDS = " \
     bison-native \
@@ -33,10 +31,6 @@ EXTRA_OECONF = " \
     --disable-dynamic \
     zsh_cv_shared_environ=yes \
 "
-
-#    --enable-fndir=${datadir}/${PN}/${PV}/function \
-#    --enable-site-fndir=${datadir}/${PN}/site-functions \
-#
 
 EXTRA_OEMAKE = "-e MAKEFLAGS="
 

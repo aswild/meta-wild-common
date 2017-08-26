@@ -23,7 +23,7 @@ FILES_${PN} = "         \
     ${ROOT_HOME}        \
     ${LINUXFILES_LOC}   \
 "
-WARN_QA_remove = "file-rdeps"
+ERROR_QA_remove = "file-rdeps"
 
 do_install() {
     set -x
