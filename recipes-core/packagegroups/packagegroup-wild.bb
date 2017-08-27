@@ -3,27 +3,32 @@ LICENSE = "MIT"
 
 inherit packagegroup
 
-PACKAGES += "${PN}-core"
-RDEPENDS_${PN}-core = " \
+PACKAGES += "${PN}-base"
+RDEPENDS_${PN}-base = " \
     packagegroup-core-full-cmdline-libs \
     packagegroup-core-full-cmdline-utils \
     packagegroup-core-full-cmdline-sys-services \
     curl \
     dhcp-client \
-    htop \
     iproute2 \
     iputils \
-    make \
     openssh \
     openssh-sshd \
     openssh-sftp \
     openssh-sftp-server \
     sysstat \
+    vim \
+    wget \
+"
+
+PACKAGES += "${PN}-core"
+RDEPENDS_${PN}-core = " \
+    ${PN}-base \
+    htop \
+    make \
     the-silver-searcher \
     tmux \
     usbutils \
-    vim \
-    wget \
     wild-linuxfiles \
     zsh \
 "
