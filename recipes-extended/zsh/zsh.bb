@@ -18,6 +18,8 @@ DEPENDS = " \
     libpcre \
 "
 
+RDEPENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
+
 inherit autotools gettext
 
 bindir = "${base_bindir}"
