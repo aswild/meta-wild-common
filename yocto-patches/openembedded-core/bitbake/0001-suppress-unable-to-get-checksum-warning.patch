@@ -1,0 +1,26 @@
+From 1a7608c8e0937e32c4a907a301c4677e374eb6b6 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Fri, 25 Aug 2017 23:10:21 -0400
+Subject: [PATCH] suppress unable to get checksum warning
+
+fixes local fetching with broken symlinks
+---
+ lib/bb/checksum.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/bb/checksum.py b/lib/bb/checksum.py
+index 84289208..f4025d4e 100644
+--- a/lib/bb/checksum.py
++++ b/lib/bb/checksum.py
+@@ -91,7 +91,7 @@ class FileChecksumCache(MultiProcessCache):
+             try:
+                 checksum = self.get_checksum(f)
+             except OSError as e:
+-                bb.warn("Unable to get checksum for %s SRC_URI entry %s: %s" % (pn, os.path.basename(f), e))
++                bb.debug(1, "Unable to get checksum for %s SRC_URI entry %s: %s" % (pn, os.path.basename(f), e))
+                 return None
+             return checksum
+ 
+-- 
+2.15.0
+
