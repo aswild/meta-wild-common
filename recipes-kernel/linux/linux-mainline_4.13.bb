@@ -8,11 +8,4 @@ KBUILD_DEFCONFIG_x86 = "i386_defconfig"
 KBUILD_DEFCONFIG_x86-64 = "x86_64_defconfig"
 KCONFIG_MODE = "alldefconfig"
 
-SRC_URI += " \
-    file://overlayfs.cfg \
-    file://squashfs.cfg \
-    file://nouveau.cfg \
-    file://usb-xhci.cfg \
-"
-
 require linux-mainline.inc
