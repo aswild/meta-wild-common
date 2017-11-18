@@ -37,9 +37,6 @@ do_install() {
     rm -f .git/objects/info/alternates
     make DESTDIR="${D}${ROOT_HOME}" SRCDIR="${LINUXFILES_LOC}" install
 
-    # remove 'sudo' aliases
-    sed -i '/alias.*sudo/d' $installdir/myshrc
-
     # create .bash_profile to source .bashrc
     echo '[[ -f $HOME/.bashrc ]] && . $HOME/.bashrc' >${D}${ROOT_HOME}/.bash_profile
 
