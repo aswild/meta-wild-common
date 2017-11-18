@@ -12,6 +12,7 @@ SRC_URI += " \
     file://overlayfs.cfg \
     file://squashfs.cfg \
     file://nouveau.cfg \
+    file://usb-xhci.cfg \
 "
 
 require linux-mainline.inc

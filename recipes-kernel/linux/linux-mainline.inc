@@ -12,6 +12,7 @@ PV = "${LINUX_VERSION}+git${SRCPV}"
 LINUX_VERSION_EXTENSION ?= ""
 
 KCONFIG_MODE ?= "allnoconfig"
+KCONFIG_CONFIG_COMMAND ?= "nconfig"
 
 # have to manually expand ${PN} because immediate expansion when parsing the inc file will yield 'defaultpkgname'
 # LINUX_VERSION must be set before including this file
