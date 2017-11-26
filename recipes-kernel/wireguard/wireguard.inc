@@ -6,5 +6,5 @@ LIC_FILES_CHKSUM = "file://../COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 TAG = "0.0.20171122"
 PV = "${TAG}+git${SRCPV}"
-SRC_URI = "git://git.zx2c4.com/WireGuard;tag=${TAG}"
+SRC_URI = "git://github.com/WireGuard/WireGuard;tag=${TAG}"
 S = "${WORKDIR}/git/src"
