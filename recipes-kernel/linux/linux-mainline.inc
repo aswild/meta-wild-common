@@ -18,7 +18,7 @@ KCONFIG_CONFIG_COMMAND ?= "nconfig"
 LVSHORT := "${@'.'.join(d.getVar('LINUX_VERSION').split('.')[:2])}"
 
 # have to manually expand ${PN} because immediate expansion when parsing the inc file will yield 'defaultpkgname'
-FILESEXTRAPATHS_prepend := "${THISDIR}/linux-mainline-${LVSHORT}:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/linux-mainline-${LVSHORT}:${THISDIR}/linux-mainline:"
 
 KERNELORG_GITMIRROR ??= "git.kernel.org"
 KERNELORG_GITPROTO  ??= "git"
