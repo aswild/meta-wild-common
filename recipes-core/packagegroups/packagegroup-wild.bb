@@ -61,6 +61,7 @@ RDEPENDS_${PN}-utils = " \
 PACKAGES += "${PN}-network-utils"
 RDEPENDS_${PN}-network-utils = " \
     bridge-utils \
+    dhcpcd \
     ebtables \
     iptables \
     tcpdump \
