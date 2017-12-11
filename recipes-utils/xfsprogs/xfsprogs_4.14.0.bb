@@ -6,6 +6,7 @@ LICENSE_libhandle = "LGPLv2.1"
 LIC_FILES_CHKSUM = "file://doc/COPYING;md5=102f7fec3d53c7c8f0b7baf9bf9d76a8"
 DEPENDS = "util-linux util-linux-native"
 SRC_URI = "https://www.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/${BP}.tar.xz \
+           file://crc32-selftest-extra-includes.patch \
            "
 SRC_URI[md5sum] = "2d50e3751cc98e6c9364bc3d2297b9fd"
 SRC_URI[sha256sum] = "b1b710b268bc95d6f45eca06e1262c29eb38865a19cd4404e48ba446e043b7ec"
@@ -43,6 +44,10 @@ PACKAGECONFIG[blkid] = "--enable-blkid=yes,--enable-blkid=no,util-linux"
 export DEBUG="-DNDEBUG"
 export BUILD_VERBOSE="1"
 export tagname="CC"
+
+# the CRC32 selftest can't find <linux/fsmap.h> if the build host is on an old kernel,
+# so a patch adds the target include directory for this one compilation
+STAGING_INCDIR[export] = "1"
 
 EXTRA_OEMAKE = "DIST_ROOT='${D}'"
 
