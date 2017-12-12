@@ -1,0 +1,50 @@
+From 68d0346ed2976653598d58de9be905c29e635e69 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Mon, 11 Dec 2017 21:08:23 -0500
+Subject: [PATCH] syslinux: always use the BFD linker
+
+Syslinux compiles successfully with Gold, but at runtime Isolinux fails
+to boot, getting stuck at the version screen without loading the menu.
+Forcing the BFD linker fixes this.
+
+To future-proof, use an inline python replace rather than duplicating
+the definition of LD in bitbake.conf
+
+Signed-off-by: Allen Wild <allenwild93@gmail.com>
+---
+ meta/recipes-devtools/syslinux/syslinux_6.03.bb | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/meta/recipes-devtools/syslinux/syslinux_6.03.bb b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
+index f8b1094096..c61adec577 100644
+--- a/meta/recipes-devtools/syslinux/syslinux_6.03.bb
++++ b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
+@@ -34,6 +34,11 @@ COMPATIBLE_HOST = '(x86_64|i.86).*-(linux|freebsd.*)'
+ INSANE_SKIP_${PN}-misc = "arch"
+ INSANE_SKIP_${PN}-chain = "arch"
+ 
++# isolinux isn't compatible with the Gold linker, so force BFD
++# some python replacing is used here to avoid getting out of sync with the definition in bitbake.conf
++SYSLINUX_LD = "${LD}"
++SYSLINUX_LD_class-target = "${@d.getVar('LD').replace('%sld'%d.getVar('HOST_PREFIX'), '%sld.bfd'%d.getVar('HOST_PREFIX'))}"
++
+ EXTRA_OEMAKE = " \
+ 	BINDIR=${bindir} SBINDIR=${sbindir} LIBDIR=${libdir} \
+ 	DATADIR=${datadir} MANDIR=${mandir} INCDIR=${includedir} \
+@@ -58,11 +63,11 @@ do_compile() {
+ 
+ 	# Rebuild only the installer; keep precompiled bootloaders
+ 	# as per author's request (doc/distrib.txt)
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" firmware="bios" installer
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${SYSLINUX_LD}" LDFLAGS="${LDFLAGS}" firmware="bios" installer
+ }
+ 
+ do_install() {
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" install INSTALLROOT="${D}" firmware="bios"
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${SYSLINUX_LD}" install INSTALLROOT="${D}" firmware="bios"
+ 
+ 	install -d ${D}${datadir}/syslinux/
+ 	install -m 644 ${S}/bios/core/ldlinux.sys ${D}${datadir}/syslinux/
+-- 
+2.14.1
+
