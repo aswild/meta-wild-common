@@ -1,4 +1,4 @@
-From 68d0346ed2976653598d58de9be905c29e635e69 Mon Sep 17 00:00:00 2001
+From edfedac0985a6c748e4f069a657e337ab81a75e4 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Mon, 11 Dec 2017 21:08:23 -0500
 Subject: [PATCH] syslinux: always use the BFD linker
@@ -46,5 +46,5 @@ index f8b1094096..c61adec577 100644
  	install -d ${D}${datadir}/syslinux/
  	install -m 644 ${S}/bios/core/ldlinux.sys ${D}${datadir}/syslinux/
 -- 
-2.14.1
+2.15.1
 
