@@ -1,0 +1,296 @@
+From 9f60abc5eb776c7fabe9b267e37df55d6576ec6a Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 17 Dec 2017 20:51:28 -0500
+Subject: [PATCH] syslinux: patch to force using the BFD linker
+
+---
+ .../syslinux/syslinux-link-with-gcc-wrapper.patch  | 250 +++++++++++++++++++++
+ meta/recipes-devtools/syslinux/syslinux_6.03.bb    |   5 +-
+ 2 files changed, 253 insertions(+), 2 deletions(-)
+ create mode 100644 meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
+
+diff --git a/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch b/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
+new file mode 100644
+index 0000000000..f4f3601757
+--- /dev/null
++++ b/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
+@@ -0,0 +1,250 @@
++From 7072eddb4a1334f5d35ee6aad0152278bcb6619b Mon Sep 17 00:00:00 2001
++From: Allen Wild <allenwild93@gmail.com>
++Date: Sat, 16 Dec 2017 13:38:54 -0500
++Subject: [PATCH] syslinux: link with gcc wrapper
++
++Syslinux fails at runtime if the GNU Gold linker is used, Gold is the
++default "ld" linker in some distributions.
++
++Force the BFD linker by using LD='gcc -nostdlib -fuse-ld=bfd' and adding
++-Wl in front of LDFLAGS entries as needed
++---
++ Makefile                       | 4 ++--
++ com32/cmenu/Makefile           | 2 +-
++ com32/elflink/Makefile         | 2 +-
++ com32/elflink/ldlinux/Makefile | 4 ++--
++ com32/gpllib/Makefile          | 2 +-
++ com32/lib/Makefile             | 2 +-
++ com32/libutil/Makefile         | 2 +-
++ com32/lua/src/Makefile         | 2 +-
++ core/Makefile                  | 4 ++--
++ memdisk/Makefile               | 4 ++--
++ mk/com32.mk                    | 2 +-
++ mk/elf.mk                      | 2 +-
++ mk/embedded.mk                 | 2 +-
++ mk/lib.mk                      | 2 +-
++ mk/syslinux.mk                 | 2 +-
++ 15 files changed, 19 insertions(+), 19 deletions(-)
++
++diff --git a/Makefile b/Makefile
++index fb387c5..de37340 100644
++--- a/Makefile
+++++ b/Makefile
++@@ -163,7 +163,7 @@ BOBJECTS = $(BTARGET) \
++ 	core/pxelinux.0 core/lpxelinux.0 \
++ 	core/isolinux.bin core/isolinux-debug.bin \
++ 	gpxe/gpxelinux.0 dos/syslinux.com \
++-	win32/syslinux.exe win64/syslinux64.exe \
+++	 win64/syslinux64.exe \
++ 	dosutil/*.com dosutil/*.sys \
++ 	$(MODULES)
++ 
++@@ -203,7 +203,7 @@ INSTALL_AUX   =	core/pxelinux.0 gpxe/gpxelinux.0 gpxe/gpxelinuxk.0 \
++ 		core/isolinux.bin core/isolinux-debug.bin \
++ 		dos/syslinux.com core/lpxelinux.0 \
++ 		mbr/*.bin $(INSTALLABLE_MODULES)
++-INSTALL_AUX_OPT = win32/syslinux.exe win64/syslinux64.exe
+++INSTALL_AUX_OPT =  win64/syslinux64.exe
++ INSTALL_DIAG  =	diag/mbr/handoff.bin \
++ 		diag/geodsp/geodsp1s.img.xz diag/geodsp/geodspms.img.xz
++ 
++diff --git a/com32/cmenu/Makefile b/com32/cmenu/Makefile
++index 6bb5231..c01d2d2 100644
++--- a/com32/cmenu/Makefile
+++++ b/com32/cmenu/Makefile
++@@ -49,7 +49,7 @@ makeoutputdirs:
++ 	@mkdir -p $(OBJ)/libmenu
++ 
++ libmenu/libmenu.elf: $(LIBMENU)
++-	$(LD) -shared $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) \
+++	$(LD) -shared $(LDFLAGS) -Wl,-soname $(patsubst %.elf,%.c32,$(@F)) \
++ 		-o $@ $^
++ 
++ tidy dist:
++diff --git a/com32/elflink/Makefile b/com32/elflink/Makefile
++index fce1be8..3e1c583 100644
++--- a/com32/elflink/Makefile
+++++ b/com32/elflink/Makefile
++@@ -20,7 +20,7 @@ test_memalign.elf : test_memalign.o  $(LIBS) $(C_LIBS)
++ 
++ test_com32.elf: CFLAGS += -DELF_DEBUG
++ test_com32.elf: test_com32.o ../lib/libcom32min.a $(LIBGCC)
++-	$(LD) -n $(LDFLAGS) -o $@ test_com32.o $(LIBGCC) --whole-archive ../lib/libcom32min.a -Map test_com32.map
+++	$(LD) -n $(LDFLAGS) -o $@ test_com32.o $(LIBGCC) -Wl,--whole-archive ../lib/libcom32min.a -Wl,-Map,test_com32.map
++ 
++ tidy dist:
++ 	rm -f *.o *.lo *.a *.lst *.elf .*.d *.map
++diff --git a/com32/elflink/ldlinux/Makefile b/com32/elflink/ldlinux/Makefile
++index d948da4..037cbe9 100644
++--- a/com32/elflink/ldlinux/Makefile
+++++ b/com32/elflink/ldlinux/Makefile
++@@ -14,7 +14,7 @@ VPATH = $(SRC)
++ include $(MAKEDIR)/elf.mk
++ 
++ CFLAGS += -I$(topdir)/core/elflink -I$(topdir)/core/include -I$(topdir)/com32/lib -fvisibility=hidden
++-LIBS = --whole-archive $(objdir)/com32/lib/libcom32min.a
+++LIBS = -Wl,--whole-archive $(objdir)/com32/lib/libcom32min.a
++ 
++ OBJS = ldlinux.o cli.o readconfig.o refstr.o colors.o getadv.o adv.o \
++ 	execute.o chainboot.o kernel.o get_key.o advwrite.o setadv.o \
++@@ -33,7 +33,7 @@ endif
++ all: $(BTARGET) ldlinux_lnx.a
++ 
++ ldlinux.elf : $(OBJS)
++-	$(LD) $(LDFLAGS) -soname $(SONAME) -o $@ $^ $(LIBS)
+++	$(LD) $(LDFLAGS) -Wl,-soname $(SONAME) -o $@ $^ $(LIBS)
++ 
++ LNXCFLAGS += -D__export='__attribute__((visibility("default")))'
++ LNXLIBOBJS = get_key.lo
++diff --git a/com32/gpllib/Makefile b/com32/gpllib/Makefile
++index e3e30d7..47d106c 100644
++--- a/com32/gpllib/Makefile
+++++ b/com32/gpllib/Makefile
++@@ -24,7 +24,7 @@ makeoutputdirs:
++ 		$(addprefix $(OBJ),$(sort $(dir $(LIBOBJS)))),$(b))
++ 
++ libgpl.elf : $(LIBOBJS)
++-	$(LD) -shared $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
+++	$(LD) -shared $(LDFLAGS) -Wl,-soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
++ 
++ tidy dist clean:
++ 	find . \( -name \*.o -o -name .\*.d -o -name \*.tmp \) -print0 | \
++diff --git a/com32/lib/Makefile b/com32/lib/Makefile
++index 1624ae7..7391d36 100644
++--- a/com32/lib/Makefile
+++++ b/com32/lib/Makefile
++@@ -91,7 +91,7 @@ makeoutputdirs:
++ 
++ libcom32.elf : $(LIBOBJS)
++ 	rm -f $@
++-	$(LD) -shared $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
+++	$(LD) -shared $(LDFLAGS) -Wl,-soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
++ 
++ libcom32min.a : $(MINLIBOBJS)
++ 	rm -f $@
++diff --git a/com32/libutil/Makefile b/com32/libutil/Makefile
++index 094f1ff..86218f2 100644
++--- a/com32/libutil/Makefile
+++++ b/com32/libutil/Makefile
++@@ -41,7 +41,7 @@ LNXLIBOBJS = $(patsubst %.o,%.lo,$(LIBOBJS))
++ all: libutil.c32 libutil_lnx.a
++ 
++ libutil.elf: $(LIBOBJS)
++-	$(LD) $(LDFLAGS) -soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
+++	$(LD) $(LDFLAGS) -Wl,-soname $(patsubst %.elf,%.c32,$(@F)) -o $@ $^
++ 
++ libutil_lnx.a: $(LNXLIBOBJS)
++ 	rm -f $@
++diff --git a/com32/lua/src/Makefile b/com32/lua/src/Makefile
++index c8a141f..4227d60 100644
++--- a/com32/lua/src/Makefile
+++++ b/com32/lua/src/Makefile
++@@ -51,7 +51,7 @@ CFLAGS += -DLUA_ANSI
++ all: $(MODULES) $(TESTFILES)
++ 
++ liblua.elf : $(LIBLUA_OBJS)
++-	$(LD) $(LDFLAGS) -shared -soname $(patsubst %.elf,%.c32,$(@F)) \
+++	$(LD) $(LDFLAGS) -shared -Wl,-soname $(patsubst %.elf,%.c32,$(@F)) \
++ 		-o $@ $^
++ 
++ lua.elf : $(OBJS) $(LIBLUA) $(C_LIBS)
++diff --git a/core/Makefile b/core/Makefile
++index ad0acb5..59d4efb 100644
++--- a/core/Makefile
+++++ b/core/Makefile
++@@ -164,8 +164,8 @@ AUXLIBS = libisolinux.a libisolinux-debug.a libldlinux.a \
++ LDSCRIPT = $(SRC)/$(ARCH)/syslinux.ld
++ 
++ %.elf: %.o $(LIBDEP) $(LDSCRIPT) $(AUXLIBS)
++-	$(LD) $(LDFLAGS) -Bsymbolic $(LD_PIE) -E --hash-style=gnu -T $(LDSCRIPT) -M -o $@ $< \
++-		--start-group $(LIBS) $(subst $(*F).elf,lib$(*F).a,$@) --end-group \
+++	$(LD) $(LDFLAGS) -Bsymbolic $(LD_PIE) -Wl,-E -Wl,--hash-style=gnu -T $(LDSCRIPT) -Wl,-M -o $@ $< \
+++		-Wl,--start-group $(LIBS) $(subst $(*F).elf,lib$(*F).a,$@) -Wl,--end-group \
++ 		> $(@:.elf=.map)
++ 	$(OBJDUMP) -h $@ > $(@:.elf=.sec)
++ 	$(PERL) $(SRC)/lstadjust.pl $(@:.elf=.lsr) $(@:.elf=.sec) $(@:.elf=.lst)
++diff --git a/memdisk/Makefile b/memdisk/Makefile
++index e6557d8..c3bf4a5 100644
++--- a/memdisk/Makefile
+++++ b/memdisk/Makefile
++@@ -78,10 +78,10 @@ memdisk16.o: memdisk16.asm
++ 	$(NASM) -f bin $(NASMOPT) $(NFLAGS) $(NINCLUDE) -o $@ -l $*.lst $<
++ 
++ memdisk_%.o: memdisk_%.bin
++-	$(LD) -r -b binary -o $@ $<
+++	$(LD) -Wl,-r -Wl,-b,binary -o $@ $<
++ 
++ memdisk16.elf: $(OBJS16)
++-	$(LD) -Ttext 0 -o $@ $^
+++	$(LD) -Wl,-Ttext,0 -o $@ $^
++ 
++ #memdisk32.elf: memdisk.ld $(OBJS32)
++ memdisk32.elf: $(ARCH)/memdisk.ld $(OBJS32)
++diff --git a/mk/com32.mk b/mk/com32.mk
++index 9a3b19d..1e1e387 100644
++--- a/mk/com32.mk
+++++ b/mk/com32.mk
++@@ -75,7 +75,7 @@ SFLAGS     = $(GCCOPT) $(GCCWARN) \
++ 	     -I$(com32)/include/sys $(GPLINCLUDE)
++ 
++ COM32LD	   = $(com32)/lib/$(ARCH)/elf.ld
++-LDFLAGS    = -m elf_$(ARCH) -shared --hash-style=gnu -T $(COM32LD)
+++LDFLAGS    = -Wl,-m,elf_$(ARCH) -shared -Wl,--hash-style=gnu -T $(COM32LD)
++ LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
++ 
++ LNXCFLAGS  = -I$(com32)/libutil/include $(GCCWARN) -O -g \
++diff --git a/mk/elf.mk b/mk/elf.mk
++index 12d1077..391ea5f 100644
++--- a/mk/elf.mk
+++++ b/mk/elf.mk
++@@ -65,7 +65,7 @@ CFLAGS	  += -mregparm=3 -DREGPARM=3
++ endif
++ 
++ SFLAGS     = $(GCCOPT) -D__COM32__ -D__FIRMWARE_$(FIRMWARE)__ 
++-LDFLAGS    = -m elf_$(ARCH) -shared --hash-style=gnu -T $(com32)/lib/$(ARCH)/elf.ld --as-needed
+++LDFLAGS    = -Wl,-m,elf_$(ARCH) -shared -Wl,--hash-style=gnu -T $(com32)/lib/$(ARCH)/elf.ld -Wl,--as-needed
++ LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
++ 
++ LNXCFLAGS  = -I$(com32)/libutil/include -W -Wall -O -g -D_GNU_SOURCE
++diff --git a/mk/embedded.mk b/mk/embedded.mk
++index 1614d8b..0c22d59 100644
++--- a/mk/embedded.mk
+++++ b/mk/embedded.mk
++@@ -55,7 +55,7 @@ GCCOPT    += $(call gcc_ok,-fvisibility=hidden)
++ 
++ LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
++ 
++-LD        += -m elf_$(ARCH)
+++LD        += -Wl,-m,elf_$(ARCH)
++ 
++ # Note: use += for CFLAGS and SFLAGS in case something is set in MCONFIG.local
++ CFLAGS    += $(GCCOPT) -g $(GCCWARN) -Wno-sign-compare $(OPTFLAGS) $(INCLUDES)
++diff --git a/mk/lib.mk b/mk/lib.mk
++index ceb95bd..d9089fb 100644
++--- a/mk/lib.mk
+++++ b/mk/lib.mk
++@@ -203,7 +203,7 @@ CORELIBOBJS = \
++ 	$(LIBENTRY_OBJS) \
++ 	$(LIBMODULE_OBJS)
++ 
++-LDFLAGS	= -m elf_$(ARCH) --hash-style=gnu -T $(com32)/lib/$(ARCH)/elf.ld
+++LDFLAGS	= -Wl,-m,elf_$(ARCH) -Wl,--hash-style=gnu -T $(com32)/lib/$(ARCH)/elf.ld
++ 
++ .SUFFIXES: .c .o .a .so .lo .i .S .s .ls .ss .lss
++ 
++diff --git a/mk/syslinux.mk b/mk/syslinux.mk
++index 9ca74b1..187c719 100644
++--- a/mk/syslinux.mk
+++++ b/mk/syslinux.mk
++@@ -53,7 +53,7 @@ gcc_ok   = $(shell tmpf=gcc_ok.$$$$.tmp; \
++ 		   then echo '$(1)'; else echo '$(2)'; fi; \
++ 		   rm -f $$tmpf)
++ 
++-LD	 = ld
+++LD	 = gcc -nostdinc -fuse-ld=bfd
++ OBJDUMP	 = objdump
++ OBJCOPY  = objcopy
++ STRIP    = strip
++-- 
++2.15.1
++
+diff --git a/meta/recipes-devtools/syslinux/syslinux_6.03.bb b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
+index f8b1094096..b3145986e0 100644
+--- a/meta/recipes-devtools/syslinux/syslinux_6.03.bb
++++ b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
+@@ -24,6 +24,7 @@ SRC_URI = "${KERNELORG_MIRROR}/linux/utils/boot/syslinux/syslinux-${PV}.tar.xz \
+            file://0010-gcc46-compatibility.patch \
+            file://0011-mk-MMD-does-not-take-any-arguments.patch \
+            file://syslinux-6.03-sysmacros.patch \
++           file://syslinux-link-with-gcc-wrapper.patch \
+            "
+ 
+ SRC_URI[md5sum] = "92a253df9211e9c20172796ecf388f13"
+@@ -58,11 +59,11 @@ do_compile() {
+ 
+ 	# Rebuild only the installer; keep precompiled bootloaders
+ 	# as per author's request (doc/distrib.txt)
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" firmware="bios" installer
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" LDFLAGS="${LDFLAGS}" firmware="bios" installer
+ }
+ 
+ do_install() {
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" install INSTALLROOT="${D}" firmware="bios"
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" install INSTALLROOT="${D}" firmware="bios"
+ 
+ 	install -d ${D}${datadir}/syslinux/
+ 	install -m 644 ${S}/bios/core/ldlinux.sys ${D}${datadir}/syslinux/
+-- 
+2.15.1
+
