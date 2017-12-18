@@ -1,4 +1,4 @@
-From 59a25367fe89a2914ec5d3399229ba700415af03 Mon Sep 17 00:00:00 2001
+From d483392c6d3ea46ac698efd93c1db3184e3b0e09 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 26 Nov 2017 13:55:55 -0500
 Subject: [PATCH] rootfs-postcommands: remove space before semicolons
@@ -9,7 +9,7 @@ This lets layers disable these with _remove syntax
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/meta/classes/rootfs-postcommands.bbclass b/meta/classes/rootfs-postcommands.bbclass
-index a4e627fef8..b19042da09 100644
+index 5391e7a8e3..c0025676c0 100644
 --- a/meta/classes/rootfs-postcommands.bbclass
 +++ b/meta/classes/rootfs-postcommands.bbclass
 @@ -1,6 +1,6 @@
@@ -20,7 +20,7 @@ index a4e627fef8..b19042da09 100644
  
  # Allow dropbear/openssh to accept logins from accounts with an empty password string if debug-tweaks is enabled
  ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains_any("IMAGE_FEATURES", [ 'debug-tweaks', 'allow-empty-password' ], "ssh_allow_empty_password; ", "",d)}'
-@@ -9,7 +9,7 @@ ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains_any("IMAGE_FEATURES", [ 'deb
+@@ -9,17 +9,17 @@ ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains_any("IMAGE_FEATURES", [ 'deb
  ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains_any("IMAGE_FEATURES", [ 'debug-tweaks', 'post-install-logging' ], "postinst_enable_logging; ", "",d)}'
  
  # Create /etc/timestamp during image construction to give a reasonably sane default time setting
@@ -29,8 +29,6 @@ index a4e627fef8..b19042da09 100644
  
  # Tweak the mount options for rootfs in /etc/fstab if read-only-rootfs is enabled
  ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains("IMAGE_FEATURES", "read-only-rootfs", "read_only_rootfs_hook; ", "",d)}'
-@@ -23,11 +23,11 @@ ROOTFS_POSTPROCESS_COMMAND += '${@bb.utils.contains("IMAGE_FEATURES", "read-only
- APPEND_append = '${@bb.utils.contains("IMAGE_FEATURES", "read-only-rootfs", " ro", "", d)}'
  
  # Generates test data file with data store variables expanded in json format
 -ROOTFS_POSTPROCESS_COMMAND += "write_image_test_data ; "
@@ -43,7 +41,7 @@ index a4e627fef8..b19042da09 100644
  # Set default postinst log file
  POSTINST_LOGFILE ?= "${localstatedir}/log/postinstall.log"
  # Set default target for systemd images
-@@ -38,7 +38,7 @@ ROOTFS_POSTPROCESS_COMMAND += 'empty_var_volatile;'
+@@ -30,7 +30,7 @@ ROOTFS_POSTPROCESS_COMMAND += 'empty_var_volatile;'
  
  # Disable DNS lookups, the SSH_DISABLE_DNS_LOOKUP can be overridden to allow
  # distros to choose not to take this change
