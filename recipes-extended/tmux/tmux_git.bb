@@ -4,16 +4,15 @@ LICENSE = "ISC"
 DEPENDS = "ncurses libevent"
 LIC_FILES_CHKSUM = "file://COPYING;md5=f7d9aab84ec6567139a4755c48d147fb"
 
-SRC_URI = "git://github.com/tmux/tmux"
-SRCREV = "caa90735cf0b20a7110d25596140f553e2d05bff"
-PV = "2.5+git${SRCPV}"
+PV = "2.6"
+SRC_URI = "git://github.com/tmux/tmux;tag=${PV}"
 
 S = "${WORKDIR}/git"
-B = "${WORKDIR}/build"
 
-FILES_${PN} = " \
-    ${bindir}/tmux \
-    ${mandir}/man1/tmux.1 \
-"
+inherit autotools pkgconfig
 
-inherit autotools-brokensep pkgconfig
+do_compile_prepend() {
+    # used by autotools compat functions from AC_REPLACE_FUNCS, but directory
+    # isn't created in Yocto automatically for some reason
+    install -d ${B}/compat
+}
