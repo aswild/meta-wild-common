@@ -30,7 +30,7 @@ wild_rootfs_postprocess() {
     # set timezone to match the build host
     localtime_file=${sysconfdir}/localtime
     if [ -L $localtime_file ]; then
-        host_tz=`readlink $localtime_file`
+        host_tz=`readlink -f $localtime_file`
         if [ -n ${host_tz} ] && [ -e ${IMAGE_ROOTFS}${host_tz} ]; then
             bbnote "Setting timezone to ${host_tz}"
             ln -sfv ${host_tz} ${IMAGE_ROOTFS}${localtime_file}
