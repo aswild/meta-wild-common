@@ -37,7 +37,14 @@ EXTRA_OECONF = " \
 
 EXTRA_OEMAKE = "-e MAKEFLAGS="
 
+FILES_${PN} += "${sysconfdir}/zprofile"
+
 do_configure() {
     gnu-configize --force ${S}
     oe_runconf
+}
+
+do_install_append() {
+    install -d ${D}${sysconfdir}
+    echo "[[ -f ${sysconfdir}/profile ]] && . ${sysconfdir}/profile" >${D}${sysconfdir}/zprofile
 }
