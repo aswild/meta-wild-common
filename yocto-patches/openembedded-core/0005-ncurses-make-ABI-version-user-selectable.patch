@@ -1,0 +1,61 @@
+From 698f4ea354872df34fb47171ae75c3e58af60a95 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sat, 20 Jan 2018 01:44:55 -0500
+Subject: [PATCH] ncurses: make ABI version user-selectable
+
+The ncurses6 features can be useful and backwards-compatibility
+with the ncurses5 ABI isn't always needed.
+
+Signed-off-by: Allen Wild <allenwild93@gmail.com>
+---
+ meta/recipes-core/ncurses/ncurses.inc             | 8 ++++++--
+ meta/recipes-core/ncurses/ncurses_6.0+20170715.bb | 2 +-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
+index 1f21cd413d..c5c9c16412 100644
+--- a/meta/recipes-core/ncurses/ncurses.inc
++++ b/meta/recipes-core/ncurses/ncurses.inc
+@@ -20,6 +20,10 @@ CONFIG_SITE =+ "${WORKDIR}/config.cache"
+ 
+ EXTRASITECONFIG = "CFLAGS='${CFLAGS} -I${SYSROOT_DESTDIR}${includedir}'"
+ 
++# ncurses ABI version: 5 for compatibility with most external
++# applications, 6 for new features such as extra mouse buttons
++NCURSES_ABI_VERSION ?= "5"
++
+ # Whether to enable separate widec libraries; must be 'true' or 'false'
+ #
+ # TODO: remove this variable when widec is supported in every setup?
+@@ -212,7 +216,7 @@ do_install() {
+                 test -h $f || continue
+                 rm -f $f
+                 echo '/* GNU ld script */'  >$f
+-                echo "INPUT($i.so.5 AS_NEEDED(-ltinfo))" >>$f
++                echo "INPUT($i.so.${NCURSES_ABI_VERSION} AS_NEEDED(-ltinfo))" >>$f
+         done
+ 
+         # Make sure that libcurses is linked so that it gets -ltinfo
+@@ -238,7 +242,7 @@ do_install() {
+             # Use lnr to ensure this is a relative link despite absolute paths
+             # (as we can't know the relationship between base_libdir and libdir).
+             # At some point we can rely on coreutils 8.16 which has ln -r.
+-            lnr ${D}${base_libdir}/libtinfo.so.5 ${D}${libdir}/libtinfo.so
++            lnr ${D}${base_libdir}/libtinfo.so.${NCURSES_ABI_VERSION} ${D}${libdir}/libtinfo.so
+         fi
+         if [ -d "${D}${includedir}/ncurses" ]; then
+             for f in `find ${D}${includedir}/ncurses -name "*.h"`
+diff --git a/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb b/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
+index d1da5d16e0..f918e2db47 100644
+--- a/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
++++ b/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
+@@ -8,5 +8,5 @@ SRC_URI += "file://0001-tic-hang.patch \
+ # commit id corresponds to the revision in package version
+ SRCREV = "52681a6a1a18b4d6eb1a716512d0dd827bd71c87"
+ S = "${WORKDIR}/git"
+-EXTRA_OECONF += "--with-abi-version=5"
++EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
+ UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+(\+\d+)*)"
+-- 
+2.16.0
+
