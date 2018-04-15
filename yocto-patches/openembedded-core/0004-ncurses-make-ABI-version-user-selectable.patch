@@ -1,4 +1,4 @@
-From 698f4ea354872df34fb47171ae75c3e58af60a95 Mon Sep 17 00:00:00 2001
+From 5119cc4aede9575ee2ceb2150f8551f51f9e22b2 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sat, 20 Jan 2018 01:44:55 -0500
 Subject: [PATCH] ncurses: make ABI version user-selectable
@@ -9,11 +9,11 @@ with the ncurses5 ABI isn't always needed.
 Signed-off-by: Allen Wild <allenwild93@gmail.com>
 ---
  meta/recipes-core/ncurses/ncurses.inc             | 8 ++++++--
- meta/recipes-core/ncurses/ncurses_6.0+20170715.bb | 2 +-
+ meta/recipes-core/ncurses/ncurses_6.0+20171125.bb | 2 +-
  2 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
-index 1f21cd413d..c5c9c16412 100644
+index 01e41d5f73..f6f9624118 100644
 --- a/meta/recipes-core/ncurses/ncurses.inc
 +++ b/meta/recipes-core/ncurses/ncurses.inc
 @@ -20,6 +20,10 @@ CONFIG_SITE =+ "${WORKDIR}/config.cache"
@@ -27,7 +27,7 @@ index 1f21cd413d..c5c9c16412 100644
  # Whether to enable separate widec libraries; must be 'true' or 'false'
  #
  # TODO: remove this variable when widec is supported in every setup?
-@@ -212,7 +216,7 @@ do_install() {
+@@ -216,7 +220,7 @@ do_install() {
                  test -h $f || continue
                  rm -f $f
                  echo '/* GNU ld script */'  >$f
@@ -36,7 +36,7 @@ index 1f21cd413d..c5c9c16412 100644
          done
  
          # Make sure that libcurses is linked so that it gets -ltinfo
-@@ -238,7 +242,7 @@ do_install() {
+@@ -242,7 +246,7 @@ do_install() {
              # Use lnr to ensure this is a relative link despite absolute paths
              # (as we can't know the relationship between base_libdir and libdir).
              # At some point we can rely on coreutils 8.16 which has ln -r.
@@ -45,17 +45,17 @@ index 1f21cd413d..c5c9c16412 100644
          fi
          if [ -d "${D}${includedir}/ncurses" ]; then
              for f in `find ${D}${includedir}/ncurses -name "*.h"`
-diff --git a/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb b/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
-index d1da5d16e0..f918e2db47 100644
---- a/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
-+++ b/meta/recipes-core/ncurses/ncurses_6.0+20170715.bb
-@@ -8,5 +8,5 @@ SRC_URI += "file://0001-tic-hang.patch \
+diff --git a/meta/recipes-core/ncurses/ncurses_6.0+20171125.bb b/meta/recipes-core/ncurses/ncurses_6.0+20171125.bb
+index 6c4b96f428..74dc27275e 100644
+--- a/meta/recipes-core/ncurses/ncurses_6.0+20171125.bb
++++ b/meta/recipes-core/ncurses/ncurses_6.0+20171125.bb
+@@ -7,5 +7,5 @@ SRC_URI += "file://0001-tic-hang.patch \
  # commit id corresponds to the revision in package version
- SRCREV = "52681a6a1a18b4d6eb1a716512d0dd827bd71c87"
+ SRCREV = "5d849e836052459901cfe0b85a0b2939ff8d2b2a"
  S = "${WORKDIR}/git"
 -EXTRA_OECONF += "--with-abi-version=5"
 +EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
  UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+(\+\d+)*)"
 -- 
-2.16.0
+2.17.0
 

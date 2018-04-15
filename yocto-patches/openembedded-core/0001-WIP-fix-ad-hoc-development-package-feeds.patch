@@ -1,17 +1,17 @@
-From 6b160546ceb936d5343f2f0259347d9abdea097f Mon Sep 17 00:00:00 2001
+From c7ac822b108ea3d2227658446e6f167803c4ba0d Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 13 Aug 2017 12:04:59 -0400
 Subject: [PATCH] WIP fix ad-hoc development package feeds
 
 ---
- meta/lib/oe/package_manager.py | 65 +++++++++++++++++++++++-------------------
+ meta/lib/oe/package_manager.py | 65 +++++++++++++++++++---------------
  1 file changed, 36 insertions(+), 29 deletions(-)
 
 diff --git a/meta/lib/oe/package_manager.py b/meta/lib/oe/package_manager.py
-index ef69b18b64..d674716095 100644
+index 2d8aeba037..be05c2257f 100644
 --- a/meta/lib/oe/package_manager.py
 +++ b/meta/lib/oe/package_manager.py
-@@ -925,6 +925,39 @@ class OpkgPM(OpkgDpkgPM):
+@@ -1121,6 +1121,39 @@ class OpkgPM(OpkgDpkgPM):
  
          os.rename(status_file + ".tmp", status_file)
  
@@ -51,7 +51,7 @@ index ef69b18b64..d674716095 100644
      def _create_custom_config(self):
          bb.note("Building from feeds activated!")
  
-@@ -945,35 +978,7 @@ class OpkgPM(OpkgDpkgPM):
+@@ -1141,35 +1174,7 @@ class OpkgPM(OpkgDpkgPM):
  
                      config_file.write("src/gz %s %s\n" % (feed_name, feed_uri))
  
@@ -88,7 +88,7 @@ index ef69b18b64..d674716095 100644
  
  
      def _create_config(self):
-@@ -1002,6 +1007,8 @@ class OpkgPM(OpkgDpkgPM):
+@@ -1198,6 +1203,8 @@ class OpkgPM(OpkgDpkgPM):
                  config_file.write("option lists_dir    %s\n" % os.path.join(self.d.getVar('OPKGLIBDIR'), 'opkg', 'lists'))
                  config_file.write("option status_file  %s\n" % os.path.join(self.d.getVar('OPKGLIBDIR'), 'opkg', 'status'))
  
@@ -98,5 +98,5 @@ index ef69b18b64..d674716095 100644
          if feed_uris == "":
              return
 -- 
-2.15.1
+2.17.0
 

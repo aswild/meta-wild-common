@@ -1,4 +1,4 @@
-From ac03b566eeacfdd7aa24df59470360ce06d639d3 Mon Sep 17 00:00:00 2001
+From c173cb6471a1c71d97c7554fde8ae73a24dab26d Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 26 Nov 2017 13:55:55 -0500
 Subject: [PATCH] rootfs-postcommands: remove space before semicolons
@@ -53,5 +53,5 @@ index a4e627fef8..b19042da09 100644
  
  # Sort the user and group entries in /etc by ID in order to make the content
 -- 
-2.15.1
+2.17.0
 
