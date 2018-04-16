@@ -1,0 +1,38 @@
+From 7b73349a09d671f98ec8b7b7fa57d041c17d087a Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Mon, 16 Apr 2018 00:25:55 -0400
+Subject: [PATCH] kernel: Use base_libdir instead of /lib for the modules
+ tarball
+
+When using the usrmerge distro feature, the kernel installs to
+/usr/lib/modules, but the deployed modules tarball only looks at /lib,
+creating an empty archive.
+
+Create the modules tarball from base_libdir so that it gets populated
+when usrmerge is in use.
+
+Signed-off-by: Allen Wild <allenwild93@gmail.com>
+---
+ meta/classes/kernel.bbclass | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/meta/classes/kernel.bbclass b/meta/classes/kernel.bbclass
+index 78d6c30b07..a2ebda2743 100644
+--- a/meta/classes/kernel.bbclass
++++ b/meta/classes/kernel.bbclass
+@@ -677,8 +677,10 @@ kernel_do_deploy() {
+ 		install -m 0644 ${KERNEL_OUTPUT_DIR}/${type} $deployDir/${base_name}.bin
+ 	done
+ 	if [ ${MODULE_TARBALL_DEPLOY} = "1" ] && (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
+-		mkdir -p ${D}/lib
+-		tar -cvzf $deployDir/${MODULE_TARBALL_BASE_NAME} -C ${D} lib
++		mod_libdir=${base_libdir}
++		mod_libdir=${mod_libdir#/}
++		mkdir -p ${D}/$mod_libdir
++		tar -cvzf $deployDir/${MODULE_TARBALL_BASE_NAME} -C ${D} $mod_libdir
+ 		ln -sf ${MODULE_TARBALL_BASE_NAME} $deployDir/${MODULE_TARBALL_SYMLINK_NAME}
+ 	fi
+ 
+-- 
+2.17.0
+
