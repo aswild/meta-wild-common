@@ -21,7 +21,7 @@ ROOTFS_POSTPROCESS_COMMAND_prepend = "copy_ssh_host_keys; "
 wild_rootfs_postprocess() {
     # Yocto will install the kernel image to /boot, but we don't want that because
     # the boot partition will be mounted in /boot (by fstab in base-files)
-    rm -fv ${IMAGE_ROOTFS}/boot/*
+    rm -rfv ${IMAGE_ROOTFS}/boot/*
 
     # Mark the rootfs as rw in fstab. This gives us rw when booting ext4,
     # and squashfs will mount ro always anyway
