@@ -4,7 +4,7 @@ DESCRIPTION = "Shell dotfiles"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=873a8e3c61b23b718b4594fa0a3e7449"
 
-PACKAGE_ARCH = "all"
+inherit allarch
 
 # gitsm:// fetcher clones submodules
 SRC_URI = "gitsm://github.com/aswild/linuxfiles;branch=master"
