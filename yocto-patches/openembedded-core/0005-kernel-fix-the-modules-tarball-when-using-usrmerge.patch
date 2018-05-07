@@ -1,0 +1,35 @@
+From 78234d5019f1f78ba0f2727d3b0779e9023c5967 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 6 May 2018 20:28:06 -0400
+Subject: [PATCH] kernel: fix the modules tarball when using usrmerge
+
+kernel_do_deploy only uses /lib when creating the modules tarball,
+creating an empty archive if usrmerge is in distro features because the
+modules are in /usr/lib.
+
+Create the modules tarball from ${D}${root_prefix}/lib instead of
+${D}/lib so that it's not empty when usrmerge is enabled.
+
+Signed-off-by: Allen Wild <allenwild93@gmail.com>
+---
+ meta/classes/kernel.bbclass | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/meta/classes/kernel.bbclass b/meta/classes/kernel.bbclass
+index 78d6c30b07..bbb5dbb1b2 100644
+--- a/meta/classes/kernel.bbclass
++++ b/meta/classes/kernel.bbclass
+@@ -677,8 +677,8 @@ kernel_do_deploy() {
+ 		install -m 0644 ${KERNEL_OUTPUT_DIR}/${type} $deployDir/${base_name}.bin
+ 	done
+ 	if [ ${MODULE_TARBALL_DEPLOY} = "1" ] && (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
+-		mkdir -p ${D}/lib
+-		tar -cvzf $deployDir/${MODULE_TARBALL_BASE_NAME} -C ${D} lib
++		mkdir -p ${D}${root_prefix}/lib
++		tar -cvzf $deployDir/${MODULE_TARBALL_BASE_NAME} -C ${D}${root_prefix} lib
+ 		ln -sf ${MODULE_TARBALL_BASE_NAME} $deployDir/${MODULE_TARBALL_SYMLINK_NAME}
+ 	fi
+ 
+-- 
+2.17.0
+
