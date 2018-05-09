@@ -1,0 +1,50 @@
+From e3bd1061871e2e0f7e4893741569413b11116847 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Tue, 8 May 2018 19:42:43 -0400
+Subject: [PATCH] allocator fix for gcc8
+
+Python 2.7.14 when compiled with GCC 8 and -O3 segfaults because of
+memory allocation misalignment.
+
+Patch from https://mail.python.org/pipermail/python-dev/2018-January/152011.html
+See also https://bugs.python.org/issue27987
+---
+ Include/objimpl.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/Include/objimpl.h b/Include/objimpl.h
+index 55e83ec..aa90614 100644
+--- a/Include/objimpl.h
++++ b/Include/objimpl.h
+@@ -248,6 +248,18 @@ PyAPI_FUNC(PyVarObject *) _PyObject_GC_Resize(PyVarObject *, Py_ssize_t);
+ /* for source compatibility with 2.2 */
+ #define _PyObject_GC_Del PyObject_GC_Del
+ 
++/* Former over-aligned definition of PyGC_Head, used to compute the
++   size of the padding for the new version below. */
++union _gc_head;
++union _gc_head_old {
++    struct {
++        union _gc_head *gc_next;
++        union _gc_head *gc_prev;
++        Py_ssize_t gc_refs;
++    } gc;
++    long double dummy;
++};
++
+ /* GC information is stored BEFORE the object structure. */
+ typedef union _gc_head {
+     struct {
+@@ -255,7 +267,8 @@ typedef union _gc_head {
+         union _gc_head *gc_prev;
+         Py_ssize_t gc_refs;
+     } gc;
+-    long double dummy;  /* force worst-case alignment */
++    double dummy;  /* force worst-case alignment */
++    char dummy_padding[sizeof(union _gc_head_old)];
+ } PyGC_Head;
+ 
+ extern PyGC_Head *_PyGC_generation0;
+-- 
+2.17.0
+
