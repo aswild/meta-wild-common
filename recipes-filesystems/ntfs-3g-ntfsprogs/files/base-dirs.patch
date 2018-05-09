@@ -1,0 +1,75 @@
+Index: ntfs-3g_ntfsprogs-2016.2.22/configure.ac
+===================================================================
+--- ntfs-3g_ntfsprogs-2016.2.22.orig/configure.ac
++++ ntfs-3g_ntfsprogs-2016.2.22/configure.ac
+@@ -582,14 +582,15 @@ ntfs3gincludedir="\$(includedir)/ntfs-3g
+ # automounting NTFS volumes can fail during boot if the driver binaries 
+ # and their dependencies are on an unmounted partition. Use --exec-prefix
+ # to override this.
++# Yocto base_* variables should override this
+ if test "x${exec_prefix}" = "xNONE"; then
+-	rootbindir="/bin"
+-	rootsbindir="/sbin"
+-	rootlibdir="/lib${libdir##*/lib}"
++	rootbindir="${base_bindir:-/bin}"
++	rootsbindir="${base_sbindir:-/sbin}"
++	rootlibdir="${base_libdir:-/lib${libdir##*/lib}}"
+ else
+-	rootbindir="\$(bindir)"
+-	rootsbindir="\$(sbindir)"
+-	rootlibdir="\$(libdir)"
++	rootbindir="${base_bindir:-\$(bindir)}"
++	rootsbindir="${base_sbindir:-\$(sbindir)}"
++	rootlibdir="${base_libdir:-\$(libdir)}"
+ fi
+ AC_SUBST([pkgconfigdir])
+ AC_SUBST([ntfs3gincludedir])
+Index: ntfs-3g_ntfsprogs-2016.2.22/ntfsprogs/Makefile.am
+===================================================================
+--- ntfs-3g_ntfsprogs-2016.2.22.orig/ntfsprogs/Makefile.am
++++ ntfs-3g_ntfsprogs-2016.2.22/ntfsprogs/Makefile.am
+@@ -155,15 +155,15 @@ extras:	libs $(EXTRA_PROGRAMS)
+ 
+ if ENABLE_MOUNT_HELPER
+ install-exec-hook:
+-	$(INSTALL) -d $(DESTDIR)/sbin
+-	$(LN_S) -f $(sbindir)/mkntfs $(DESTDIR)/sbin/mkfs.ntfs
++	$(INSTALL) -d $(DESTDIR)$(rootsbindir)
++	$(LN_S) -f $(sbindir)/mkntfs $(DESTDIR)$(rootsbindir)/mkfs.ntfs
+ 
+ install-data-hook:
+ 	$(INSTALL) -d $(DESTDIR)$(man8dir)
+ 	$(LN_S) -f mkntfs.8 $(DESTDIR)$(man8dir)/mkfs.ntfs.8
+ 
+ uninstall-local:
+-	$(RM) -f $(DESTDIR)/sbin/mkfs.ntfs
++	$(RM) -f $(DESTDIR)$(rootsbindir)/mkfs.ntfs
+ 	$(RM) -f $(DESTDIR)$(man8dir)/mkfs.ntfs.8
+ endif
+ 
+Index: ntfs-3g_ntfsprogs-2016.2.22/src/Makefile.am
+===================================================================
+--- ntfs-3g_ntfsprogs-2016.2.22.orig/src/Makefile.am
++++ ntfs-3g_ntfsprogs-2016.2.22/src/Makefile.am
+@@ -68,9 +68,9 @@ endif
+ 
+ if ENABLE_MOUNT_HELPER
+ install-exec-local:	install-rootbinPROGRAMS
+-	$(MKDIR_P) "$(DESTDIR)/sbin"
+-	$(LN_S) -f "$(rootbindir)/ntfs-3g" "$(DESTDIR)/sbin/mount.ntfs-3g"
+-	$(LN_S) -f "$(rootbindir)/lowntfs-3g" "$(DESTDIR)/sbin/mount.lowntfs-3g"
++	$(MKDIR_P) "$(DESTDIR)$(rootsbindir)"
++	$(LN_S) -f "$(rootbindir)/ntfs-3g" "$(DESTDIR)$(rootsbindir)/mount.ntfs-3g"
++	$(LN_S) -f "$(rootbindir)/lowntfs-3g" "$(DESTDIR)$(rootsbindir)/mount.lowntfs-3g"
+ 
+ install-data-local:	install-man8
+ 	$(LN_S) -f ntfs-3g.8 "$(DESTDIR)$(man8dir)/mount.ntfs-3g.8"
+@@ -78,7 +78,7 @@ install-data-local:	install-man8
+ 
+ uninstall-local:
+ 	$(RM) -f "$(DESTDIR)$(man8dir)/mount.ntfs-3g.8"
+-	$(RM) -f "$(DESTDIR)/sbin/mount.ntfs-3g" "$(DESTDIR)/sbin/mount.lowntfs-3g"
++	$(RM) -f "$(DESTDIR)$(rootsbindir)/mount.ntfs-3g" "$(DESTDIR)$(rootsbindir)/mount.lowntfs-3g"
+ endif
+ 
+ endif # ENABLE_NTFS_3G
