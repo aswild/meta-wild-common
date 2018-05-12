@@ -2,7 +2,7 @@
 
 DESCRIPTION = "Shell dotfiles"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=873a8e3c61b23b718b4594fa0a3e7449"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=7be1bf717db056fe85928318a0e68571"
 
 inherit allarch
 
@@ -30,6 +30,7 @@ do_install() {
     # leave detached HEAD, and make sure we get all the objects in the installdir
     git checkout master
     git repack -ad
+    git submodule foreach git repack -ad
     rm -f .git/objects/info/alternates
     make DESTDIR="${D}${ROOT_HOME}" SRCDIR="${LINUXFILES_LOC}" install
 
