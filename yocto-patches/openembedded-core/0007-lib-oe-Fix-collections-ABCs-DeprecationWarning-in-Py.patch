@@ -1,0 +1,51 @@
+From b603ae98ad470f73b018bd59a5820c13626a2d1b Mon Sep 17 00:00:00 2001
+From: Khem Raj <raj.khem@gmail.com>
+Date: Wed, 8 Aug 2018 10:24:40 -0700
+Subject: [PATCH] lib/oe: Fix collections ABCs DeprecationWarning in Python
+ 3.7+
+
+- Prefer collections.abc (new in Python 3.3) over collections for abstract base classes
+
+- In Python 3.8, the abstract base classes in collections.abc will no longer be exposed in
+  the regular collections module. This will help create a clearer distinction between
+  the concrete classes and the abstract base classes."
+
+- https://docs.python.org/3.7/whatsnew/3.7.html#deprecated
+
+- see https://github.com/python/cpython/commit/c66f9f8d3909f588c251957d499599a1680e2320
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ meta/lib/oe/maketype.py | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/meta/lib/oe/maketype.py b/meta/lib/oe/maketype.py
+index f88981dd90..c36e7b5604 100644
+--- a/meta/lib/oe/maketype.py
++++ b/meta/lib/oe/maketype.py
+@@ -7,7 +7,12 @@ the arguments of the type's factory for details.
+ 
+ import inspect
+ import oe.types as types
+-import collections
++try:
++    # Python 3.7+
++    from collections.abc import Callable
++except ImportError:
++    # Python < 3.7
++    from collections import Callable
+ 
+ available_types = {}
+ 
+@@ -96,7 +101,7 @@ for name in dir(types):
+         continue
+ 
+     obj = getattr(types, name)
+-    if not isinstance(obj, collections.Callable):
++    if not isinstance(obj, Callable):
+         continue
+ 
+     register(name, obj)
+-- 
+2.18.0
+
