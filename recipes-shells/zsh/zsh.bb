@@ -5,10 +5,10 @@ DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=1a4c4cda3e8096d2fd483ff2f4514fec"
 
-PV = "5.4.2"
+PV = "5.5.1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.gz"
-SRC_URI[md5sum] = "dfe156fd69b0d8d1745ecf6d6e02e047"
-SRC_URI[sha256sum] = "957bcdb2c57f64c02f673693ea5a7518ef24b6557aeb3a4ce222cefa6d74acc9"
+SRC_URI[md5sum] = "678bc037a7311a46e7fc0adca7ed8266"
+SRC_URI[sha256sum] = "774caa89e7aea5f33c3033cbffd93e28707f72ba5149c79709e48e6c2d2ee080"
 
 DEPENDS = " \
     bison-native \
@@ -19,14 +19,18 @@ DEPENDS = " \
 "
 
 # pcre is dynamically loaded, so needs to explicitly be in RDEPENDS
-RDEPENDS_${PN} += "libpcre ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
+#RDEPENDS_${PN} += "libpcre"
+RRECOMMENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
 RPROVIDES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', '/bin/zsh', '', d)}"
 
 inherit autotools gettext pkgconfig
 
 bindir = "${base_bindir}"
 EXTRA_OECONF = " \
+    --bindir=${base_bindir} \
     --enable-etcdir=${sysconfdir} \
+    --enable-fndir=${datadir}/${PN}/${PV}/functions \
+    --enable-site-fndir=${datadir}/${PN}/site-functions \
     --with-term-lib=ncursesw \
     --with-tcsetpgrp \
     --enable-cap \
@@ -36,6 +40,9 @@ EXTRA_OECONF = " \
     zsh_cv_shared_environ=yes \
     ac_cv_prog_PCRECONF='pkg-config libpcre' \
 "
+
+# Configure respects --bindir from EXTRA_OECONF, but then Src/Makefile will read bindir from environment
+export bindir="${base_bindir}"
 
 # in order to find libzsh-${PV}.so properly
 LDFLAGS += "-Wl,-rpath=${libdir}/zsh"
