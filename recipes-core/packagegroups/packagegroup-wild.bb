@@ -27,6 +27,7 @@ RDEPENDS_${PN}-core = " \
     htop \
     make \
     the-silver-searcher \
+    the-silver-searcher-zsh-completion \
     tmux \
     usbutils \
     wild-linuxfiles \
