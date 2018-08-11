@@ -19,8 +19,6 @@ EXTRA_OECONF = " \
     --with-pcre2 \
 "
 
-FILES_${PN} = " \
-    ${bindir}/ag \
-    ${datadir}/the_silver_searcher/completions/ag.bashcomp.sh \
-    ${datadir}/zsh/site-functions/_the_silver_searcher \
-"
+inherit bash-completion
+PACKAGES += "${PN}-zsh-completion"
+FILES_${PN}-zsh-completion = "${datadir}/zsh/site-functions"
