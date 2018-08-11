@@ -35,6 +35,7 @@ EXTRA_OECONF = "\
     --with-match-limit=10000000 \
     --enable-pcre2-16 \
     --enable-pcre2-32 \
+    --enable-jit \
 "
 # Set LINK_SIZE in BUILD_CFLAGS given that the autotools bbclass use it to
 # set CFLAGS_FOR_BUILD, required for the libpcre build.
