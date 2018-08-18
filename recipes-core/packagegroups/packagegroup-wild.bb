@@ -16,6 +16,7 @@ RDEPENDS_${PN}-base = " \
     openssh-sshd \
     openssh-sftp \
     openssh-sftp-server \
+    shadow \
     sysstat \
     vim \
     wget \
