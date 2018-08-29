@@ -1,0 +1,40 @@
+Index: scons-3.0.1/script/scons
+===================================================================
+--- scons-3.0.1.orig/script/scons
++++ scons-3.0.1/script/scons
+@@ -1,4 +1,4 @@
+-#! /usr/bin/env python
++#! /usr/bin/env python2
+ #
+ # SCons - a Software Constructor
+ #
+Index: scons-3.0.1/script/scons-configure-cache
+===================================================================
+--- scons-3.0.1.orig/script/scons-configure-cache
++++ scons-3.0.1/script/scons-configure-cache
+@@ -1,4 +1,4 @@
+-#! /usr/bin/env python
++#! /usr/bin/env python2
+ #
+ # SCons - a Software Constructor
+ #
+Index: scons-3.0.1/script/scons-time
+===================================================================
+--- scons-3.0.1.orig/script/scons-time
++++ scons-3.0.1/script/scons-time
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python2
+ #
+ # scons-time - run SCons timings and collect statistics
+ #
+Index: scons-3.0.1/script/sconsign
+===================================================================
+--- scons-3.0.1.orig/script/sconsign
++++ scons-3.0.1/script/sconsign
+@@ -1,4 +1,4 @@
+-#! /usr/bin/env python
++#! /usr/bin/env python2
+ #
+ # SCons - a Software Constructor
+ #
