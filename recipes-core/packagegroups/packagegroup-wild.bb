@@ -10,6 +10,7 @@ RDEPENDS_${PN}-base = " \
     packagegroup-core-full-cmdline-sys-services \
     curl \
     dhcp-client \
+    glibc-utils \
     iproute2 \
     iputils \
     openssh \
