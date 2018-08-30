@@ -9,6 +9,7 @@ NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
 
 SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip \
            file://LICENSE.ubnt \
+           file://unifi.service \
 "
 SRC_URI[md5sum] = "2a9a20e704d80e94f92949a14e1ea517"
 SRC_URI[sha256sum] = "236732b433d93c279835a33a3a72b2dcff1dad0adbe3ccb91401e537137f6c6b"
@@ -19,6 +20,7 @@ UNIFI_HOMEDIR ?= "/home/${PN}"
 # no package splitting
 PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/${PN} \
+               ${systemd_unitdir}/system \
                ${UNIFI_HOMEDIR}"
 
 # unifi controller includes precompiled binaries
@@ -35,11 +37,14 @@ DEPENDS = "rsync-native"
 
 RDEPENDS_${PN} = "openjre-8 mongodb"
 
+inherit systemd
+SYSTEMD_SERVICE_${PN} = "unifi.service"
+
 inherit useradd
 GROUPADD_PACKAGES = "${PN}"
-GROUPADD_PARAM_${PN} = "--system ${PN}"
+GROUPADD_PARAM_${PN} = "--system --gid 862 ${PN}"
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system --gid ${PN} --home-dir ${UNIFI_HOMEDIR} ${PN}"
+USERADD_PARAM_${PN} = "--system --uid 862 --gid ${PN} --home-dir ${UNIFI_HOMEDIR} ${PN}"
 
 # arch for prebuilt libraries
 NATIVEARCH = "invalid"
@@ -73,4 +78,7 @@ do_install() {
         install -dm750 ${D}${UNIFI_HOMEDIR}/$_d
         ln -sv ${UNIFI_HOMEDIR}/$_d $installdir/$_d
     done
+
+    bbnote "Installing systemd service"
+    install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
 }
