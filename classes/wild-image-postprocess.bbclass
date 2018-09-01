@@ -59,6 +59,17 @@ wild_rootfs_postprocess() {
     # Make /media a symlink to /run/media
     rm -rf ${IMAGE_ROOTFS}/media
     ln -sfv run/media ${IMAGE_ROOTFS}/media
+
+    # base-files_3.0.14.bbappend in meta-java sets JAVA_HOME in /etc/profile
+    # but does so assuming that /usr/lib/jvm actually has stuff in it. If we don't
+    # have a JVM installed, every login prints an error
+    #    /etc/profile:36: no matches found: /usr/lib/jvm/*
+    # work around this by installing /usr/lib/jvm/dummy if necessary
+    if grep -qF 'for dir in ${libdir}/jvm/*' ${IMAGE_ROOTFS}${sysconfdir}/profile \
+       && [ ! -d ${IMAGE_ROOTFS}${libdir}/jvm ]; then
+        install -d ${IMAGE_ROOTFS}${libdir}/jvm
+        touch ${IMAGE_ROOTFS}${libdir}/jvm/dummy
+    fi
 }
 ROOTFS_POSTPROCESS_COMMAND_append = " wild_rootfs_postprocess;"
 
