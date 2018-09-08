@@ -7,6 +7,9 @@ User=unifi
 WorkingDirectory=/usr/lib/unifi
 ExecStart=/usr/bin/java -jar /usr/lib/unifi/lib/ace.jar start
 ExecStop=/usr/bin/java -jar /usr/lib/unifi/lib/ace.jar stop
+SuccessExitStatus=143
+TimeoutStopSec=60
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
