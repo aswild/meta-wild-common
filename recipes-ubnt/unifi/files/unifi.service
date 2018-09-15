@@ -1,6 +1,7 @@
 [Unit]
 Description=Ubiquiti UniFi Controller Server
-After=network.target
+Wants=network-online.target time-sync.target
+After=network-online.target time-sync.target
 
 [Service]
 User=unifi
