@@ -1,18 +1,19 @@
 # UniFi Controller recipe - based on the Arch Linux "unifi" (AUR) PKGBUILD
 SUMMARY = "UniFi SDN Controller"
-PV = "5.8.28"
 
 # The package doesn't ship with a license file
 LICENSE = "UBIQUITI"
 LIC_FILES_CHKSUM = "file://../LICENSE.ubnt;md5=d0b4702d3eb46e97d80d14dd16338b76"
 NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
 
-SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip \
+SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi-${PV}.unix.zip \
            file://LICENSE.ubnt \
            file://unifi.service \
 "
-SRC_URI[md5sum] = "2a9a20e704d80e94f92949a14e1ea517"
-SRC_URI[sha256sum] = "236732b433d93c279835a33a3a72b2dcff1dad0adbe3ccb91401e537137f6c6b"
+
+PV = "5.8.30"
+SRC_URI[md5sum] = "bcba20d4bfa27952d8b718cccb8b00a4"
+SRC_URI[sha256sum] = "884d04d5d94fd6de93866c6f936e0f9d872cdfd105b1cf23b53b32ea1bd37f9c"
 
 # read-write directory to store data and logs
 UNIFI_HOMEDIR ?= "/home/${PN}"
