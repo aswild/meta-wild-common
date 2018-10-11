@@ -11,9 +11,9 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://unifi.service \
 "
 
-PV = "5.8.30"
-SRC_URI[md5sum] = "bcba20d4bfa27952d8b718cccb8b00a4"
-SRC_URI[sha256sum] = "884d04d5d94fd6de93866c6f936e0f9d872cdfd105b1cf23b53b32ea1bd37f9c"
+PV = "5.9.29"
+SRC_URI[md5sum] = "3c7df447b2e90cf9b48d8a7a3265066a"
+SRC_URI[sha256sum] = "1dca860cc4db2bad5058f78f0fd46976322c12d8dd4272c8585c7010bdcba146"
 
 # read-write directory to store data and logs
 UNIFI_HOMEDIR ?= "/home/${PN}"
