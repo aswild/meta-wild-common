@@ -24,7 +24,7 @@ gettop() {
     done
 }
 
-[[ -d $TOP ]] || TOP="$(gettop)" || die "Please set TOP first"
+TOP="$(gettop)" || die "Couldn't find TOP"
 thisdir=$(dirname $0)
 branchname=wild
 
