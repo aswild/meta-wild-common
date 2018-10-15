@@ -1,0 +1,30 @@
+From 67e3715633d1ab94ebfcf262cda4ed3c7bfc50a9 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 14 Oct 2018 23:02:31 -0400
+Subject: [PATCH] set HOME to /root if needed
+
+Yocto images typically have HOME=/home/root but many distros (including
+Arch) use /root for root's home dir. Set HOME to /root if needed so that
+dotfiles and such are loaded correctly inside the chroot.
+---
+ arch-chroot.in | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch-chroot.in b/arch-chroot.in
+index bfb83a3..98914f7 100644
+--- a/arch-chroot.in
++++ b/arch-chroot.in
+@@ -76,4 +76,10 @@ chroot_add_resolv_conf "$chrootdir" || die "failed to setup resolv.conf"
+ chroot_args=()
+ [[ $userspec ]] && chroot_args+=(--userspec "$userspec")
+ 
++if [[ -n "$HOME" && (! -d "${chrootdir}${HOME}") && -d "${chrootdir}/root" ]]; then
++    msg "current HOME ($HOME) doesn't exist in chroot but /root does"
++    msg "setting HOME=/root"
++    export HOME=/root
++fi
++
+ SHELL=/bin/bash unshare --fork --pid chroot "${chroot_args[@]}" -- "$chrootdir" "$@"
+-- 
+2.19.1
+
