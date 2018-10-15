@@ -1,0 +1,96 @@
+#!/hint/bash
+
+_wild_yocto_functions=()
+
+_wild_yocto_unset_functions() {
+    unset -f "${_wild_yocto_functions[@]}"
+}
+_wild_yocto_functions+=(_wild_yocto_unset_functions)
+
+_wild_yocto_apply_patches() {
+    if ( ! git -C openembedded-core symbolic-ref HEAD &>/dev/null ) && \
+            [[ -x meta-wild-common/yocto-patches/apply-patches.sh ]]; then
+        echo -ne "\nopenembedded-core is in a detached HEAD. Apply patches from meta-wild-common? (Y/n) "
+        local _apply_patch_answer
+        read _apply_patch_answer
+        if [[ -z $_apply_patch_answer ]] || [[ $_apply_patch_answer == [yY]* ]]; then
+            meta-wild-common/yocto-patches/apply-patches.sh
+        fi
+    fi
+}
+_wild_yocto_functions+=(_wild_yocto_apply_patches)
+
+_wild_yocto_symlink_cache_dir() {
+    local _name="$1"
+    if [[ -e ./$_name ]]; then
+        if [[ ! -d ./$_name ]]; then
+            echo "WARNING: ./$_name exists but is not a directory!" >&2
+        fi
+        return 0
+    fi
+    local _dir
+    if [[ -d "$XDG_CACHE_HOME" ]]; then
+        _dir="$XDG_CACHE_HOME"
+    else
+        _dir="$HOME/.cache"
+    fi
+    _dir="$_dir/yocto/$_name"
+    if [[ -d "$_dir" ]]; then
+        ln -sv "$_dir" "$_name"
+    else
+        echo "WARNING: $_dir doesn't exist" >&2
+    fi
+}
+_wild_yocto_functions+=(_wild_yocto_symlink_cache_dir)
+
+_wild_yocto_python3_hack() {
+    case "$1" in
+        pre)
+            # oe-buildenv-internal will fail if the default python is python3
+            # it's unsupported, but it actually works, so do some trickery
+            if /usr/bin/env python --version 2>&1 | grep -q "Python 3"; then
+                _wild_yocto_pytmpdir=$(mktemp -d)
+                if [[ -d $_wild_yocto_pytmpdir ]]; then
+                    echo "NOTE: hiding default python3 from oe-core" >&2
+                    ln -s $(command which python2) $_wild_yocto_pytmpdir/python
+                    export PATH="$_wild_yocto_pytmpdir:$PATH"
+                fi
+            fi
+            ;;
+        post)
+            # clean up PATH if we changed it earlier
+            if [[ -d $_wild_yocto_pytmpdir ]]; then
+                export PATH="$(sed "s|${_wild_yocto_pytmpdir}:||" <<<"$PATH")"
+                rm -rf $_wild_yocto_pytmpdir
+                unset _wild_yocto_pytmpdir
+            fi
+            ;;
+        *)
+            echo "ERROR: unknown option to _wild_yocto_python3_hack"
+            return 1
+            ;;
+    esac
+}
+_wild_yocto_functions+=(_wild_yocto_python3_hack)
+
+_wild_yocto_subst_confvars() {
+    # use: subst_confvars file1 file2 -- VAR1 VAR2 ...
+    local _files _var _val _sed_args
+    _files=()
+    while (( $# )); do
+        if [[ "$1" == "--" ]]; then
+            break
+        fi
+        _files+=("$1")
+        shift
+    done
+    shift
+
+    _sed_args=()
+    for _var in "$@"; do
+        eval _val="\$$_var"
+        _sed_args+=(-e "s,##$_var##,$_val,g")
+    done
+    sed -i "${_sed_args[@]}" "${_files[@]}"
+}
+_wild_yocto_functions+=(_wild_yocto_subst_confvars)
