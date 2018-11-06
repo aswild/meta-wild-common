@@ -37,6 +37,7 @@ ERROR_QA_remove = "build-deps"
 DEPENDS = "rsync-native"
 
 RDEPENDS_${PN} = "openjre-8 mongodb"
+RRECOMMENDS_${PN} = "unifi-cert-update"
 
 inherit systemd
 SYSTEMD_SERVICE_${PN} = "unifi.service"
