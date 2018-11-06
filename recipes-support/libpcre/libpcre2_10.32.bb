@@ -8,14 +8,14 @@ SUMMARY = "Perl Compatible Regular Expressions version 2"
 HOMEPAGE = "http://www.pcre.org"
 SECTION = "devel"
 LICENSE = "BSD"
-LIC_FILES_CHKSUM = "file://LICENCE;md5=f5e4bde9fd0493d0967b4dba9899590f"
+LIC_FILES_CHKSUM = "file://LICENCE;md5=cf66d307bf03bae65d413eb7a8e603a0"
 
 SRC_URI = "https://ftp.pcre.org/pub/pcre/pcre2-${PV}.tar.bz2 \
            file://pcre-cross.patch \
 "
 
-SRC_URI[md5sum] = "e0b91c891a3c49050f7fd15de33d0ba4"
-SRC_URI[sha256sum] = "e07d538704aa65e477b6a392b32ff9fc5edf75ab9a40ddfc876186c4ff4d68ac"
+SRC_URI[md5sum] = "8a096287153fb994970df3570e90fcb5"
+SRC_URI[sha256sum] = "f29e89cc5de813f45786580101aaee3984a65818631d4ddbda7b32f699b87c2e"
 
 CVE_PRODUCT = "pcre2"
 
@@ -45,15 +45,22 @@ CXXFLAGS_append_powerpc = " -lstdc++"
 
 export CCLD_FOR_BUILD ="${BUILD_CCLD}"
 
-PACKAGES =+ "libpcre2-16 libpcre2-32 pcre2grep pcre2grep-doc pcre2test pcre2test-doc"
+PACKAGES =+ "libpcre2-8 libpcre2-16 libpcre2-32 libpcre2-posix pcre2grep pcre2grep-doc pcre2test pcre2test-doc"
+
+# base package is empty, depends on main library packages
+ALLOW_EMPTY_${PN} = "1"
+FILES_${PN} = ""
+RRECOMMENDS_${PN} = "libpcre2-8 libpcre2-16 libpcre2-32 libpcre2-posix"
 
 SUMMARY_pcre2grep = "grep utility that uses perl 5 compatible regexes"
 SUMMARY_pcre2grep-doc = "grep utility that uses perl 5 compatible regexes - docs"
 SUMMARY_pcre2test = "program for testing Perl-comatible regular expressions"
 SUMMARY_pcre2test-doc = "program for testing Perl-comatible regular expressions - docs"
 
+FILES_libpcre2-8 = "${libdir}/libpcre2-8.so.*"
 FILES_libpcre2-16 = "${libdir}/libpcre2-16.so.*"
 FILES_libpcre2-32 = "${libdir}/libpcre2-32.so.*"
+FILES_libpcre2-posix = "${libdir}/libpcre2-posix.so.*"
 FILES_pcre2grep = "${bindir}/pcre2grep"
 FILES_pcre2grep-doc = "${mandir}/man1/pcre2grep.1"
 FILES_pcre2test = "${bindir}/pcre2test"
