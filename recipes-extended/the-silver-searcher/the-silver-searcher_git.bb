@@ -8,16 +8,19 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
 SRC_URI = "git://github.com/aswild/the_silver_searcher;branch=master"
 SRCREV = "${AUTOREV}"
-PV = "2.1.0+git${SRCPV}"
+PV = "2.2.0+git${SRCPV}"
 
 inherit autotools pkgconfig
 
 S = "${WORKDIR}/git"
 
 EXTRA_OECONF = " \
-    --disable-silent-rules \
-    --with-pcre2 \
+    --enable-lzma \
+    --enable-zlib \
+    ac_cv_prog_CLANG_FORMAT=no \
+    ac_cv_prog_CRAM=no \
 "
+CONFIGUREOPT_DEPTRACK = ""
 
 inherit bash-completion
 PACKAGES += "${PN}-zsh-completion"
