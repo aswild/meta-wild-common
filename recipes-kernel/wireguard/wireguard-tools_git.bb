@@ -1,7 +1,7 @@
 require wireguard.inc
 inherit bash-completion systemd pkgconfig
 
-DEPENDS = "wireguard-module libmnl"
+DEPENDS = "libmnl"
 RDEPENDS_${PN} = "wireguard-module bash"
 
 S = "${WORKDIR}/git/src/tools"
@@ -13,6 +13,7 @@ EXTRA_OEMAKE += " \
     WITH_BASHCOMPLETION=yes WITH_WGQUICK=yes \
 "
 
+do_configure[noexec] = "1"
 do_install() {
     oe_runmake install
 }
