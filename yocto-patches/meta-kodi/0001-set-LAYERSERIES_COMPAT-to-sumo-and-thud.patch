@@ -1,0 +1,21 @@
+From b450cf5b63dbfdf1f1c3c7278f8592fb70afccb7 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sat, 11 Aug 2018 13:30:23 -0400
+Subject: [PATCH] set LAYERSERIES_COMPAT to sumo and thud
+
+---
+ conf/layer.conf | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/conf/layer.conf b/conf/layer.conf
+index fcb66b0..f537759 100644
+--- a/conf/layer.conf
++++ b/conf/layer.conf
+@@ -7,3 +7,4 @@ BBFILES += "${LAYERDIR}/recipes*/*/*.bb ${LAYERDIR}/recipes*/*/*.bbappend"
+ BBFILE_COLLECTIONS += "meta-kodi"
+ BBFILE_PATTERN_meta-kodi := "^${LAYERDIR}/"
+ BBFILE_PRIORITY_meta-kodi = "8"
++LAYERSERIES_COMPAT_meta-kodi = "sumo thud"
+-- 
+2.19.1
+
