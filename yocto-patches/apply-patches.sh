@@ -53,8 +53,5 @@ for dir in $(find "$thisdir" -mindepth 1 -type d -printf '%P\n'); do
     fi
     repo start $branchname $pdir || die "unable to create branch $branchname in $pdir"
     echo "Created branch $branchname in $pdir"
-    for patch in "$sdir"/*.patch; do
-        echo "Applying $(basename $patch)"
-        git -C "$pdir" am -q --whitespace=nowarn "$patch" || die "failed to apply patch $patch"
-    done
+    git -C "$pdir" am --whitespace=nowarn "$sdir"/*.patch || die "failed to apply patchs to $(basename "$pdir")"
 done
