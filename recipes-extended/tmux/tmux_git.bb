@@ -4,7 +4,7 @@ LICENSE = "ISC"
 DEPENDS = "ncurses libevent"
 LIC_FILES_CHKSUM = "file://COPYING;md5=f7d9aab84ec6567139a4755c48d147fb"
 
-PV = "2.6"
+PV = "2.8"
 SRC_URI = "git://github.com/tmux/tmux;tag=${PV}"
 
 S = "${WORKDIR}/git"
