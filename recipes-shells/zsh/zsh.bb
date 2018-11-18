@@ -5,10 +5,10 @@ DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=1a4c4cda3e8096d2fd483ff2f4514fec"
 
-PV = "5.5.1"
-SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.gz"
-SRC_URI[md5sum] = "678bc037a7311a46e7fc0adca7ed8266"
-SRC_URI[sha256sum] = "774caa89e7aea5f33c3033cbffd93e28707f72ba5149c79709e48e6c2d2ee080"
+PV = "5.6.2"
+SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.xz"
+SRC_URI[md5sum] = "540673bf823d2e13806ac0395caa8345"
+SRC_URI[sha256sum] = "a50bd66c0557e8eca3b8fa24e85d0de533e775d7a22df042da90488623752e9e"
 
 DEPENDS = " \
     bison-native \
@@ -19,11 +19,11 @@ DEPENDS = " \
 "
 
 # pcre is dynamically loaded, so needs to explicitly be in RDEPENDS
-#RDEPENDS_${PN} += "libpcre"
+RDEPENDS_${PN} += "libpcre"
 RRECOMMENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
 RPROVIDES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', '/bin/zsh', '', d)}"
 
-inherit autotools gettext pkgconfig
+inherit autotools-brokensep gettext pkgconfig
 
 bindir = "${base_bindir}"
 EXTRA_OECONF = " \
