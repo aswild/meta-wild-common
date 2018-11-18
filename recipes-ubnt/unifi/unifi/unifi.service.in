@@ -4,12 +4,12 @@ Wants=network-online.target time-sync.target
 After=network-online.target time-sync.target
 
 [Service]
-User=unifi
-WorkingDirectory=/usr/lib/unifi
-ExecStart=/usr/bin/java -jar /usr/lib/unifi/lib/ace.jar start
-ExecStop=/usr/bin/java -jar /usr/lib/unifi/lib/ace.jar stop
+User=@UNIFI_USER@
+WorkingDirectory=@libdir@/unifi
+ExecStart=@bindir@/java -jar @libdir@/unifi/lib/ace.jar start
+ExecStop=@bindir@/java -jar @libdir@/unifi/lib/ace.jar stop
 SuccessExitStatus=143
-TimeoutStopSec=60
+TimeoutSec=240
 Restart=on-failure
 
 [Install]

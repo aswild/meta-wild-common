@@ -8,25 +8,30 @@ NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
 
 SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi-${PV}.unix.zip \
            file://LICENSE.ubnt \
-           file://unifi.service \
+           file://unifi.service.in \
+           file://mongod.in \
 "
 
 PV = "5.9.29"
 SRC_URI[md5sum] = "3c7df447b2e90cf9b48d8a7a3265066a"
 SRC_URI[sha256sum] = "1dca860cc4db2bad5058f78f0fd46976322c12d8dd4272c8585c7010bdcba146"
 
+# Unifi controller Linux and group
+UNIFI_USER  ?= "${PN}"
+UNIFI_GROUP ?= "${UNIFI_USER}"
+UNIFI_UID   ?= "862"
+UNIFI_GID   ?= "${UNIFI_UID}"
+
 # read-write directory to store data and logs
-UNIFI_HOMEDIR ?= "/home/${PN}"
+UNIFI_HOMEDIR ?= "/home/${UNIFI_USER}"
 
 # no package splitting
-PACKAGES = "${PN}"
 FILES_${PN} = "${libdir}/${PN} \
                ${systemd_unitdir}/system \
                ${UNIFI_HOMEDIR}"
 
 # unifi controller includes precompiled binaries
 INSANE_SKIP_${PN} = "already-stripped"
-INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
 # precompiled library links with libsystemd which generates a warning if
 # systemd isn't in DEPENDS, but we don't really need that dependency.
@@ -36,7 +41,7 @@ ERROR_QA_remove = "build-deps"
 # use rsync to install because, unlike cp, it supports --exclude
 DEPENDS = "rsync-native"
 
-RDEPENDS_${PN} = "openjre-8 mongodb"
+RDEPENDS_${PN} = "openjre-8 mongodb bash"
 RRECOMMENDS_${PN} = "unifi-cert-update"
 
 inherit systemd
@@ -44,9 +49,9 @@ SYSTEMD_SERVICE_${PN} = "unifi.service"
 
 inherit useradd
 GROUPADD_PACKAGES = "${PN}"
-GROUPADD_PARAM_${PN} = "--system --gid 862 ${PN}"
+GROUPADD_PARAM_${PN} = "--system --gid ${UNIFI_GID} ${UNIFI_USER}"
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system --uid 862 --gid ${PN} --home-dir ${UNIFI_HOMEDIR} ${PN}"
+USERADD_PARAM_${PN} = "--system --uid ${UNIFI_UID} --gid ${UNIFI_GID} --home-dir ${UNIFI_HOMEDIR} ${UNIFI_USER}"
 
 # arch for prebuilt libraries
 NATIVEARCH = "invalid"
@@ -58,7 +63,16 @@ NATIVEARCH_x86-64 = "x86_64"
 S = "${WORKDIR}/UniFi"
 
 do_configure[noexec] = "1"
-do_compile[noexec] = "1"
+
+do_compile() {
+    for file in unifi.service mongod; do
+        sed -e "s|@base_bindir@|${base_bindir}|g" \
+            -e "s|@bindir@|${bindir}|g" \
+            -e "s|@libdir@|${libdir}|g" \
+            -e "s|@UNIFI_USER@|${UNIFI_USER}|g" \
+            ${WORKDIR}/$file.in >${WORKDIR}/$file
+    done
+}
 
 do_install() {
     bbnote "Installing base files"
@@ -80,6 +94,10 @@ do_install() {
         install -dm750 ${D}${UNIFI_HOMEDIR}/$_d
         ln -sv ${UNIFI_HOMEDIR}/$_d $installdir/$_d
     done
+
+    bbnote "Replacing mongod wrapper"
+    rm -f ${D}${libdir}/${PN}/bin/mongod
+    install -m755 ${WORKDIR}/mongod ${D}${libdir}/${PN}/bin/mongod
 
     bbnote "Installing systemd service"
     install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service

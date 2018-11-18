@@ -1,0 +1,2 @@
+#!@base_bindir@/bash
+exec @bindir@/mongod ${*//--nohttpinterface/}
