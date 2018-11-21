@@ -3,11 +3,12 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://wpa_oneoff.sh;endline=21;md5=8241bd9423fb5ab2c43128e588393d3b"
 
 RDEPENDS_${PN} = "bash wpa-supplicant wpa-supplicant-passphrase"
-PACKAGE_ARCH = "all"
 
 PV = "1.0"
 SRC_URI = "file://wpa_oneoff.sh"
 S = "${WORKDIR}"
+
+inherit allarch
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
