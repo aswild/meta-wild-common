@@ -1,0 +1,15 @@
+Index: xfsprogs-4.18.0/configure.ac
+===================================================================
+--- xfsprogs-4.18.0.orig/configure.ac
++++ xfsprogs-4.18.0/configure.ac
+@@ -128,6 +128,10 @@ NONE:NONE | NONE:/usr | /usr:*)
+   ;;
+ esac
+ 
++# override the sillyness above
++root_sbindir="${yocto_root_sbindir}"
++root_libdir="${yocto_root_libdir}"
++
+ AC_SUBST([root_sbindir])
+ AC_SUBST([root_libdir])
+ 
