@@ -1,7 +1,7 @@
-# Mainline Linux 4.14 kernel
+# Mainline Linux 4.19 kernel
 
-LINUX_VERSION = "4.14.81"
-LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
+LINUX_VERSION = "4.19.2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 KBUILD_DEFCONFIG_x86 = "i386_defconfig"
 KBUILD_DEFCONFIG_x86-64 = "x86_64_defconfig"
