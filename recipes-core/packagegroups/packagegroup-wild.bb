@@ -59,6 +59,7 @@ RDEPENDS_${PN}-utils = " \
     ldd \
     rsync \
     sshfs-fuse \
+    tree \
     util-linux \
     util-linux-blkid \
 "
