@@ -53,7 +53,7 @@ wild_rootfs_postprocess() {
     # use systemd-resolved for /etc/resolv.conf
     if [ -f ${IMAGE_ROOTFS}/lib/systemd/systemd-resolved ]; then
         rm -f ${IMAGE_ROOTFS}/etc/resolv.conf
-        ln -s /run/systemd/resolve/resolv.conf ${IMAGE_ROOTFS}/etc/resolv.conf
+        ln -s /run/systemd/resolve/stub-resolv.conf ${IMAGE_ROOTFS}/etc/resolv.conf
     fi
 
     # Make /media a symlink to /run/media
