@@ -56,6 +56,21 @@ wild_rootfs_postprocess() {
         ln -s /run/systemd/resolve/stub-resolv.conf ${IMAGE_ROOTFS}/etc/resolv.conf
     fi
 
+    # systemd units that use StateDirectory= need /var/lib to be writable. We have mount-copybind
+    # to do that (via var-volatile-lib.service which comes before local-fs.target), but
+    # some of these units (like systemd-rfkill) use DefaultDependencies=no, so we need
+    # an explicit dependency.
+    if [ -d ${IMAGE_ROOTFS}${systemd_unitdir} ] && \
+       ${@bb.utils.contains('IMAGE_FEATURES', 'read-only-rootfs', 'true', 'false', d)}; then
+        local service
+        find ${IMAGE_ROOTFS}${systemd_unitdir} -name '*.service' -type f | while read service; do
+            if grep -q '^StateDirectory' $service; then
+                install -d ${service}.d
+                echo -e '[Unit]\nAfter=var-volatile-lib.service' >${service}.d/var-volatile-lib.conf
+            fi
+        done
+    fi
+
     # Make /media a symlink to /run/media
     rm -rf ${IMAGE_ROOTFS}/media
     ln -sfv run/media ${IMAGE_ROOTFS}/media
