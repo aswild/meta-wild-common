@@ -1,3 +1,13 @@
+# base class for customized images
+
+inherit core-image
+
+# enable BCJ filters for squashfs xz
+IMAGE_CMD_squashfs-xz_append_x86 = " -Xbcj x86"
+IMAGE_CMD_squashfs-xz_append_x86-64 = " -Xbcj x86"
+IMAGE_CMD_squashfs-xz_append_arm = " -Xbcj arm,armthumb"
+IMAGE_CMD_squashfs-xz_append_aarch64 = " -Xbcj arm"
+
 # common image postprocess commands
 
 copy_ssh_host_keys() {
