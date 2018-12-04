@@ -2,7 +2,9 @@ require wireguard.inc
 inherit bash-completion systemd pkgconfig
 
 DEPENDS = "libmnl"
-RDEPENDS_${PN} = "wireguard-module bash"
+RDEPENDS_${PN} = "bash"
+RRECOMMENDS_${PN} = "kernel-module-wireguard"
+FILES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system', '', d)}"
 
 S = "${WORKDIR}/git/src/tools"
 EXTRA_OEMAKE += " \
@@ -17,5 +19,3 @@ do_configure[noexec] = "1"
 do_install() {
     oe_runmake install
 }
-
-FILES_${PN} += "${systemd_unitdir}/system"
