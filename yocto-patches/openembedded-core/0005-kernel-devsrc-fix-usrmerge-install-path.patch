@@ -1,0 +1,33 @@
+From fe42f2a22070361882a7f9434b03a40d645d9a06 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sat, 15 Dec 2018 14:21:12 -0500
+Subject: [PATCH] kernel-devsrc: fix usrmerge install path
+
+Update /lib to $nonarch_base_libdir to fix package QA errors when
+usermerge is enabled in DISTRO_FEATURES.
+
+ERROR: kernel-devsrc-1.0-r0 do_package_qa: QA Issue: kernel-devsrc
+package is not obeying usrmerge distro feature. /lib should be relocated
+to /usr. [usrmerge]
+
+Signed-off-by: Allen Wild <allenwild93@gmail.com>
+---
+ meta/recipes-kernel/linux/kernel-devsrc.bb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/recipes-kernel/linux/kernel-devsrc.bb b/meta/recipes-kernel/linux/kernel-devsrc.bb
+index 361ad21e1f..87347fa969 100644
+--- a/meta/recipes-kernel/linux/kernel-devsrc.bb
++++ b/meta/recipes-kernel/linux/kernel-devsrc.bb
+@@ -32,7 +32,7 @@ B = "${STAGING_KERNEL_BUILDDIR}"
+ 
+ PACKAGE_ARCH = "${MACHINE_ARCH}"
+ 
+-KERNEL_BUILD_ROOT="/lib/modules/"
++KERNEL_BUILD_ROOT="${nonarch_base_libdir}/modules/"
+ 
+ do_install() {
+     kerneldir=${D}${KERNEL_BUILD_ROOT}${KERNEL_VERSION}
+-- 
+2.20.0
+
