@@ -1,0 +1,15 @@
+[Unit]
+Description=Redirect port 80/443 to 8080/8443
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/unifi/bin/iptables-redirect.sh start
+ExecStop=/usr/lib/unifi/bin/iptables-redirect.sh stop
+
+[Install]
+WantedBy=multi-user.target
+
+# vim: ft=systemd
