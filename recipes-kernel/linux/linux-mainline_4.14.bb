@@ -1,6 +1,6 @@
 # Mainline Linux 4.14 kernel
 
-LINUX_VERSION = "4.14.92"
+LINUX_VERSION = "4.14.97"
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
 KBUILD_DEFCONFIG_x86 = "i386_defconfig"
