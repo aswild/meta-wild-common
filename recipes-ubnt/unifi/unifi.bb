@@ -9,6 +9,7 @@ NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
 SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi-${PV}.unix.zip \
            file://LICENSE.ubnt \
            file://unifi.service.in \
+           file://unifi.env \
            file://mongod.in \
 "
 
@@ -28,6 +29,7 @@ UNIFI_HOMEDIR ?= "/home/${UNIFI_USER}"
 # no package splitting
 FILES_${PN} = "${libdir}/${PN} \
                ${systemd_unitdir}/system \
+               ${sysconfdir}/default/unifi.env \
                ${UNIFI_HOMEDIR}"
 
 # unifi controller includes precompiled binaries
@@ -69,6 +71,7 @@ do_compile() {
         sed -e "s|@base_bindir@|${base_bindir}|g" \
             -e "s|@bindir@|${bindir}|g" \
             -e "s|@libdir@|${libdir}|g" \
+            -e "s|@sysconfdir@|${sysconfdir}|g" \
             -e "s|@UNIFI_USER@|${UNIFI_USER}|g" \
             ${WORKDIR}/$file.in >${WORKDIR}/$file
     done
@@ -101,4 +104,5 @@ do_install() {
 
     bbnote "Installing systemd service"
     install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
+    install -Dm644 ${WORKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
 }
