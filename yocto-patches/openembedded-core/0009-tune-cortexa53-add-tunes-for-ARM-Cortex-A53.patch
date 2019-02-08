@@ -1,0 +1,42 @@
+From 8bf6d00955dc9fb0a37dce5cf1f9ab96186338de Mon Sep 17 00:00:00 2001
+From: ayaka <ayaka@soulik.info>
+Date: Mon, 4 Feb 2019 18:57:26 -0800
+Subject: [PATCH] tune-cortexa53: add tunes for ARM Cortex-A53
+
+It looks that the Cryptography engine is mandatory in this
+platform.
+
+https://developer.arm.com/products/processors/cortex-a/cortex-a53
+
+Signed-off-by: Randy Li <ayaka@soulik.info>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+---
+ meta/conf/machine/include/tune-cortexa53.inc | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 meta/conf/machine/include/tune-cortexa53.inc
+
+diff --git a/meta/conf/machine/include/tune-cortexa53.inc b/meta/conf/machine/include/tune-cortexa53.inc
+new file mode 100644
+index 0000000000..a9d9cdd1f5
+--- /dev/null
++++ b/meta/conf/machine/include/tune-cortexa53.inc
+@@ -0,0 +1,15 @@
++DEFAULTTUNE ?= "cortexa53"
++
++TUNEVALID[cortexa53] = "Enable Cortex-A53 specific processor optimizations"
++TUNE_CCARGS .= "${@bb.utils.contains('TUNE_FEATURES', 'cortexa53', ' -mcpu=cortex-a53', '', d)}"
++
++require conf/machine/include/arm/arch-armv8a.inc
++
++# Little Endian base configs
++AVAILTUNES += "cortexa53 cortexa53-crypto"
++ARMPKGARCH_tune-cortexa53             = "cortexa53"
++ARMPKGARCH_tune-cortexa53-crypto      = "cortexa53"
++TUNE_FEATURES_tune-cortexa53          = "aarch64 cortexa53 simd crc"
++TUNE_FEATURES_tune-cortexa53-crypto   = "aarch64 cortexa53 simd crc crypto"
++PACKAGE_EXTRA_ARCHS_tune-cortexa53             = "${PACKAGE_EXTRA_ARCHS_tune-armv8a-crc} cortexa53"
++PACKAGE_EXTRA_ARCHS_tune-cortexa53-crypto      = "${PACKAGE_EXTRA_ARCHS_tune-armv8a-crc-crypto} cortexa53 cortexa53-crypto"
+-- 
+2.20.1
+
