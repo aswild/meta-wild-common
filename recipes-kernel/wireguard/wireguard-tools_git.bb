@@ -6,8 +6,8 @@ RDEPENDS_${PN} = "bash"
 RRECOMMENDS_${PN} = "kernel-module-wireguard"
 FILES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system', '', d)}"
 
-S = "${WORKDIR}/git/src/tools"
 EXTRA_OEMAKE += " \
+    -C tools \
     V=1 \
     DESTDIR='${D}' PREFIX='${prefix}' BINDIR='${bindir}' LIBDIR='${libdir}' \
     SYSCONFDIR='${sysconfdir}' SYSTEMDUNITDIR='${systemd_unitdir}/system' \
