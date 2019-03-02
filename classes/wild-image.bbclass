@@ -8,6 +8,11 @@ IMAGE_CMD_squashfs-xz_append_x86-64 = " -Xbcj x86"
 IMAGE_CMD_squashfs-xz_append_arm = " -Xbcj arm,armthumb"
 IMAGE_CMD_squashfs-xz_append_aarch64 = " -Xbcj arm"
 
+# layer versions and build configuration in /etc/build
+inherit image-buildinfo
+IMAGE_BUILDINFO_VARS = "DISTRO DISTRO_VERSION MACHINE TARGET_SYS TUNE_FEATURES \
+                        ${@'TARGET_FPU' if d.getVar('TARGET_FPU') else ''}"
+
 # common image postprocess commands
 
 copy_ssh_host_keys() {
@@ -98,12 +103,5 @@ wild_rootfs_postprocess() {
 }
 ROOTFS_POSTPROCESS_COMMAND_append = " wild_rootfs_postprocess;"
 
-# Don't spam DEPLOYDIR with testdata.json files. Unfortunately for us,
-# rootfs-postcommands.bbclass adds "write_image_test_data ;" and that space makes it so
-# that typical _remove syntax doesn't work right
-python __anonymous() {
-    import re
-    cmd = d.getVar('ROOTFS_POSTPROCESS_COMMAND')
-    cmd = re.sub(r'write_image_test_data\s*;', '', cmd)
-    d.setVar('ROOTFS_POSTPROCESS_COMMAND', cmd)
-}
+# Don't spam DEPLOYDIR with testdata.json files
+ROOTFS_POSTPROCESS_COMMAND_remove = "write_image_test_data;"
