@@ -8,6 +8,3 @@ TAG = "0.0.20190227"
 PV = "${TAG}+git${SRCPV}"
 SRC_URI = "git://github.com/WireGuard/WireGuard;tag=${TAG}"
 S = "${WORKDIR}/git/src"
-
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
-SRC_URI += "file://wireguard-makefile-no-depmod.patch"
