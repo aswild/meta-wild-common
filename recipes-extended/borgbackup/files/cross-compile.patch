@@ -1,0 +1,44 @@
+Index: borgbackup-1.1.9/setup.py
+===================================================================
+--- borgbackup-1.1.9.orig/setup.py
++++ borgbackup-1.1.9/setup.py
+@@ -167,8 +167,7 @@ include_dirs = []
+ library_dirs = []
+ define_macros = []
+ 
+-possible_openssl_prefixes = ['/usr', '/usr/local', '/usr/local/opt/openssl', '/usr/local/ssl', '/usr/local/openssl',
+-                             '/usr/local/borg', '/opt/local', '/opt/pkg', ]
++possible_openssl_prefixes = []
+ if os.environ.get('BORG_OPENSSL_PREFIX'):
+     possible_openssl_prefixes.insert(0, os.environ.get('BORG_OPENSSL_PREFIX'))
+ ssl_prefix = detect_openssl(possible_openssl_prefixes)
+@@ -178,8 +177,7 @@ include_dirs.append(os.path.join(ssl_pre
+ library_dirs.append(os.path.join(ssl_prefix, 'lib'))
+ 
+ 
+-possible_liblz4_prefixes = ['/usr', '/usr/local', '/usr/local/opt/lz4', '/usr/local/lz4',
+-                         '/usr/local/borg', '/opt/local', '/opt/pkg', ]
++possible_liblz4_prefixes = []
+ if os.environ.get('BORG_LIBLZ4_PREFIX'):
+     possible_liblz4_prefixes.insert(0, os.environ.get('BORG_LIBLZ4_PREFIX'))
+ liblz4_prefix = setup_lz4.lz4_system_prefix(possible_liblz4_prefixes)
+@@ -190,8 +188,7 @@ if prefer_system_liblz4 and liblz4_prefi
+ else:
+     liblz4_system = False
+ 
+-possible_libb2_prefixes = ['/usr', '/usr/local', '/usr/local/opt/libb2', '/usr/local/libb2',
+-                           '/usr/local/borg', '/opt/local', '/opt/pkg', ]
++possible_libb2_prefixes = []
+ if os.environ.get('BORG_LIBB2_PREFIX'):
+     possible_libb2_prefixes.insert(0, os.environ.get('BORG_LIBB2_PREFIX'))
+ libb2_prefix = setup_b2.b2_system_prefix(possible_libb2_prefixes)
+@@ -202,8 +199,7 @@ if prefer_system_libb2 and libb2_prefix:
+ else:
+     libb2_system = False
+ 
+-possible_libzstd_prefixes = ['/usr', '/usr/local', '/usr/local/opt/libzstd', '/usr/local/libzstd',
+-                             '/usr/local/borg', '/opt/local', '/opt/pkg', ]
++possible_libzstd_prefixes = []
+ if os.environ.get('BORG_LIBZSTD_PREFIX'):
+     possible_libzstd_prefixes.insert(0, os.environ.get('BORG_LIBZSTD_PREFIX'))
+ libzstd_prefix = setup_zstd.zstd_system_prefix(possible_libzstd_prefixes)
