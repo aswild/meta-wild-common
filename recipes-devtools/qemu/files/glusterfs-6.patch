@@ -1,0 +1,103 @@
+Fix build for glusterfs 6
+
+Squashed and rebased from upstream:
+https://git.qemu.org/?p=qemu.git;a=commit;h=e014dbe74e0484188164c61ff6843f8a04a8cb9d
+https://git.qemu.org/?p=qemu.git;a=commit;h=0e3b891fefacc0e49f3c8ffa3a753b69eb7214d2
+
+See also https://bugzilla.redhat.com/show_bug.cgi?id=1684298
+
+Index: qemu-3.0.0/block/gluster.c
+===================================================================
+--- qemu-3.0.0.orig/block/gluster.c
++++ qemu-3.0.0/block/gluster.c
+@@ -20,6 +20,10 @@
+ #include "qemu/option.h"
+ #include "qemu/cutils.h"
+ 
++#ifdef CONFIG_GLUSTERFS_FTRUNCATE_HAS_STAT
++# define glfs_ftruncate(fd, offset) glfs_ftruncate(fd, offset, NULL, NULL)
++#endif
++
+ #define GLUSTER_OPT_FILENAME        "filename"
+ #define GLUSTER_OPT_VOLUME          "volume"
+ #define GLUSTER_OPT_PATH            "path"
+@@ -725,7 +729,11 @@ static struct glfs *qemu_gluster_init(Bl
+ /*
+  * AIO callback routine called from GlusterFS thread.
+  */
+-static void gluster_finish_aiocb(struct glfs_fd *fd, ssize_t ret, void *arg)
++static void gluster_finish_aiocb(struct glfs_fd *fd, ssize_t ret,
++#ifdef CONFIG_GLUSTERFS_IOCB_HAS_STAT
++                                 struct glfs_stat *pre, struct glfs_stat *post,
++#endif
++                                 void *arg)
+ {
+     GlusterAIOCB *acb = (GlusterAIOCB *)arg;
+ 
+Index: qemu-3.0.0/configure
+===================================================================
+--- qemu-3.0.0.orig/configure
++++ qemu-3.0.0/configure
+@@ -451,6 +451,8 @@ glusterfs_xlator_opt="no"
+ glusterfs_discard="no"
+ glusterfs_fallocate="no"
+ glusterfs_zerofill="no"
++glusterfs_ftruncate_has_stat="no"
++glusterfs_iocb_has_stat="no"
+ gtk=""
+ gtkabi=""
+ gtk_gl="no"
+@@ -3947,6 +3949,38 @@ if test "$glusterfs" != "no" ; then
+       glusterfs_fallocate="yes"
+       glusterfs_zerofill="yes"
+     fi
++    cat > $TMPC << EOF
++#include <glusterfs/api/glfs.h>
++
++int
++main(void)
++{
++	/* new glfs_ftruncate() passes two additional args */
++	return glfs_ftruncate(NULL, 0, NULL, NULL);
++}
++EOF
++    if compile_prog "$glusterfs_cflags" "$glusterfs_libs" ; then
++      glusterfs_ftruncate_has_stat="yes"
++    fi
++    cat > $TMPC << EOF
++#include <glusterfs/api/glfs.h>
++
++/* new glfs_io_cbk() passes two additional glfs_stat structs */
++static void
++glusterfs_iocb(glfs_fd_t *fd, ssize_t ret, struct glfs_stat *prestat, struct glfs_stat *poststat, void *data)
++{}
++
++int
++main(void)
++{
++	glfs_io_cbk iocb = &glusterfs_iocb;
++	iocb(NULL, 0 , NULL, NULL, NULL);
++	return 0;
++}
++EOF
++    if compile_prog "$glusterfs_cflags" "$glusterfs_libs" ; then
++      glusterfs_iocb_has_stat="yes"
++    fi
+   else
+     if test "$glusterfs" = "yes" ; then
+       feature_not_found "GlusterFS backend support" \
+@@ -6631,6 +6665,14 @@ if test "$glusterfs_zerofill" = "yes" ;
+   echo "CONFIG_GLUSTERFS_ZEROFILL=y" >> $config_host_mak
+ fi
+ 
++if test "$glusterfs_ftruncate_has_stat" = "yes" ; then
++  echo "CONFIG_GLUSTERFS_FTRUNCATE_HAS_STAT=y" >> $config_host_mak
++fi
++
++if test "$glusterfs_iocb_has_stat" = "yes" ; then
++  echo "CONFIG_GLUSTERFS_IOCB_HAS_STAT=y" >> $config_host_mak
++fi
++
+ if test "$libssh2" = "yes" ; then
+   echo "CONFIG_LIBSSH2=m" >> $config_host_mak
+   echo "LIBSSH2_CFLAGS=$libssh2_cflags" >> $config_host_mak
