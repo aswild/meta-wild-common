@@ -34,7 +34,7 @@ RDEPENDS_${PN}-core = " \
     tmux \
     usbutils \
     wild-linuxfiles \
-    wireless-regdb \
+    wireless-regdb-static \
     zsh \
 "
 
