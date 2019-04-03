@@ -4,3 +4,6 @@
 # This breaks with Linux 5.0, even though it's effectively the same as the 4.x series.
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += "file://hotspot-linux-5.patch"
+
+# Fix compile errors on newer host GCC
+CFLAGS_append = " -Wno-error=stringop-overflow -Wno-error=format-overflow"
