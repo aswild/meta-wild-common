@@ -82,6 +82,7 @@ do_install() {
     installdir="${D}${libdir}/${PN}"
     install -d $installdir
     rsync -rptlv --exclude 'lib/native' bin dl lib webapps $installdir/
+    echo '${PV}' >$installdir/version
 
     if [ "${NATIVEARCH}" = "invalid" ]; then
         bbfatal "Sorry, the target architecture '${TARGET_ARCH}' is not supported"
