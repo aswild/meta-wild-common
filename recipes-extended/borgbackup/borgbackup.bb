@@ -4,7 +4,7 @@ HOMEPAGE = "https://www.borgbackup.org"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=05e264dfb41374bd0f5c4c602e039705"
 
-SRC_URI = "https://github.com/borgbackup/borg/release/download/${PV}/${BP}.tar.gz \
+SRC_URI = "https://github.com/borgbackup/borg/releases/download/${PV}/${BP}.tar.gz \
            file://cross-compile.patch"
 
 PV = "1.1.9"
