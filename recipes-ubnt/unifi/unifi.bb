@@ -13,9 +13,9 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://mongod.in \
 "
 
-PV = "5.10.21"
-SRC_URI[md5sum] = "bcfc1c62a8b11931ac10f91d85016ddf"
-SRC_URI[sha256sum] = "9ab19ccebd053c7c9029e7123988d5dcddcaf4f02991a98afe1284a0c581f0bf"
+PV = "5.10.23"
+SRC_URI[md5sum] = "0d1e76b0ca27668c4f8504b63d04afc3"
+SRC_URI[sha256sum] = "d277781d7eefdae93ffd9548102dd38a5d30114f6e90e26bb31574ae55170e8e"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
