@@ -1,3 +1,6 @@
+# this meta-oe patch breaks gcc builds
+SRC_URI_remove = "file://0001-asio-Dont-use-experimental-with-clang.patch"
+
 # build the mongo client for connecting to and managing things
 
 # use the mozjs engine, needed for the mongo client
