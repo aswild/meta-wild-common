@@ -1,4 +1,4 @@
-From 96114be0ebd657e312e6df30468dbed60c7ec068 Mon Sep 17 00:00:00 2001
+From e50e29ae36164d8bc25d1491182e0eac5b2db52a Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sat, 20 Jan 2018 01:44:55 -0500
 Subject: [PATCH] ncurses: make ABI version user-selectable
@@ -9,11 +9,11 @@ with the ncurses5 ABI isn't always needed.
 Signed-off-by: Allen Wild <allenwild93@gmail.com>
 ---
  meta/recipes-core/ncurses/ncurses.inc             | 8 ++++++--
- meta/recipes-core/ncurses/ncurses_6.1+20180630.bb | 2 +-
+ meta/recipes-core/ncurses/ncurses_6.1+20181013.bb | 2 +-
  2 files changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
-index 99fc47869e..daa2daaec3 100644
+index 5f2cc35823..348cf93624 100644
 --- a/meta/recipes-core/ncurses/ncurses.inc
 +++ b/meta/recipes-core/ncurses/ncurses.inc
 @@ -20,6 +20,10 @@ CONFIG_SITE =+ "${WORKDIR}/config.cache"
@@ -45,17 +45,17 @@ index 99fc47869e..daa2daaec3 100644
          fi
          if [ -d "${D}${includedir}/ncurses" ]; then
              for f in `find ${D}${includedir}/ncurses -name "*.h"`
-diff --git a/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb b/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
-index 38faf7af28..d8fe598b67 100644
---- a/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
-+++ b/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
+diff --git a/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb b/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
+index ef6ca9879b..7a5f119ebb 100644
+--- a/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
++++ b/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
 @@ -7,5 +7,5 @@ SRC_URI += "file://0001-tic-hang.patch \
  # commit id corresponds to the revision in package version
- SRCREV = "d3b29180ae4360d7ab7a41a15e963299fdb72e33"
+ SRCREV = "7a97a7f937762ba342d5b2fd7cd090885a809835"
  S = "${WORKDIR}/git"
--EXTRA_OECONF += "--with-abi-version=5"
-+EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
+-EXTRA_OECONF += "--with-abi-version=5 --cache-file=${B}/config.cache"
++EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION} --cache-file=${B}/config.cache"
  UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+(\+\d+)*)"
 -- 
-2.19.1
+2.21.0
 

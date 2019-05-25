@@ -1,11 +1,11 @@
-From 1051eb5349ea06b81ad3bc7f777fc98b6bac6376 Mon Sep 17 00:00:00 2001
+From 46e7120da10e5120d185e7609db1636b886d4c99 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 17 Dec 2017 20:51:28 -0500
 Subject: [PATCH] syslinux: patch to force using the BFD linker
 
 ---
  .../syslinux-link-with-gcc-wrapper.patch      | 250 ++++++++++++++++++
- .../syslinux/syslinux_6.03.bb                 |   5 +-
+ .../syslinux/syslinux_6.04-pre2.bb            |   5 +-
  2 files changed, 253 insertions(+), 2 deletions(-)
  create mode 100644 meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
 
@@ -265,19 +265,19 @@ index 0000000000..f4f3601757
 +-- 
 +2.15.1
 +
-diff --git a/meta/recipes-devtools/syslinux/syslinux_6.03.bb b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
-index f8b1094096..b3145986e0 100644
---- a/meta/recipes-devtools/syslinux/syslinux_6.03.bb
-+++ b/meta/recipes-devtools/syslinux/syslinux_6.03.bb
-@@ -24,6 +24,7 @@ SRC_URI = "${KERNELORG_MIRROR}/linux/utils/boot/syslinux/syslinux-${PV}.tar.xz \
-            file://0010-gcc46-compatibility.patch \
-            file://0011-mk-MMD-does-not-take-any-arguments.patch \
-            file://syslinux-6.03-sysmacros.patch \
+diff --git a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb b/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
+index 67e5d57d48..abc6e0110a 100644
+--- a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
++++ b/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
+@@ -21,6 +21,7 @@ SRC_URI = "https://www.zytor.com/pub/syslinux/Testing/6.04/syslinux-${PV}.tar.xz
+            file://0008-libinstaller-syslinuxext-implement-syslinux_patch_bo.patch \
+            file://0009-linux-syslinux-implement-install_bootblock.patch \
+            file://0001-install-don-t-install-obsolete-file-com32.ld.patch \
 +           file://syslinux-link-with-gcc-wrapper.patch \
             "
  
- SRC_URI[md5sum] = "92a253df9211e9c20172796ecf388f13"
-@@ -58,11 +59,11 @@ do_compile() {
+ SRC_URI[md5sum] = "2b31c78f087f99179feb357da312d7ec"
+@@ -59,11 +60,11 @@ do_compile() {
  
  	# Rebuild only the installer; keep precompiled bootloaders
  	# as per author's request (doc/distrib.txt)
@@ -286,11 +286,11 @@ index f8b1094096..b3145986e0 100644
  }
  
  do_install() {
--	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" install INSTALLROOT="${D}" firmware="bios"
-+	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" install INSTALLROOT="${D}" firmware="bios"
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" firmware="bios" install INSTALLROOT="${D}"
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" firmware="bios" install INSTALLROOT="${D}"
  
  	install -d ${D}${datadir}/syslinux/
  	install -m 644 ${S}/bios/core/ldlinux.sys ${D}${datadir}/syslinux/
 -- 
-2.19.1
+2.21.0
 

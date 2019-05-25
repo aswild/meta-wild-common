@@ -1,4 +1,4 @@
-From 7cc4913abdb181ace7b5a3c908e95019e9bfe955 Mon Sep 17 00:00:00 2001
+From ed647cca8f37fbec9e8bdeb1b321f9515b9f001e Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 26 Nov 2017 13:55:55 -0500
 Subject: [PATCH] rootfs-postcommands: remove space before semicolons
@@ -44,5 +44,5 @@ index bde58ad6cd..73e74b36ab 100644
  POSTINST_LOGFILE ?= "${localstatedir}/log/postinstall.log"
  # Set default target for systemd images
 -- 
-2.19.1
+2.21.0
 
