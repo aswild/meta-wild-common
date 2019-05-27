@@ -1,20 +1,20 @@
-From 46e7120da10e5120d185e7609db1636b886d4c99 Mon Sep 17 00:00:00 2001
+From 9483822086045fbc26cf6a0f531d6171d217e08d Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 17 Dec 2017 20:51:28 -0500
 Subject: [PATCH] syslinux: patch to force using the BFD linker
 
 ---
- .../syslinux-link-with-gcc-wrapper.patch      | 250 ++++++++++++++++++
+ .../syslinux-link-with-gcc-wrapper.patch      | 240 ++++++++++++++++++
  .../syslinux/syslinux_6.04-pre2.bb            |   5 +-
- 2 files changed, 253 insertions(+), 2 deletions(-)
+ 2 files changed, 243 insertions(+), 2 deletions(-)
  create mode 100644 meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
 
 diff --git a/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch b/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
 new file mode 100644
-index 0000000000..f4f3601757
+index 0000000000..40ff96f4a4
 --- /dev/null
 +++ b/meta/recipes-devtools/syslinux/syslinux/syslinux-link-with-gcc-wrapper.patch
-@@ -0,0 +1,250 @@
+@@ -0,0 +1,240 @@
 +From 7072eddb4a1334f5d35ee6aad0152278bcb6619b Mon Sep 17 00:00:00 2001
 +From: Allen Wild <allenwild93@gmail.com>
 +Date: Sat, 16 Dec 2017 13:38:54 -0500
@@ -43,20 +43,11 @@ index 0000000000..f4f3601757
 + mk/syslinux.mk                 | 2 +-
 + 15 files changed, 19 insertions(+), 19 deletions(-)
 +
-+diff --git a/Makefile b/Makefile
-+index fb387c5..de37340 100644
-+--- a/Makefile
-++++ b/Makefile
-+@@ -163,7 +163,7 @@ BOBJECTS = $(BTARGET) \
-+ 	core/pxelinux.0 core/lpxelinux.0 \
-+ 	core/isolinux.bin core/isolinux-debug.bin \
-+ 	gpxe/gpxelinux.0 dos/syslinux.com \
-+-	win32/syslinux.exe win64/syslinux64.exe \
-++	 win64/syslinux64.exe \
-+ 	dosutil/*.com dosutil/*.sys \
-+ 	$(MODULES)
-+ 
-+@@ -203,7 +203,7 @@ INSTALL_AUX   =	core/pxelinux.0 gpxe/gpxelinux.0 gpxe/gpxelinuxk.0 \
++Index: syslinux-6.04-pre2/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/Makefile
+++++ syslinux-6.04-pre2/Makefile
++@@ -205,7 +205,7 @@ INSTALL_AUX   =	core/pxelinux.0 \
 + 		core/isolinux.bin core/isolinux-debug.bin \
 + 		dos/syslinux.com core/lpxelinux.0 \
 + 		mbr/*.bin $(INSTALLABLE_MODULES)
@@ -65,10 +56,10 @@ index 0000000000..f4f3601757
 + INSTALL_DIAG  =	diag/mbr/handoff.bin \
 + 		diag/geodsp/geodsp1s.img.xz diag/geodsp/geodspms.img.xz
 + 
-+diff --git a/com32/cmenu/Makefile b/com32/cmenu/Makefile
-+index 6bb5231..c01d2d2 100644
-+--- a/com32/cmenu/Makefile
-++++ b/com32/cmenu/Makefile
++Index: syslinux-6.04-pre2/com32/cmenu/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/cmenu/Makefile
+++++ syslinux-6.04-pre2/com32/cmenu/Makefile
 +@@ -49,7 +49,7 @@ makeoutputdirs:
 + 	@mkdir -p $(OBJ)/libmenu
 + 
@@ -78,11 +69,11 @@ index 0000000000..f4f3601757
 + 		-o $@ $^
 + 
 + tidy dist:
-+diff --git a/com32/elflink/Makefile b/com32/elflink/Makefile
-+index fce1be8..3e1c583 100644
-+--- a/com32/elflink/Makefile
-++++ b/com32/elflink/Makefile
-+@@ -20,7 +20,7 @@ test_memalign.elf : test_memalign.o  $(LIBS) $(C_LIBS)
++Index: syslinux-6.04-pre2/com32/elflink/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/elflink/Makefile
+++++ syslinux-6.04-pre2/com32/elflink/Makefile
++@@ -20,7 +20,7 @@ test_memalign.elf : test_memalign.o  $(L
 + 
 + test_com32.elf: CFLAGS += -DELF_DEBUG
 + test_com32.elf: test_com32.o ../lib/libcom32min.a $(LIBGCC)
@@ -91,10 +82,10 @@ index 0000000000..f4f3601757
 + 
 + tidy dist:
 + 	rm -f *.o *.lo *.a *.lst *.elf .*.d *.map
-+diff --git a/com32/elflink/ldlinux/Makefile b/com32/elflink/ldlinux/Makefile
-+index d948da4..037cbe9 100644
-+--- a/com32/elflink/ldlinux/Makefile
-++++ b/com32/elflink/ldlinux/Makefile
++Index: syslinux-6.04-pre2/com32/elflink/ldlinux/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/elflink/ldlinux/Makefile
+++++ syslinux-6.04-pre2/com32/elflink/ldlinux/Makefile
 +@@ -14,7 +14,7 @@ VPATH = $(SRC)
 + include $(MAKEDIR)/elf.mk
 + 
@@ -113,10 +104,10 @@ index 0000000000..f4f3601757
 + 
 + LNXCFLAGS += -D__export='__attribute__((visibility("default")))'
 + LNXLIBOBJS = get_key.lo
-+diff --git a/com32/gpllib/Makefile b/com32/gpllib/Makefile
-+index e3e30d7..47d106c 100644
-+--- a/com32/gpllib/Makefile
-++++ b/com32/gpllib/Makefile
++Index: syslinux-6.04-pre2/com32/gpllib/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/gpllib/Makefile
+++++ syslinux-6.04-pre2/com32/gpllib/Makefile
 +@@ -24,7 +24,7 @@ makeoutputdirs:
 + 		$(addprefix $(OBJ),$(sort $(dir $(LIBOBJS)))),$(b))
 + 
@@ -126,11 +117,11 @@ index 0000000000..f4f3601757
 + 
 + tidy dist clean:
 + 	find . \( -name \*.o -o -name .\*.d -o -name \*.tmp \) -print0 | \
-+diff --git a/com32/lib/Makefile b/com32/lib/Makefile
-+index 1624ae7..7391d36 100644
-+--- a/com32/lib/Makefile
-++++ b/com32/lib/Makefile
-+@@ -91,7 +91,7 @@ makeoutputdirs:
++Index: syslinux-6.04-pre2/com32/lib/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/lib/Makefile
+++++ syslinux-6.04-pre2/com32/lib/Makefile
++@@ -90,7 +90,7 @@ makeoutputdirs:
 + 
 + libcom32.elf : $(LIBOBJS)
 + 	rm -f $@
@@ -139,11 +130,11 @@ index 0000000000..f4f3601757
 + 
 + libcom32min.a : $(MINLIBOBJS)
 + 	rm -f $@
-+diff --git a/com32/libutil/Makefile b/com32/libutil/Makefile
-+index 094f1ff..86218f2 100644
-+--- a/com32/libutil/Makefile
-++++ b/com32/libutil/Makefile
-+@@ -41,7 +41,7 @@ LNXLIBOBJS = $(patsubst %.o,%.lo,$(LIBOBJS))
++Index: syslinux-6.04-pre2/com32/libutil/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/libutil/Makefile
+++++ syslinux-6.04-pre2/com32/libutil/Makefile
++@@ -41,7 +41,7 @@ LNXLIBOBJS = $(patsubst %.o,%.lo,$(LIBOB
 + all: libutil.c32 libutil_lnx.a
 + 
 + libutil.elf: $(LIBOBJS)
@@ -152,10 +143,10 @@ index 0000000000..f4f3601757
 + 
 + libutil_lnx.a: $(LNXLIBOBJS)
 + 	rm -f $@
-+diff --git a/com32/lua/src/Makefile b/com32/lua/src/Makefile
-+index c8a141f..4227d60 100644
-+--- a/com32/lua/src/Makefile
-++++ b/com32/lua/src/Makefile
++Index: syslinux-6.04-pre2/com32/lua/src/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/com32/lua/src/Makefile
+++++ syslinux-6.04-pre2/com32/lua/src/Makefile
 +@@ -51,7 +51,7 @@ CFLAGS += -DLUA_ANSI
 + all: $(MODULES) $(TESTFILES)
 + 
@@ -165,31 +156,33 @@ index 0000000000..f4f3601757
 + 		-o $@ $^
 + 
 + lua.elf : $(OBJS) $(LIBLUA) $(C_LIBS)
-+diff --git a/core/Makefile b/core/Makefile
-+index ad0acb5..59d4efb 100644
-+--- a/core/Makefile
-++++ b/core/Makefile
-+@@ -164,8 +164,8 @@ AUXLIBS = libisolinux.a libisolinux-debug.a libldlinux.a \
-+ LDSCRIPT = $(SRC)/$(ARCH)/syslinux.ld
-+ 
++Index: syslinux-6.04-pre2/core/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/core/Makefile
+++++ syslinux-6.04-pre2/core/Makefile
++@@ -158,9 +158,9 @@ NASM_ELF = elf
 + %.elf: %.o $(LIBDEP) $(LDSCRIPT) $(AUXLIBS)
-+-	$(LD) $(LDFLAGS) -Bsymbolic $(LD_PIE) -E --hash-style=gnu -T $(LDSCRIPT) -M -o $@ $< \
++ 	$(LD) $(LDFLAGS) -pie -Bsymbolic \
++ 		-T $(LDSCRIPT) \
++-		--unresolved-symbols=report-all \
++-		-E --hash-style=gnu -M -o $@ $< \
 +-		--start-group $(LIBS) $(subst $(*F).elf,lib$(*F).a,$@) --end-group \
-++	$(LD) $(LDFLAGS) -Bsymbolic $(LD_PIE) -Wl,-E -Wl,--hash-style=gnu -T $(LDSCRIPT) -Wl,-M -o $@ $< \
+++		-Wl,--unresolved-symbols=report-all \
+++		-Wl,-E -Wl,--hash-style=gnu -Wl,-M -o $@ $< \
 ++		-Wl,--start-group $(LIBS) $(subst $(*F).elf,lib$(*F).a,$@) -Wl,--end-group \
 + 		> $(@:.elf=.map)
-+ 	$(OBJDUMP) -h $@ > $(@:.elf=.sec)
-+ 	$(PERL) $(SRC)/lstadjust.pl $(@:.elf=.lsr) $(@:.elf=.sec) $(@:.elf=.lst)
-+diff --git a/memdisk/Makefile b/memdisk/Makefile
-+index e6557d8..c3bf4a5 100644
-+--- a/memdisk/Makefile
-++++ b/memdisk/Makefile
++ 	if [ `$(NM) -D -u $@ | wc -l` -ne 0 ]; then \
++ 		$(NM) -D -u $@ 1>&2; rm -f $@; false; fi
++Index: syslinux-6.04-pre2/memdisk/Makefile
++===================================================================
++--- syslinux-6.04-pre2.orig/memdisk/Makefile
+++++ syslinux-6.04-pre2/memdisk/Makefile
 +@@ -78,10 +78,10 @@ memdisk16.o: memdisk16.asm
 + 	$(NASM) -f bin $(NASMOPT) $(NFLAGS) $(NINCLUDE) -o $@ -l $*.lst $<
 + 
 + memdisk_%.o: memdisk_%.bin
-+-	$(LD) -r -b binary -o $@ $<
-++	$(LD) -Wl,-r -Wl,-b,binary -o $@ $<
++-	$(LD) --oformat elf32-i386 -r -b binary -o $@ $<
+++	$(LD) -Wl,--oformat elf32-i386 -Wl,-r -Wl,-b,binary -o $@ $<
 + 
 + memdisk16.elf: $(OBJS16)
 +-	$(LD) -Ttext 0 -o $@ $^
@@ -197,12 +190,12 @@ index 0000000000..f4f3601757
 + 
 + #memdisk32.elf: memdisk.ld $(OBJS32)
 + memdisk32.elf: $(ARCH)/memdisk.ld $(OBJS32)
-+diff --git a/mk/com32.mk b/mk/com32.mk
-+index 9a3b19d..1e1e387 100644
-+--- a/mk/com32.mk
-++++ b/mk/com32.mk
-+@@ -75,7 +75,7 @@ SFLAGS     = $(GCCOPT) $(GCCWARN) \
-+ 	     -I$(com32)/include/sys $(GPLINCLUDE)
++Index: syslinux-6.04-pre2/mk/com32.mk
++===================================================================
++--- syslinux-6.04-pre2.orig/mk/com32.mk
+++++ syslinux-6.04-pre2/mk/com32.mk
++@@ -80,7 +80,7 @@ SFLAGS     = $(GCCOPT) $(GCCWARN) \
++ 	     -I$(topdir)/core/include
 + 
 + COM32LD	   = $(com32)/lib/$(ARCH)/elf.ld
 +-LDFLAGS    = -m elf_$(ARCH) -shared --hash-style=gnu -T $(COM32LD)
@@ -210,11 +203,11 @@ index 0000000000..f4f3601757
 + LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
 + 
 + LNXCFLAGS  = -I$(com32)/libutil/include $(GCCWARN) -O -g \
-+diff --git a/mk/elf.mk b/mk/elf.mk
-+index 12d1077..391ea5f 100644
-+--- a/mk/elf.mk
-++++ b/mk/elf.mk
-+@@ -65,7 +65,7 @@ CFLAGS	  += -mregparm=3 -DREGPARM=3
++Index: syslinux-6.04-pre2/mk/elf.mk
++===================================================================
++--- syslinux-6.04-pre2.orig/mk/elf.mk
+++++ syslinux-6.04-pre2/mk/elf.mk
++@@ -67,7 +67,7 @@ GCCOPT += -mregparm=3 -DREGPARM=3
 + endif
 + 
 + SFLAGS     = $(GCCOPT) -D__COM32__ -D__FIRMWARE_$(FIRMWARE)__ 
@@ -223,11 +216,11 @@ index 0000000000..f4f3601757
 + LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
 + 
 + LNXCFLAGS  = -I$(com32)/libutil/include -W -Wall -O -g -D_GNU_SOURCE
-+diff --git a/mk/embedded.mk b/mk/embedded.mk
-+index 1614d8b..0c22d59 100644
-+--- a/mk/embedded.mk
-++++ b/mk/embedded.mk
-+@@ -55,7 +55,7 @@ GCCOPT    += $(call gcc_ok,-fvisibility=hidden)
++Index: syslinux-6.04-pre2/mk/embedded.mk
++===================================================================
++--- syslinux-6.04-pre2.orig/mk/embedded.mk
+++++ syslinux-6.04-pre2/mk/embedded.mk
++@@ -54,7 +54,7 @@ GCCOPT    += $(call gcc_ok,-fvisibility=
 + 
 + LIBGCC    := $(shell $(CC) $(GCCOPT) --print-libgcc)
 + 
@@ -236,10 +229,10 @@ index 0000000000..f4f3601757
 + 
 + # Note: use += for CFLAGS and SFLAGS in case something is set in MCONFIG.local
 + CFLAGS    += $(GCCOPT) -g $(GCCWARN) -Wno-sign-compare $(OPTFLAGS) $(INCLUDES)
-+diff --git a/mk/lib.mk b/mk/lib.mk
-+index ceb95bd..d9089fb 100644
-+--- a/mk/lib.mk
-++++ b/mk/lib.mk
++Index: syslinux-6.04-pre2/mk/lib.mk
++===================================================================
++--- syslinux-6.04-pre2.orig/mk/lib.mk
+++++ syslinux-6.04-pre2/mk/lib.mk
 +@@ -203,7 +203,7 @@ CORELIBOBJS = \
 + 	$(LIBENTRY_OBJS) \
 + 	$(LIBMODULE_OBJS)
@@ -249,11 +242,11 @@ index 0000000000..f4f3601757
 + 
 + .SUFFIXES: .c .o .a .so .lo .i .S .s .ls .ss .lss
 + 
-+diff --git a/mk/syslinux.mk b/mk/syslinux.mk
-+index 9ca74b1..187c719 100644
-+--- a/mk/syslinux.mk
-++++ b/mk/syslinux.mk
-+@@ -53,7 +53,7 @@ gcc_ok   = $(shell tmpf=gcc_ok.$$$$.tmp; \
++Index: syslinux-6.04-pre2/mk/syslinux.mk
++===================================================================
++--- syslinux-6.04-pre2.orig/mk/syslinux.mk
+++++ syslinux-6.04-pre2/mk/syslinux.mk
++@@ -53,7 +53,7 @@ gcc_ok   = $(shell tmpf=gcc_ok.$$$$.tmp;
 + 		   then echo '$(1)'; else echo '$(2)'; fi; \
 + 		   rm -f $$tmpf)
 + 
@@ -262,9 +255,6 @@ index 0000000000..f4f3601757
 + OBJDUMP	 = objdump
 + OBJCOPY  = objcopy
 + STRIP    = strip
-+-- 
-+2.15.1
-+
 diff --git a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb b/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
 index 67e5d57d48..abc6e0110a 100644
 --- a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
