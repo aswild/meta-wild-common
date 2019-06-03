@@ -7,9 +7,9 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=05e264dfb41374bd0f5c4c602e039705"
 SRC_URI = "https://github.com/borgbackup/borg/releases/download/${PV}/${BP}.tar.gz \
            file://cross-compile.patch"
 
-PV = "1.1.9"
-SRC_URI[md5sum] = "0fda2c1f636754d0748569bff67a6836"
-SRC_URI[sha256sum] = "7d0ff84e64c4be35c43ae2c047bb521a94f15b278c2fe63b43950c4836b42575"
+PV = "1.1.10"
+SRC_URI[md5sum] = "0a27e660ace162e41ea1d80e4b700808"
+SRC_URI[sha256sum] = "efb41416d24ff1d13c7952c7f4eaf41ef6fc5e1000354217db55cd62c905e7de"
 
 DEPENDS = "acl lz4 openssl xz python3-setuptools-scm-native python3-cython-native"
 

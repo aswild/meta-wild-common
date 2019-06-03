@@ -6,6 +6,7 @@ After=network-online.target time-sync.target
 [Service]
 User=@UNIFI_USER@
 WorkingDirectory=@libdir@/unifi
+LimitCORE=0
 EnvironmentFile=-@sysconfdir@/default/unifi.env
 ExecStart=@bindir@/java $JAVA_ARGS -jar @libdir@/unifi/lib/ace.jar start
 ExecStop=@bindir@/java $JAVA_ARGS -jar @libdir@/unifi/lib/ace.jar stop

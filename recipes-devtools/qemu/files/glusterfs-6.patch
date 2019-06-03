@@ -6,10 +6,10 @@ https://git.qemu.org/?p=qemu.git;a=commit;h=0e3b891fefacc0e49f3c8ffa3a753b69eb72
 
 See also https://bugzilla.redhat.com/show_bug.cgi?id=1684298
 
-Index: qemu-3.0.0/block/gluster.c
+Index: qemu-3.1.0/block/gluster.c
 ===================================================================
---- qemu-3.0.0.orig/block/gluster.c
-+++ qemu-3.0.0/block/gluster.c
+--- qemu-3.1.0.orig/block/gluster.c
++++ qemu-3.1.0/block/gluster.c
 @@ -20,6 +20,10 @@
  #include "qemu/option.h"
  #include "qemu/cutils.h"
@@ -34,20 +34,20 @@ Index: qemu-3.0.0/block/gluster.c
  {
      GlusterAIOCB *acb = (GlusterAIOCB *)arg;
  
-Index: qemu-3.0.0/configure
+Index: qemu-3.1.0/configure
 ===================================================================
---- qemu-3.0.0.orig/configure
-+++ qemu-3.0.0/configure
-@@ -451,6 +451,8 @@ glusterfs_xlator_opt="no"
+--- qemu-3.1.0.orig/configure
++++ qemu-3.1.0/configure
+@@ -453,6 +453,8 @@ glusterfs_xlator_opt="no"
  glusterfs_discard="no"
  glusterfs_fallocate="no"
  glusterfs_zerofill="no"
 +glusterfs_ftruncate_has_stat="no"
 +glusterfs_iocb_has_stat="no"
  gtk=""
- gtkabi=""
  gtk_gl="no"
-@@ -3947,6 +3949,38 @@ if test "$glusterfs" != "no" ; then
+ tls_priority="NORMAL"
+@@ -3982,6 +3984,38 @@ if test "$glusterfs" != "no" ; then
        glusterfs_fallocate="yes"
        glusterfs_zerofill="yes"
      fi
@@ -86,7 +86,7 @@ Index: qemu-3.0.0/configure
    else
      if test "$glusterfs" = "yes" ; then
        feature_not_found "GlusterFS backend support" \
-@@ -6631,6 +6665,14 @@ if test "$glusterfs_zerofill" = "yes" ;
+@@ -6722,6 +6756,14 @@ if test "$glusterfs_zerofill" = "yes" ;
    echo "CONFIG_GLUSTERFS_ZEROFILL=y" >> $config_host_mak
  fi
  

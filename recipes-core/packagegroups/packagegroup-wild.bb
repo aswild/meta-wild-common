@@ -5,6 +5,7 @@ inherit packagegroup
 
 PACKAGES += "${PN}-base"
 RDEPENDS_${PN}-base = " \
+    packagegroup-core-base-utils \
     packagegroup-core-full-cmdline-libs \
     packagegroup-core-full-cmdline-utils \
     packagegroup-core-full-cmdline-sys-services \

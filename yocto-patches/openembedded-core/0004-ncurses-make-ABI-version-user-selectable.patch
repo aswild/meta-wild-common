@@ -1,4 +1,4 @@
-From 96114be0ebd657e312e6df30468dbed60c7ec068 Mon Sep 17 00:00:00 2001
+From b1cf67f533fd4544e3ab4874672012c0162461b2 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sat, 20 Jan 2018 01:44:55 -0500
 Subject: [PATCH] ncurses: make ABI version user-selectable
@@ -6,14 +6,18 @@ Subject: [PATCH] ncurses: make ABI version user-selectable
 The ncurses6 features can be useful and backwards-compatibility
 with the ncurses5 ABI isn't always needed.
 
+Also remove the narrowc libtinfo libraries so that widec versions get
+installed to prevent runtime segfaults. Not sure why this is only needed
+for ABI v6.
+
 Signed-off-by: Allen Wild <allenwild93@gmail.com>
 ---
- meta/recipes-core/ncurses/ncurses.inc             | 8 ++++++--
- meta/recipes-core/ncurses/ncurses_6.1+20180630.bb | 2 +-
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ meta/recipes-core/ncurses/ncurses.inc             | 14 +++++++++++---
+ meta/recipes-core/ncurses/ncurses_6.1+20181013.bb |  2 +-
+ 2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
-index 99fc47869e..daa2daaec3 100644
+index 5f2cc35823..410cd69d90 100644
 --- a/meta/recipes-core/ncurses/ncurses.inc
 +++ b/meta/recipes-core/ncurses/ncurses.inc
 @@ -20,6 +20,10 @@ CONFIG_SITE =+ "${WORKDIR}/config.cache"
@@ -27,7 +31,21 @@ index 99fc47869e..daa2daaec3 100644
  # Whether to enable separate widec libraries; must be 'true' or 'false'
  #
  # TODO: remove this variable when widec is supported in every setup?
-@@ -217,7 +221,7 @@ do_install() {
+@@ -177,8 +181,12 @@ do_install() {
+                 install.data
+ 
+ 
+-        ! ${ENABLE_WIDEC} || \
++        if ${ENABLE_WIDEC}; then
++            # remove libtinfo files to force the widec versions to get installed, otherwise
++            # segfaults happen at runtime
++            rm ${D}${libdir}/libtinfo*
+             oe_runmake -C widec ${_install_cfgs} ${_install_opts}
++        fi
+ 
+         cd narrowc
+ 
+@@ -217,7 +225,7 @@ do_install() {
                  test -h $f || continue
                  rm -f $f
                  echo '/* GNU ld script */'  >$f
@@ -36,7 +54,7 @@ index 99fc47869e..daa2daaec3 100644
          done
  
          # Make sure that libcurses is linked so that it gets -ltinfo
-@@ -243,7 +247,7 @@ do_install() {
+@@ -243,7 +251,7 @@ do_install() {
              # Use lnr to ensure this is a relative link despite absolute paths
              # (as we can't know the relationship between base_libdir and libdir).
              # At some point we can rely on coreutils 8.16 which has ln -r.
@@ -45,17 +63,17 @@ index 99fc47869e..daa2daaec3 100644
          fi
          if [ -d "${D}${includedir}/ncurses" ]; then
              for f in `find ${D}${includedir}/ncurses -name "*.h"`
-diff --git a/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb b/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
-index 38faf7af28..d8fe598b67 100644
---- a/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
-+++ b/meta/recipes-core/ncurses/ncurses_6.1+20180630.bb
+diff --git a/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb b/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
+index ef6ca9879b..7a5f119ebb 100644
+--- a/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
++++ b/meta/recipes-core/ncurses/ncurses_6.1+20181013.bb
 @@ -7,5 +7,5 @@ SRC_URI += "file://0001-tic-hang.patch \
  # commit id corresponds to the revision in package version
- SRCREV = "d3b29180ae4360d7ab7a41a15e963299fdb72e33"
+ SRCREV = "7a97a7f937762ba342d5b2fd7cd090885a809835"
  S = "${WORKDIR}/git"
--EXTRA_OECONF += "--with-abi-version=5"
-+EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
+-EXTRA_OECONF += "--with-abi-version=5 --cache-file=${B}/config.cache"
++EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION} --cache-file=${B}/config.cache"
  UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+(\+\d+)*)"
 -- 
-2.19.1
+2.21.0
 
