@@ -41,6 +41,8 @@ wild_rootfs_postprocess() {
     # Mark the rootfs as rw in fstab. This gives us rw when booting ext4,
     # and squashfs will mount ro always anyway
     sed -i '/\/dev\/root/s/\bro\b/rw/' ${IMAGE_ROOTFS}/etc/fstab
+    # Similarly, change fs_passno back to 1 so that we still fsck if using ext4
+    sed -i '/\/dev\/root/s/0[[:space:]]*$/1/' ${IMAGE_ROOTFS}/etc/fstab
 
     # set timezone to match the build host
     localtime_file=${sysconfdir}/localtime
