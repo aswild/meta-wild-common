@@ -1,0 +1,17 @@
+[Unit]
+Description=Hardware RNG Entropy Gatherer Daemon
+DefaultDependencies=no
+Wants=systemd-udev-settle.service
+After=systemd-udev-settle.service
+Before=sysinit.target
+
+[Service]
+ExecStart=@SBINDIR@/rngd -f -r /dev/hwrng
+NoNewPrivileges=on
+PrivateNetwork=on
+PrivateTmp=on
+ProtectSystem=full
+ProtectHome=on
+
+[Install]
+WantedBy=sysinit.target
