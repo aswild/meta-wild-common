@@ -6,4 +6,8 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += "file://hotspot-linux-5.patch"
 
 # Fix compile errors on newer host GCC
-CFLAGS_append = " -Wno-error=stringop-overflow -Wno-error=format-overflow"
+FLAGS_GCC8_append = " -Wno-error=stringop-overflow -Wno-error=format-overflow"
+
+# meta-java does some gcc version specific compile flags. Since Arch
+# is on GCC 9 now, set this variable so we build right.
+FLAGS_GCC9 = "${FLAGS_GCC8}"
