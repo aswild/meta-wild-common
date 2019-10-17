@@ -5,10 +5,10 @@ DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=1a4c4cda3e8096d2fd483ff2f4514fec"
 
-PV = "5.6.2"
+PV = "5.7.1"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.xz"
-SRC_URI[md5sum] = "540673bf823d2e13806ac0395caa8345"
-SRC_URI[sha256sum] = "a50bd66c0557e8eca3b8fa24e85d0de533e775d7a22df042da90488623752e9e"
+SRC_URI[md5sum] = "374f9fdd121b5b90e07abfcad7df0627"
+SRC_URI[sha256sum] = "7260292c2c1d483b2d50febfa5055176bd512b32a8833b116177bf5f01e77ee8"
 
 DEPENDS = " \
     bison-native \
@@ -51,6 +51,11 @@ do_configure() {
     # don't regenerate the configure script because the shipped aclocal.m4 causes problems
     gnu-configize --force ${S}
     oe_runconf
+}
+
+pkg_postinst_${PN}() {
+    touch $D${sysconfdir}/shells
+    grep -q "bin/zsh" $D${sysconfdir}/shells || echo /bin/zsh >>$D${sysconfdir}/shells
 }
 
 FILES_${PN} += "${sysconfdir}/zprofile"
