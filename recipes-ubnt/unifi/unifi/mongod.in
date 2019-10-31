@@ -1,2 +1,11 @@
-#!@base_bindir@/bash
-exec @bindir@/mongod ${*//--nohttpinterface/}
+#!/bin/bash
+
+args=()
+while (( $# )); do
+    if [[ "$1" != "--nohttpinterface" ]]; then
+        args+=("$1")
+    fi
+    shift
+done
+
+exec @bindir@/mongod "${args[@]}"
