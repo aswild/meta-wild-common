@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://iptables-redirect.sh;endline=3;md5=45241351314756142d
 
 PV = "1"
 
-SRC_URI = "file://${PN}.service \
+SRC_URI = "file://${BPN}.service \
            file://iptables-redirect.sh"
 S = "${WORKDIR}"
 
@@ -12,14 +12,14 @@ RDEPENDS_${PN} = "iptables"
 RRECOMMENDS_${PN} = "kernel-module-iptable-nat"
 
 inherit systemd
-SYSTEMD_SERVICE_${PN} = "${PN}.service"
+SYSTEMD_SERVICE_${PN} = "${BPN}.service"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
 do_install() {
     install -Dm755 iptables-redirect.sh ${D}${libdir}/unifi/bin/iptables-redirect.sh
-    install -Dm644 ${PN}.service ${D}${systemd_unitdir}/system/${PN}.service
+    install -Dm644 ${BPN}.service ${D}${systemd_unitdir}/system/${BPN}.service
 }
 
 FILES_${PN} = "${libdir}/unifi/* ${systemd_unitdir}/system/*"

@@ -1,4 +1,4 @@
-From 9483822086045fbc26cf6a0f531d6171d217e08d Mon Sep 17 00:00:00 2001
+From 602826d923e137a87d69af49f7f79109079372c8 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sun, 17 Dec 2017 20:51:28 -0500
 Subject: [PATCH] syslinux: patch to force using the BFD linker
@@ -256,7 +256,7 @@ index 0000000000..40ff96f4a4
 + OBJCOPY  = objcopy
 + STRIP    = strip
 diff --git a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb b/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
-index 67e5d57d48..abc6e0110a 100644
+index e9dbefb930..48a17aaf0c 100644
 --- a/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
 +++ b/meta/recipes-devtools/syslinux/syslinux_6.04-pre2.bb
 @@ -21,6 +21,7 @@ SRC_URI = "https://www.zytor.com/pub/syslinux/Testing/6.04/syslinux-${PV}.tar.xz
@@ -267,20 +267,24 @@ index 67e5d57d48..abc6e0110a 100644
             "
  
  SRC_URI[md5sum] = "2b31c78f087f99179feb357da312d7ec"
-@@ -59,11 +60,11 @@ do_compile() {
- 
+@@ -60,7 +61,7 @@ do_compile() {
  	# Rebuild only the installer; keep precompiled bootloaders
  	# as per author's request (doc/distrib.txt)
--	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" LDFLAGS="${LDFLAGS}" firmware="bios" installer
-+	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" LDFLAGS="${LDFLAGS}" firmware="bios" installer
+ 	oe_runmake CC="${CC} ${CFLAGS}" \
+-                   LD="${LD}" LDFLAGS="${LDFLAGS}" \
++                   LD="${CCLD} -nostdlib -fuse-ld=bfd" LDFLAGS="${LDFLAGS}" \
+                    OBJDUMP="${OBJDUMP}" \
+                    OBJCOPY="${OBJCOPY}" \
+                    AR="${AR}" \
+@@ -71,7 +72,7 @@ do_compile() {
  }
  
  do_install() {
--	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" firmware="bios" install INSTALLROOT="${D}"
-+	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" firmware="bios" install INSTALLROOT="${D}"
- 
- 	install -d ${D}${datadir}/syslinux/
- 	install -m 644 ${S}/bios/core/ldlinux.sys ${D}${datadir}/syslinux/
+-	oe_runmake CC="${CC} ${CFLAGS}" LD="${LD}" \
++	oe_runmake CC="${CC} ${CFLAGS}" LD="${CCLD} -nostdlib -fuse-ld=bfd" \
+                    OBJDUMP="${OBJDUMP}" \
+                    OBJCOPY="${OBJCOPY}" \
+                    AR="${AR}" \
 -- 
-2.21.0
+2.24.0
 

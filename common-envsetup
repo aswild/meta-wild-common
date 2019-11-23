@@ -43,36 +43,6 @@ _wild_yocto_symlink_cache_dir() {
 }
 _wild_yocto_functions+=(_wild_yocto_symlink_cache_dir)
 
-_wild_yocto_python3_hack() {
-    case "$1" in
-        pre)
-            # oe-buildenv-internal will fail if the default python is python3
-            # it's unsupported, but it actually works, so do some trickery
-            if /usr/bin/env python --version 2>&1 | grep -q "Python 3"; then
-                _wild_yocto_pytmpdir=$(mktemp -d)
-                if [[ -d $_wild_yocto_pytmpdir ]]; then
-                    echo "NOTE: hiding default python3 from oe-core" >&2
-                    ln -s $(command which python2) $_wild_yocto_pytmpdir/python
-                    export PATH="$_wild_yocto_pytmpdir:$PATH"
-                fi
-            fi
-            ;;
-        post)
-            # clean up PATH if we changed it earlier
-            if [[ -d $_wild_yocto_pytmpdir ]]; then
-                export PATH="$(sed "s|${_wild_yocto_pytmpdir}:||" <<<"$PATH")"
-                rm -rf $_wild_yocto_pytmpdir
-                unset _wild_yocto_pytmpdir
-            fi
-            ;;
-        *)
-            echo "ERROR: unknown option to _wild_yocto_python3_hack"
-            return 1
-            ;;
-    esac
-}
-_wild_yocto_functions+=(_wild_yocto_python3_hack)
-
 _wild_yocto_subst_confvars() {
     # use: subst_confvars file1 file2 -- VAR1 VAR2 ...
     local _files _var _val _sed_args
