@@ -27,11 +27,11 @@ do_install() {
     cp -rvT ${S} $installdir
 
     cd $installdir
-    # leave detached HEAD, and make sure we get all the objects in the installdir
+    # repack to pull in all objects from alternate locations
     git checkout master
     git repack -ad
     git submodule foreach git repack -ad
-    rm -f .git/objects/info/alternates
+    find .git -path '*/objects/info/alternates' -exec rm -v {} \;
     make DESTDIR="${D}${ROOT_HOME}" SRCDIR="${LINUXFILES_LOC}" install
 
     # create .bash_profile to source .bashrc
