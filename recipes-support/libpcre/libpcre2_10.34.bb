@@ -14,8 +14,8 @@ SRC_URI = "https://ftp.pcre.org/pub/pcre/pcre2-${PV}.tar.gz \
            file://pcre-cross.patch \
 "
 
-SRC_URI[md5sum] = "8988af53875ecdbce57fdc1bb3c4868b"
-SRC_URI[sha256sum] = "e2e2899a97489fc6ad1b0cc3da7952c7cca991b4a0f7db6649b75d9721025d31"
+SRC_URI[md5sum] = "e3e15cca49557a9c07a21dde2da05ea5"
+SRC_URI[sha256sum] = "da6aba7ba2509e918e41f4f744a59fa41a2425c59a298a232e7fe85691e00379"
 
 CVE_PRODUCT = "pcre2"
 
