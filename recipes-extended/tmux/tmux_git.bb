@@ -1,11 +1,12 @@
 SUMMARY = "tmux - the tmux multipliexer"
 LICENSE = "ISC"
 
-DEPENDS = "ncurses libevent"
-LIC_FILES_CHKSUM = "file://COPYING;md5=f7d9aab84ec6567139a4755c48d147fb"
+DEPENDS = "ncurses libevent bison-native"
+LIC_FILES_CHKSUM = "file://COPYING;md5=2b51ca98c264af11cf8d6238df0c8264"
 
-PV = "2.8"
-SRC_URI = "git://github.com/tmux/tmux;tag=${PV}"
+PV = "3.0a"
+SRCREV = "0b86467c3ff0ed1893902faf0b3e3d6a260dc73a"
+SRC_URI = "git://github.com/tmux/tmux"
 
 S = "${WORKDIR}/git"
 
