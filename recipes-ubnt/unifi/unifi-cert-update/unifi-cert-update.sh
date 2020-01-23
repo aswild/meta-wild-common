@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2018 Allen Wild
+# Copyright (c) 2018-2020 Allen Wild
 # SPDX-License-Identifier: MIT
 #
 # based on https://github.com/stevejenkins/unifi-linux-utils/blob/master/unifi_ssl_import.sh
@@ -9,7 +9,7 @@ set -e
 
 UNIFI_DIR=/usr/lib/unifi
 KEYSTORE=$UNIFI_DIR/data/keystore
-ROOT_CA=/etc/ssl/certs/DST_Root_CA_X3.pem
+ROOT_CA=/etc/ssl/certs/ISRG_Root_X1.pem
 PASSWORD=aircontrolenterprise
 
 : ${JAVA_HOME:=/usr/lib/jvm/openjre-8}
