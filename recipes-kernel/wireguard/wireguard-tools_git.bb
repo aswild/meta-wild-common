@@ -3,8 +3,8 @@ HOMEPAGE = "https://www.wireguard.com"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://../COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-PV = "1.0.20191226"
-SRCREV = "070940d8cd5ba58bf22f465937e6f3254b68939b"
+PV = "1.0.20200121"
+SRCREV = "b9f4aa1ee7163abd6362a970cddd9b07a03a01b1"
 
 SRC_URI = "git://git.zx2c4.com/wireguard-tools;protocol=https"
 S = "${WORKDIR}/git/src"
