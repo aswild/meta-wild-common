@@ -39,6 +39,15 @@ RDEPENDS_${PN}-core = " \
     zsh \
 "
 
+PACKAGES += "${PN}-python3"
+RDEPENDS_${PN}-python3 = " \
+    python3 \
+    python3-modules \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+"
+
 PACKAGES += "${PN}-devtools"
 RDEPENDS_${PN}-devtools = " \
     python \
