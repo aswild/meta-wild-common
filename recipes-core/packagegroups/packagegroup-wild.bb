@@ -64,6 +64,7 @@ RDEPENDS_${PN}-utils = " \
     e2fsprogs-mke2fs \
     e2fsprogs-resize2fs \
     e2fsprogs-tune2fs \
+    fd-find \
     git \
     git-perltools \
     ldd \
