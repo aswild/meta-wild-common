@@ -32,7 +32,7 @@ for dir in $(find "$thisdir" -mindepth 1 -type d -printf '%P\n'); do
     sdir=$(readlink -e $thisdir/$dir)
     pdir="$TOP/$dir"
     if [[ ! -d "$pdir" ]]; then
-        echo "ERROR: $pdir does not exist"
+        echo "Warning: $pdir does not exist"
         continue
     fi
     if git -C $pdir show-ref --heads | grep -q " refs/heads/$branchname\$"; then

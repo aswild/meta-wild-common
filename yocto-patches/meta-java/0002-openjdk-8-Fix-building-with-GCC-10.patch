@@ -1,0 +1,29 @@
+From aece856ba118e283a414e451a95400d61f82c00b Mon Sep 17 00:00:00 2001
+From: Jacob Kroon <jacob.kroon@gmail.com>
+Date: Thu, 30 Apr 2020 15:15:56 +0200
+Subject: [PATCH] openjdk-8: Fix building with GCC 10
+
+Signed-off-by: Jacob Kroon <jacob.kroon@gmail.com>
+Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
+---
+ recipes-core/openjdk/openjdk-8-common.inc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/recipes-core/openjdk/openjdk-8-common.inc b/recipes-core/openjdk/openjdk-8-common.inc
+index d8b30b8..5228338 100644
+--- a/recipes-core/openjdk/openjdk-8-common.inc
++++ b/recipes-core/openjdk/openjdk-8-common.inc
+@@ -176,6 +176,10 @@ FLAGS_GCC6 = "-fno-lifetime-dse -fno-delete-null-pointer-checks"
+ FLAGS_GCC7 = "-fno-lifetime-dse -fno-delete-null-pointer-checks"
+ FLAGS_GCC8 = "-fno-lifetime-dse -fno-delete-null-pointer-checks"
+ FLAGS_GCC9 = "-fno-lifetime-dse -fno-delete-null-pointer-checks"
++FLAGS_GCC10 = "-fno-lifetime-dse -fno-delete-null-pointer-checks"
++
++# GCC 10 defaults to -fno-common, but OpenJDK 8 is not ready for this.
++FLAGS_GCC10_append = " -fcommon"
+ 
+ # flags for -native, and for bits that need a host-tool during -cross
+ BUILD_CFLAGS_append = " ${@openjdk_build_helper_get_build_cflags(d)}"
+-- 
+2.26.2
+

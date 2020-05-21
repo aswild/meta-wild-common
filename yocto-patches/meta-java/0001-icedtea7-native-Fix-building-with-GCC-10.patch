@@ -1,0 +1,28 @@
+From 8c87767f802b9589539275e6e282c88205a626e8 Mon Sep 17 00:00:00 2001
+From: Jacob Kroon <jacob.kroon@gmail.com>
+Date: Thu, 30 Apr 2020 15:15:55 +0200
+Subject: [PATCH] icedtea7-native: Fix building with GCC 10
+
+Signed-off-by: Jacob Kroon <jacob.kroon@gmail.com>
+Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
+---
+ recipes-core/icedtea/icedtea7-native.inc | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/recipes-core/icedtea/icedtea7-native.inc b/recipes-core/icedtea/icedtea7-native.inc
+index 8d0dc71..b0b9419 100644
+--- a/recipes-core/icedtea/icedtea7-native.inc
++++ b/recipes-core/icedtea/icedtea7-native.inc
+@@ -28,6 +28,9 @@ CXX_append = " -std=gnu++98"
+ # WORKAROUND: ignore errors from new compilers
+ CFLAGS_append = " -Wno-error=stringop-overflow -Wno-error=return-type"
+ 
++# Explicitly pass -fcommon since GCC 10 defaults to -fno-common for C sources
++CFLAGS_append = " -fcommon"
++
+ inherit native java autotools pkgconfig
+ inherit openjdk-build-helper
+ inherit python3native
+-- 
+2.26.2
+

@@ -1,0 +1,32 @@
+From 186fe4a3d390a52b87282c3e694ce3251e45ee78 Mon Sep 17 00:00:00 2001
+From: Charles-Antoine Couret <charles-antoine.couret@mind.be>
+Date: Thu, 26 Mar 2020 21:09:49 +0100
+Subject: [PATCH] utils: fix gcc 10 version detection
+
+Utils can not detect GCC 10 correctly due to wrong regex.
+It generates this error "ERROR: Can't get compiler version from gcc  --version output"
+
+Sub-version numbers should be 1 or more digits instead of 1 only.
+
+Signed-off-by: Charles-Antoine Couret <charles-antoine.couret@mind.be>
+Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+---
+ meta/lib/oe/utils.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/lib/oe/utils.py b/meta/lib/oe/utils.py
+index aee4336482..9042b370f7 100644
+--- a/meta/lib/oe/utils.py
++++ b/meta/lib/oe/utils.py
+@@ -391,7 +391,7 @@ def host_gcc_version(d, taskcontextonly=False):
+     except subprocess.CalledProcessError as e:
+         bb.fatal("Error running %s --version: %s" % (compiler, e.output.decode("utf-8")))
+ 
+-    match = re.match(r".* (\d\.\d)\.\d.*", output.split('\n')[0])
++    match = re.match(r".* (\d+\.\d+)\.\d+.*", output.split('\n')[0])
+     if not match:
+         bb.fatal("Can't get compiler version from %s --version output" % compiler)
+ 
+-- 
+2.26.2
+
