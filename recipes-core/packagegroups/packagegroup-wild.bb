@@ -50,11 +50,12 @@ RDEPENDS_${PN}-python3 = " \
 
 PACKAGES += "${PN}-devtools"
 RDEPENDS_${PN}-devtools = " \
-    python \
-    python-modules \
-    python3 \
-    python3-modules \
-    squashfs-tools \
+    ${PN}-python3 \
+    packagegroup-core-buildessential \
+    gdb \
+    kernel-devsrc \
+    man \
+    strace \
 "
 
 PACKAGES += "${PN}-utils"
@@ -69,6 +70,7 @@ RDEPENDS_${PN}-utils = " \
     git-perltools \
     ldd \
     rsync \
+    squashfs-tools \
     sshfs-fuse \
     tree \
     util-linux \
@@ -80,6 +82,7 @@ RDEPENDS_${PN}-network-utils = " \
     bridge-utils \
     dhcpcd \
     ebtables \
+    iperf3 \
     iptables \
     tcpdump \
 "
@@ -87,6 +90,5 @@ RDEPENDS_${PN}-network-utils = " \
 PACKAGES += "${PN}-full-cmdline"
 RDEPENDS_${PN}-full-cmdline = " \
     ${PN}-core \
-    ${PN}-devtools \
     ${PN}-utils \
 "
