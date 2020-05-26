@@ -48,16 +48,6 @@ RDEPENDS_${PN}-python3 = " \
     python3-wheel \
 "
 
-PACKAGES += "${PN}-devtools"
-RDEPENDS_${PN}-devtools = " \
-    ${PN}-python3 \
-    packagegroup-core-buildessential \
-    gdb \
-    kernel-devsrc \
-    man \
-    strace \
-"
-
 PACKAGES += "${PN}-utils"
 RDEPENDS_${PN}-utils = " \
     dosfstools \
