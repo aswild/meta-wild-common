@@ -10,12 +10,11 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://LICENSE.ubnt \
            file://unifi.service.in \
            file://unifi.env \
-           file://mongod.in \
 "
 
-PV = "5.12.72"
-SRC_URI[md5sum] = "77931cb23220ca71c59b2d3ca9477631"
-SRC_URI[sha256sum] = "60ea65e14ad0e8845debf451dc8e656363dc0d9d90eb053b2e6b9e2c49f09072"
+PV = "5.13.29"
+SRC_URI[md5sum] = "c4d18e23244572cf84505a0e836e4ac1"
+SRC_URI[sha2565sum] = "f7fd1912473a8d2de7ff18b4de169903c39c572733b568f1e22bb2514934cc7d"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
@@ -67,7 +66,7 @@ S = "${WORKDIR}/UniFi"
 do_configure[noexec] = "1"
 
 do_compile() {
-    for file in unifi.service mongod; do
+    for file in unifi.service; do
         sed -e "s|@base_bindir@|${base_bindir}|g" \
             -e "s|@bindir@|${bindir}|g" \
             -e "s|@libdir@|${libdir}|g" \
@@ -100,8 +99,7 @@ do_install() {
     done
 
     bbnote "Replacing mongod wrapper"
-    rm -f ${D}${libdir}/${PN}/bin/mongod
-    install -m755 ${WORKDIR}/mongod ${D}${libdir}/${PN}/bin/mongod
+    ln -sfvT ${bindir}/mongod ${D}${libdir}/${PN}/bin/mongod
 
     bbnote "Installing systemd service"
     install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
