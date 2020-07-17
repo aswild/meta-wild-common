@@ -4,8 +4,8 @@ LICENSE = "MIT"
 inherit packagegroup
 
 RDEPENDS_${PN} = "\
-    ${PN}-python3 \
     packagegroup-core-buildessential \
+    packagegroup-wild-python3 \
     gdb \
     kernel-devsrc \
     man \
