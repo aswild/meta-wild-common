@@ -9,13 +9,13 @@ Upstream-Status: Pending
 
 Signed-off-by: Robert Yang <liezhi.yang@windriver.com>
 
-Index: pcre2-10.30/Makefile.am
+Index: pcre2-10.35/Makefile.am
 ===================================================================
---- pcre2-10.30.orig/Makefile.am
-+++ pcre2-10.30/Makefile.am
-@@ -325,9 +325,21 @@ bin_SCRIPTS = pcre2-config
- ## to copy a distributed set of tables that are defined for ASCII code. In this
- ## case, dftables is not needed.
+--- pcre2-10.35.orig/Makefile.am
++++ pcre2-10.35/Makefile.am
+@@ -331,9 +331,21 @@ bin_SCRIPTS = pcre2-config
+ ## specified) is to copy a distributed set of tables that are defined for ASCII
+ ## code. In this case, pcre2_dftables is not needed.
  
 +CC_FOR_BUILD = @CC_FOR_BUILD@
 +CFLAGS_FOR_BUILD = @CFLAGS_FOR_BUILD@
@@ -23,22 +23,22 @@ Index: pcre2-10.30/Makefile.am
 +LDFLAGS_FOR_BUILD = @LDFLAGS_FOR_BUILD@
 +
  if WITH_REBUILD_CHARTABLES
- noinst_PROGRAMS += dftables
- dftables_SOURCES = src/dftables.c
+ noinst_PROGRAMS += pcre2_dftables
+ pcre2_dftables_SOURCES = src/pcre2_dftables.c
 +
-+dftables_LINK = $(CCLD_FOR_BUILD) -o $@
-+dftables_LDFLAGS = $(LDFLAGS_FOR_BUILD)
++pcre2_dftables_LINK = $(CCLD_FOR_BUILD) -o $@
++pcre2_dftables_LDFLAGS = $(LDFLAGS_FOR_BUILD)
 +
-+src/dftables.o: $(srcdir)/src/dftables.c
-+	$(CC_FOR_BUILD) -c $(CFLAGS_FOR_BUILD) -o $@ $(srcdir)/src/dftables.c
++src/pcre2_dftables.o: $(srcdir)/src/pcre2_dftables.c
++	$(CC_FOR_BUILD) -c $(CFLAGS_FOR_BUILD) -o $@ $<
 +
- src/pcre2_chartables.c: dftables$(EXEEXT)
+ src/pcre2_chartables.c: pcre2_dftables$(EXEEXT)
  	rm -f $@
- 	./dftables$(EXEEXT) $@
-Index: pcre2-10.30/configure.ac
+ 	./pcre2_dftables$(EXEEXT) $@
+Index: pcre2-10.35/configure.ac
 ===================================================================
---- pcre2-10.30.orig/configure.ac
-+++ pcre2-10.30/configure.ac
+--- pcre2-10.35.orig/configure.ac
++++ pcre2-10.35/configure.ac
 @@ -60,6 +60,23 @@ fi
  # This is a new thing required to stop a warning from automake 1.12
  m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
