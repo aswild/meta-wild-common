@@ -1,6 +1,8 @@
 SUMMARY = "zstd compression tools and library"
 DESCRIPTION = "A fast lossless compression algorithm, targeting real-time compression \
 scenarios at zlib-level and better compression ratios"
+HOMEPAGE = "https://facebook.github.io/zstd/"
+SECTION = "console/utils"
 
 LICENSE = "GPLv2 | BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://COPYING;md5=39bba7d2cf0ba1036f2a6e2be52fe3f0 \
@@ -8,7 +10,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=39bba7d2cf0ba1036f2a6e2be52fe3f0 \
 
 PV = "1.4.5"
 SRCREV = "b706286adbba780006a47ef92df0ad7a785666b6"
-SRC_URI = "git://github.com/facebook/zstd"
+SRC_URI = "git://github.com/facebook/zstd;nobranch=1"
 S = "${WORKDIR}/git"
 
 inherit cmake
@@ -17,4 +19,4 @@ OECMAKE_SOURCEPATH = "${S}/build/cmake"
 PACKAGES =+ "libzstd"
 FILES_libzstd = "${libdir}/libzstd${SOLIBS}"
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
