@@ -50,7 +50,7 @@ PACKAGES =+ "libpcre2-8 libpcre2-16 libpcre2-32 libpcre2-posix pcre2grep pcre2gr
 # base package is empty, depends on main library packages
 ALLOW_EMPTY_${PN} = "1"
 FILES_${PN} = ""
-RRECOMMENDS_${PN} = "libpcre2-8 libpcre2-16 libpcre2-32 libpcre2-posix"
+RRECOMMENDS_${PN}_class-target = "libpcre2-8 libpcre2-16 libpcre2-32 libpcre2-posix"
 
 SUMMARY_pcre2grep = "grep utility that uses perl 5 compatible regexes"
 SUMMARY_pcre2grep-doc = "grep utility that uses perl 5 compatible regexes - docs"
