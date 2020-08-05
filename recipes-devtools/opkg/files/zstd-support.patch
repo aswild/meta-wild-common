@@ -1,0 +1,70 @@
+Index: opkg-0.4.2/configure.ac
+===================================================================
+--- opkg-0.4.2.orig/configure.ac
++++ opkg-0.4.2/configure.ac
+@@ -104,6 +104,17 @@ if test "$want_lz4" = "yes"; then
+ fi
+ AM_CONDITIONAL(HAVE_LZ4, test "$want_lz4" = "yes")
+ 
++# check for zstd
++AC_ARG_ENABLE(zstd,
++              AC_HELP_STRING([--enable-zstd], [Enable zstd compressor support
++      [default=yes] ]),
++    [want_zstd="$enableval"], [want_zstd="yes"])
++
++if test "$want_zstd" = "yes"; then
++  AC_DEFINE(HAVE_ZSTD, 1, [Define if you want zstd support])
++fi
++AM_CONDITIONAL(HAVE_ZSTD, test "$want_zstd" = "yes")
++
+ # check for libcurl
+ AC_ARG_ENABLE(curl,
+               AC_HELP_STRING([--enable-curl], [Enable downloading with curl
+Index: opkg-0.4.2/libopkg/opkg_archive.c
+===================================================================
+--- opkg-0.4.2.orig/libopkg/opkg_archive.c
++++ opkg-0.4.2/libopkg/opkg_archive.c
+@@ -572,6 +572,19 @@ static struct archive *open_inner(struct
+         goto err_cleanup;
+     }
+ 
++#if HAVE_ZSTD
++    r = archive_read_support_filter_zstd(inner);
++    if (r == ARCHIVE_WARN) {
++        /* libarchive returns ARCHIVE_WARN if the filter is provided by
++         * an external program.
++         */
++        opkg_msg(INFO, "zstd support provided by external program.\n");
++    } else if (r != ARCHIVE_OK) {
++        opkg_msg(ERROR, "zstd format not supported.\n");
++        goto err_cleanup;
++    }
++#endif
++
+ #if HAVE_XZ
+     r = archive_read_support_filter_xz(inner);
+     if (r == ARCHIVE_WARN) {
+@@ -817,6 +830,11 @@ struct opkg_ar *ar_open_pkg_control_arch
+     ar = (struct opkg_ar *)xmalloc(sizeof(struct opkg_ar));
+ 
+     ar->ar = extract_outer(filename, "control.tar.gz");
++#if HAVE_ZSTD
++    if (!ar->ar) {
++        ar->ar = extract_outer(filename, "control.tar.zst");
++    }
++#endif
+ #if HAVE_XZ
+     if (!ar->ar) {
+         ar->ar = extract_outer(filename, "control.tar.xz");
+@@ -854,6 +872,11 @@ struct opkg_ar *ar_open_pkg_data_archive
+     ar = (struct opkg_ar *)xmalloc(sizeof(struct opkg_ar));
+ 
+     ar->ar = extract_outer(filename, "data.tar.gz");
++#if HAVE_ZSTD
++    if (!ar->ar) {
++        ar->ar = extract_outer(filename, "data.tar.zst");
++    }
++#endif
+ #if HAVE_XZ
+     if (!ar->ar) {
+         ar->ar = extract_outer(filename, "data.tar.xz");

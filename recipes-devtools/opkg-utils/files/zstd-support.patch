@@ -1,0 +1,24 @@
+Index: opkg-utils-0.4.2/opkg-build
+===================================================================
+--- opkg-utils-0.4.2.orig/opkg-build
++++ opkg-utils-0.4.2/opkg-build
+@@ -183,7 +183,9 @@ compressor_ext() {
+ 	lz4)
+ 	    echo lz4
+ 	    ;;
+-
++	zstd)
++	    echo zst
++	    ;;
+ 	*)
+ 	    echo "*** Error: unsupported compression scheme: $1" >&2
+ 	    exit 1
+@@ -362,7 +364,7 @@ Stop with an error if any files ending w
+ 
+ =item B<-Z> I<compressor>
+ 
+-Specify which compression type to use when building a package. Allowed values are B<gzip>, B<pigz>, B<bzip2>, B<lz4> and B<xz> (default is B<gzip>).
++Specify which compression type to use when building a package. Allowed values are B<gzip>, B<pigz>, B<bzip2>, B<lz4>, B<xz>, and B<zstd> (default is B<gzip>).
+ 
+ =item B<-a> I<compressor-args>
+ 
