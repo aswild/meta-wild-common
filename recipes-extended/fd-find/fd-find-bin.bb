@@ -9,11 +9,9 @@ LIC_FILES_CHKSUM = " \
 PROVIDES = "fd-find"
 RPROVIDES_${PN} = "fd-find"
 
-PV = "8.1.1-14-g1f4884a"
-SRC_URI[aarch64.md5sum] = "d2ed7cb63344ffbdd65d555b789034eb"
-SRC_URI[aarch64.sha256sum] = "c435f0a4b4c467aca2b8347472f97d6607de735511c1f181c82731f1200f0c87"
-SRC_URI[x86_64.md5sum] = "ffc8f5948351c412a54608d227e53a1b"
-SRC_URI[x86_64.sha256sum] = "92d39e88bf7fa9057024139b168dc1326010428cdd2ff5cc5b32e95b99fa9ef1"
+PV = "8.1.1-20-g65eddf3"
+SRC_URI[aarch64.sha256sum] = "94775a2189e7478ca39bfde167eeef5d89662fec998bc3bde7fd208ed66daf4b"
+SRC_URI[x86_64.sha256sum] = "5ee8e107e436592a63279729cc14df109de08390f890aad6a1277ade19b45230"
 
 SRC_URI = " \
     https://awild.cc/pub/fd/fd-${PV}-${RUSTARCH}.tar.gz;name=${HOST_ARCH} \
