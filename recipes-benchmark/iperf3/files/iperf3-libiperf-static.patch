@@ -1,7 +1,7 @@
-diff --git a/src/Makefile.am b/src/Makefile.am
-index 3881aa6..b84d8f0 100644
---- a/src/Makefile.am
-+++ b/src/Makefile.am
+Index: git/src/Makefile.am
+===================================================================
+--- git.orig/src/Makefile.am
++++ git/src/Makefile.am
 @@ -49,7 +49,7 @@ libiperf_la_SOURCES     = \
  iperf3_SOURCES          = main.c
  iperf3_CFLAGS           = -g
@@ -10,4 +10,4 @@ index 3881aa6..b84d8f0 100644
 +iperf3_LDFLAGS          = -g -static
  
  if ENABLE_PROFILING
- # If the iperf-profiled-binary is enabled (and this condition is true by default)
+ # If the iperf-profiled-binary is enabled
