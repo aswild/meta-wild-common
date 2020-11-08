@@ -1,4 +1,4 @@
-From 22325ca1cb847c9c8127f46c51bb4bafc8e64e3a Mon Sep 17 00:00:00 2001
+From 48a001a49007c36c3fc303cd65817c28ec607392 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sat, 20 Jan 2018 01:44:55 -0500
 Subject: [PATCH] ncurses: make ABI version user-selectable
@@ -17,10 +17,10 @@ Signed-off-by: Allen Wild <allenwild93@gmail.com>
  2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
-index 4156bf4f7d..d5973b47fc 100644
+index 4b61889668..58379fdae8 100644
 --- a/meta/recipes-core/ncurses/ncurses.inc
 +++ b/meta/recipes-core/ncurses/ncurses.inc
-@@ -20,6 +20,10 @@ CONFIG_SITE =+ "${WORKDIR}/config.cache"
+@@ -21,6 +21,10 @@ CACHED_CONFIGUREVARS = "cf_cv_func_nanosleep=yes"
  
  EXTRASITECONFIG = "CFLAGS='${CFLAGS} -I${SYSROOT_DESTDIR}${includedir}'"
  
@@ -31,7 +31,7 @@ index 4156bf4f7d..d5973b47fc 100644
  # Whether to enable separate widec libraries; must be 'true' or 'false'
  #
  # TODO: remove this variable when widec is supported in every setup?
-@@ -178,8 +182,12 @@ do_install() {
+@@ -179,8 +183,12 @@ do_install() {
                  install.data
  
  
@@ -45,7 +45,7 @@ index 4156bf4f7d..d5973b47fc 100644
  
          cd narrowc
  
-@@ -218,7 +226,7 @@ do_install() {
+@@ -219,7 +227,7 @@ do_install() {
                  test -h $f || continue
                  rm -f $f
                  echo '/* GNU ld script */'  >$f
@@ -54,7 +54,7 @@ index 4156bf4f7d..d5973b47fc 100644
          done
  
          # Make sure that libcurses is linked so that it gets -ltinfo
-@@ -244,7 +252,7 @@ do_install() {
+@@ -245,7 +253,7 @@ do_install() {
              # Use lnr to ensure this is a relative link despite absolute paths
              # (as we can't know the relationship between base_libdir and libdir).
              # At some point we can rely on coreutils 8.16 which has ln -r.
@@ -64,18 +64,18 @@ index 4156bf4f7d..d5973b47fc 100644
          if [ -d "${D}${includedir}/ncurses" ]; then
              for f in `find ${D}${includedir}/ncurses -name "*.h"`
 diff --git a/meta/recipes-core/ncurses/ncurses_6.2.bb b/meta/recipes-core/ncurses/ncurses_6.2.bb
-index 723e685a9b..983eb384e0 100644
+index f3c84c2877..df673bcab9 100644
 --- a/meta/recipes-core/ncurses/ncurses_6.2.bb
 +++ b/meta/recipes-core/ncurses/ncurses_6.2.bb
-@@ -7,7 +7,7 @@ SRC_URI += "file://0001-tic-hang.patch \
+@@ -6,7 +6,7 @@ SRC_URI += "file://0001-tic-hang.patch \
  # commit id corresponds to the revision in package version
  SRCREV = "a669013cd5e9d6434e5301348ea51baf306c93c4"
  S = "${WORKDIR}/git"
--EXTRA_OECONF += "--with-abi-version=5 --cache-file=${B}/config.cache"
-+EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION} --cache-file=${B}/config.cache"
- UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+(\+\d+)*)"
+-EXTRA_OECONF += "--with-abi-version=5"
++EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
+ UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+)$"
  
  # This is needed when using patchlevel versions like 6.1+20181013
 -- 
-2.28.0
+2.29.2
 
