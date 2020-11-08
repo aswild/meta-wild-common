@@ -101,6 +101,11 @@ do_install() {
     bbnote "Replacing mongod wrapper"
     ln -sfvT ${bindir}/mongod ${D}${libdir}/${PN}/bin/mongod
 
+    # somehow I got an image where most of the files had mode 600 and owned by root.
+    # Make sure the unifi user can read everything
+    bbnote "Fixing permissions"
+    chmod -R ugo+rX ${D}${libdir}/${PN}
+
     bbnote "Installing systemd service"
     install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
     install -Dm644 ${WORKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
