@@ -9,7 +9,8 @@ set -e
 
 UNIFI_DIR=/usr/lib/unifi
 KEYSTORE=$UNIFI_DIR/data/keystore
-ROOT_CA=/etc/ssl/certs/ISRG_Root_X1.pem
+#ROOT_CA=/etc/ssl/certs/ISRG_Root_X1.pem
+ROOT_CA=/etc/ssl/certs/DST_Root_CA_X3.pem
 PASSWORD=aircontrolenterprise
 
 : ${JAVA_HOME:=/usr/lib/jvm/openjre-8}
