@@ -9,9 +9,9 @@ LIC_FILES_CHKSUM = " \
 PROVIDES = "fd-find"
 RPROVIDES_${PN} = "fd-find"
 
-PV = "8.1.1-20-g65eddf3"
-SRC_URI[aarch64.sha256sum] = "94775a2189e7478ca39bfde167eeef5d89662fec998bc3bde7fd208ed66daf4b"
-SRC_URI[x86_64.sha256sum] = "5ee8e107e436592a63279729cc14df109de08390f890aad6a1277ade19b45230"
+PV = "8.1.1-47-g2dbbd75"
+SRC_URI[aarch64.sha256sum] = "47414f2d0c02ec3a009538c3faba5447a78cd56217755c5331156f1d3c5374f5"
+SRC_URI[x86_64.sha256sum] = "bdcab0762da1188fe297c476dd9b792357bf8d7d15a4eb9b48b644f06c25b4d8"
 
 SRC_URI = " \
     https://awild.cc/pub/fd/fd-${PV}-${RUSTARCH}.tar.gz;name=${HOST_ARCH} \
@@ -33,7 +33,7 @@ do_compile[noexec] = "1"
 
 do_install() {
     install -d ${D}${prefix}
-    cp -r ${S}/* ${D}${prefix}
+    cp -a --no-preserve=ownership ${S}/* ${D}${prefix}
 }
 
 inherit bash-completion
