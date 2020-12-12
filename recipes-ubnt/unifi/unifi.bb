@@ -12,9 +12,9 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://unifi.env \
 "
 
-PV = "6.0.36"
-SRC_URI[md5sum] = "2c7ccf376c662eb2685773825f10c0ee"
-SRC_URI[sha2565sum] = "edd97e4c6511311f5572f51403851386b42ef45caf143f0363f8fbc87a827dca"
+PV = "6.0.41"
+SRC_URI[md5sum] = "b8b695c03abe71a842b10f68f0244559"
+SRC_URI[sha2565sum] = "49b3effc06f565fb3fddb29aadbd03c256faed57398de265cb2dff1bedef7987"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
