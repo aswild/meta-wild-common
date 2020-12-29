@@ -1,0 +1,14 @@
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct
++++ git/SConstruct
+@@ -2473,7 +2473,8 @@ def doConfigure(myenv):
+ 
+         # Warn about redundant moves, such as moving a local variable in a return that is different
+         # than the return type.
+-        AddToCXXFLAGSIfSupported(myenv, "-Wredundant-move")
++        # WILD: suppress this warning, it's very noisy and makes it hard to find real compile errors.
++        AddToCXXFLAGSIfSupported(myenv, "-Wno-redundant-move")
+ 
+         # Disable warning about variables that may not be initialized
+         # Failures are triggered in the case of boost::optional in GCC 4.8.x
