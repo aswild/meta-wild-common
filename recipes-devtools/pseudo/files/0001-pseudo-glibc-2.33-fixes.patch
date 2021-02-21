@@ -1,0 +1,441 @@
+From 697c587871308e8bfc44ed639b75eff836bb65e2 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 21 Feb 2021 17:19:14 -0500
+Subject: [PATCH] pseudo glibc 2.33 fixes
+
+Squashed commit of the following:
+
+commit 60e25a36558f1f07dcce1a044fe976b475bec42b
+Author: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date:   Mon Feb 15 20:48:06 2021 +0000
+
+    makewrappers: Fix glibc 2.33 fstatat usage issues
+
+    In glibc 2.33 it makes calls like:
+
+    fstatat64 (pathfd, "", &st, AT_EMPTY_PATH);
+
+    where pathfd may be a symlink. This interacts badly with pseudo_root_path()
+    since the empty path is replaced with a pathname from the open fd but
+    AT_SYMLINK_NOFOLLOW is not set, hence the link is resolved and pseudo
+    throws an abort() due to inode mismatch.
+
+    Where the path is empty, an fd is passed and AT_EMPTY_PATH is set,
+    we can imply that AT_SYMLINK_NOFOLLOW is also effectly set. Adjust
+    the wrapper functions to ensure this, allowing the functions to behave
+    correctly in the AT_EMPTY_PATH case.
+
+    Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+
+commit 77d289806f77a6880f263334e717d2adde7b3978
+Author: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date:   Mon Feb 15 20:47:39 2021 +0000
+
+    ports/linux: Add wrapper for fstatat/fstatat64 in glibc 2.33
+
+    Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+
+commit d03de55845edf68908879db841834584d4724c43
+Author: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date:   Thu Feb 11 17:21:52 2021 +0000
+
+    ports/rename/renameat: Avoid race when renaming files
+
+    We're seeing failures where a file is renamed under pseudo but an
+    access appears to be made to the old filename before the OP_RENAME has
+    hit the database but after the real_rename has applied in the kernel.
+
+    This is effectively the MAY_UNLINK problem for the original filename. There
+    were protections for the newpath but not the oldpath.
+
+    To try and avoid these aborts(), mark the original path as MAY_UNLINK however
+    we need to be careful not to trigger the DID_UNLINK but instead update
+    the deleting entry in the database as the rename completes. To do this,
+    we no clear the deleting flag during the database rename operation in SQL.
+
+    Also, we have to stop removing the by_ino matches where by_ino.deleting is
+    set, else we may lose the renamed file's attributes that way.
+
+    Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+
+commit c838d8ca51fc3ace090a640eeb4289de34e77e0a
+Author: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date:   Thu Feb 11 17:20:28 2021 +0000
+
+    ports/unix: Add faccessat and faccessat2
+
+    Add wrappers for the faccessat and faccessat2 glibc functions matching
+    the way access.c works. faccessat2 was added in glibc 2.33.
+
+    Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+
+commit 7720723a7b9cbfde42d043acbb4c2a940402400c
+Author: Richard Purdie <richard.purdie@linuxfoundation.org>
+Date:   Thu Feb 11 17:19:19 2021 +0000
+
+    ports/access.c: Use EACCES, not EPERM
+
+    The man page for access() does not allow for a return value of EPERM,
+    should be EACCES. Fix.
+
+    Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+---
+ makewrappers                 |  5 ++++
+ ports/linux/guts/fstatat.c   | 15 ++++++++++++
+ ports/linux/guts/fstatat64.c | 15 ++++++++++++
+ ports/linux/wrapfuncs.in     |  2 ++
+ ports/unix/guts/access.c     |  2 +-
+ ports/unix/guts/faccessat.c  | 15 ++++++++++++
+ ports/unix/guts/faccessat2.c | 46 ++++++++++++++++++++++++++++++++++++
+ ports/unix/guts/rename.c     | 35 +++++++++++++++++----------
+ ports/unix/guts/renameat.c   | 34 ++++++++++++++++----------
+ ports/unix/wrapfuncs.in      |  2 ++
+ pseudo.c                     | 11 ++++-----
+ pseudo_db.c                  |  4 ++--
+ 12 files changed, 151 insertions(+), 35 deletions(-)
+ create mode 100644 ports/linux/guts/fstatat.c
+ create mode 100644 ports/linux/guts/fstatat64.c
+ create mode 100644 ports/unix/guts/faccessat.c
+ create mode 100644 ports/unix/guts/faccessat2.c
+
+diff --git a/makewrappers b/makewrappers
+index 6681e11..818834e 100755
+--- a/makewrappers
++++ b/makewrappers
+@@ -372,6 +372,11 @@ class Function:
+             prefix = path[:-4]
+             if prefix not in self.specific_dirfds:
+                 prefix = ''
++            if self.dirfd != "AT_FDCWD" and "flags" in self.flags \
++                    and "AT_SYMLINK_NOFOLLOW" in self.flags:
++                fix_paths.append(
++                    "if (%s && !*%s && (flags & AT_EMPTY_PATH))\n"
++                    "\t\t\tflags |= AT_SYMLINK_NOFOLLOW;" % (path, path))
+             fix_paths.append(
+                 "%s = pseudo_root_path(__func__, __LINE__, %s%s, %s, %s);" %
+                 (path, prefix, self.dirfd, path, self.flags))
+diff --git a/ports/linux/guts/fstatat.c b/ports/linux/guts/fstatat.c
+new file mode 100644
+index 0000000..3267641
+--- /dev/null
++++ b/ports/linux/guts/fstatat.c
+@@ -0,0 +1,15 @@
++/*
++ * Copyright (c) 2021 Linux Foundation; see
++ * guts/COPYRIGHT for information.
++ *
++ * SPDX-License-Identifier: LGPL-2.1-only
++ *
++ * int fstatat(int dirfd, const char *path, struct stat *buf, int flags)
++ *	int rc = -1;
++ */
++
++	rc = wrap___fxstatat(_STAT_VER, dirfd, path, buf, flags);
++
++/*	return rc;
++ * }
++ */
+diff --git a/ports/linux/guts/fstatat64.c b/ports/linux/guts/fstatat64.c
+new file mode 100644
+index 0000000..c981e14
+--- /dev/null
++++ b/ports/linux/guts/fstatat64.c
+@@ -0,0 +1,15 @@
++/*
++ * Copyright (c) 2021 Linux Foundation; see
++ * guts/COPYRIGHT for information.
++ *
++ * SPDX-License-Identifier: LGPL-2.1-only
++ *
++ * int fstatat64(int dirfd, const char *path, struct stat64 *buf, int flags)
++ *	int rc = -1;
++ */
++
++	rc = wrap___fxstatat64(_STAT_VER, dirfd, path, buf, flags);
++
++/*	return rc;
++ * }
++ */
+diff --git a/ports/linux/wrapfuncs.in b/ports/linux/wrapfuncs.in
+index 80221fc..3824fd8 100644
+--- a/ports/linux/wrapfuncs.in
++++ b/ports/linux/wrapfuncs.in
+@@ -23,9 +23,11 @@ int creat64(const char *path, mode_t mode);
+ int stat(const char *path, struct stat *buf); /* real_func=pseudo_stat */
+ int lstat(const char *path, struct stat *buf); /* real_func=pseudo_lstat, flags=AT_SYMLINK_NOFOLLOW */
+ int fstat(int fd, struct stat *buf); /* real_func=pseudo_fstat */
++int fstatat(int dirfd, const char *path, struct stat *buf, int flags);
+ int stat64(const char *path, struct stat64 *buf); /* real_func=pseudo_stat64 */
+ int lstat64(const char *path, struct stat64 *buf); /* real_func=pseudo_lstat64, flags=AT_SYMLINK_NOFOLLOW */
+ int fstat64(int fd, struct stat64 *buf); /* real_func=pseudo_fstat64 */
++int fstatat64(int dirfd, const char *path, struct stat64 *buf, int flags);
+ int __xstat64(int ver, const char *path, struct stat64 *buf);
+ int __lxstat64(int ver, const char *path, struct stat64 *buf); /* flags=AT_SYMLINK_NOFOLLOW */
+ int __fxstat64(int ver, int fd, struct stat64 *buf);
+diff --git a/ports/unix/guts/access.c b/ports/unix/guts/access.c
+index 1cc8d58..4725f49 100644
+--- a/ports/unix/guts/access.c
++++ b/ports/unix/guts/access.c
+@@ -21,7 +21,7 @@
+ 		if (buf.st_mode & 0111) {
+ 			return 0;
+ 		} else {
+-			errno = EPERM;
++			errno = EACCES;
+ 			return -1;
+ 		}
+ 	} else {
+diff --git a/ports/unix/guts/faccessat.c b/ports/unix/guts/faccessat.c
+new file mode 100644
+index 0000000..02515ee
+--- /dev/null
++++ b/ports/unix/guts/faccessat.c
+@@ -0,0 +1,15 @@
++/* 
++ * Copyright (c) 2021, Linux Foundation; see
++ * guts/COPYRIGHT for information.
++ *
++ * SPDX-License-Identifier: LGPL-2.1-only
++ *
++ * static int
++ * wrap_fsaccessat(int dirfd, const char *path, int mode, int flags) {
++ *	int rc = -1;
++ */
++	rc = wrap_faccessat2(dirfd, path, mode, flags);
++
++/*	return rc;
++ * }
++ */
+diff --git a/ports/unix/guts/faccessat2.c b/ports/unix/guts/faccessat2.c
+new file mode 100644
+index 0000000..1283cc6
+--- /dev/null
++++ b/ports/unix/guts/faccessat2.c
+@@ -0,0 +1,46 @@
++/* 
++ * Copyright (c) 2021, Linux Foundation; see
++ * guts/COPYRIGHT for information.
++ *
++ * SPDX-License-Identifier: LGPL-2.1-only
++ *
++ * static int
++ * wrap_fsaccessat2(int dirfd, const char *path, int mode, int flags) {
++ *	int rc = -1;
++ */
++	PSEUDO_STATBUF buf;
++
++#ifdef PSEUDO_NO_REAL_AT_FUNCTIONS
++	if (dirfd != AT_FDCWD) {
++		errno = ENOSYS;
++		return -1;
++	}
++	if (flags & AT_SYMLINK_NOFOLLOW) {
++		rc = base_lstat(path, &buf);
++	} else {
++		rc = base_stat(path, &buf);
++	}
++#else
++	rc = base_fstatat(dirfd, path, &buf, flags & AT_SYMLINK_NOFOLLOW);
++#endif
++	if (rc == -1)
++		return rc;
++
++	/* note:  no attempt to handle the case where user isn't
++	 * root.
++	 */
++
++	if (mode & X_OK) {
++		if (buf.st_mode & 0111) {
++			return 0;
++		} else {
++			errno = EACCES;
++			return -1;
++		}
++	} else {
++		return 0;
++	}
++
++/*	return rc;
++ * }
++ */
+diff --git a/ports/unix/guts/rename.c b/ports/unix/guts/rename.c
+index 7e4a499..80bbf41 100644
+--- a/ports/unix/guts/rename.c
++++ b/ports/unix/guts/rename.c
+@@ -13,7 +13,8 @@
+ 	int oldrc, newrc;
+ 	int save_errno;
+ 	int old_db_entry = 0;
+-	int may_unlinked = 0;
++	int may_unlink_new = 0;
++	int may_unlink_old = 0;
+ 
+ 	pseudo_debug(PDBGF_OP, "rename: %s->%s\n",
+ 		oldpath ? oldpath : "<nil>",
+@@ -43,28 +44,36 @@
+ 	/* as with unlink, we have to mark that the file may get deleted */
+ 	msg = pseudo_client_op(OP_MAY_UNLINK, 0, -1, -1, newpath, newrc ? NULL : &newbuf);
+ 	if (msg && msg->result == RESULT_SUCCEED)
+-		may_unlinked = 1;
++		may_unlink_new = 1;
++        /* oldpath is also likely to disappear. Something could call stat() after 
++           real_rename so we need to mark as MAY_UNLINK too */
++	msg = pseudo_client_op(OP_MAY_UNLINK, 0, -1, -1, oldpath, oldrc ? NULL : &oldbuf);
++	if (msg && msg->result == RESULT_SUCCEED)
++		may_unlink_old = 1;
++
+ 	msg = pseudo_client_op(OP_STAT, 0, -1, -1, oldpath, oldrc ? NULL : &oldbuf);
+ 	if (msg && msg->result == RESULT_SUCCEED)
+ 		old_db_entry = 1;
+ 	rc = real_rename(oldpath, newpath);
+ 	save_errno = errno;
+-	if (may_unlinked) {
+-		if (rc == -1) {
+-			/* since we failed, that wasn't really unlinked -- put
+-			 * it back.
+-			 */
+-			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, -1, newpath, &newbuf);
+-		} else {
+-			/* confirm that the file was removed */
+-			pseudo_client_op(OP_DID_UNLINK, 0, -1, -1, newpath, &newbuf);
+-		}
+-	}
++
+ 	if (rc == -1) {
++		/* since we failed, that wasn't really unlinked -- put
++		 * it back.
++		 */
++		if (may_unlink_new)
++			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, -1, newpath, &newbuf);
++		if (may_unlink_old)
++			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, -1, oldpath, &oldbuf);
+ 		/* and we're done. */
+ 		errno = save_errno;
+ 		return rc;
+ 	}
++
++	/* confirm that the file was removed */
++	if (may_unlink_new)	
++		pseudo_client_op(OP_DID_UNLINK, 0, -1, -1, newpath, &newbuf);
++	/* OP_DID_UNLINK for oldpath is handled by the server */
+ 	save_errno = errno;
+ 
+ 	/* rename(3) is not mv(1).  rename(file, dir) fails; you must provide
+diff --git a/ports/unix/guts/renameat.c b/ports/unix/guts/renameat.c
+index 8064818..5ac63f9 100644
+--- a/ports/unix/guts/renameat.c
++++ b/ports/unix/guts/renameat.c
+@@ -13,7 +13,8 @@
+ 	int oldrc, newrc;
+ 	int save_errno;
+ 	int old_db_entry = 0;
+-	int may_unlinked = 0;
++	int may_unlink_new = 0;
++	int may_unlink_old = 0;
+ 
+ 	pseudo_debug(PDBGF_FILE, "renameat: %d,%s->%d,%s\n",
+ 		olddirfd, oldpath ? oldpath : "<nil>",
+@@ -55,29 +56,36 @@
+ 	/* as with unlink, we have to mark that the file may get deleted */
+ 	msg = pseudo_client_op(OP_MAY_UNLINK, 0, -1, newdirfd, newpath, newrc ? NULL : &newbuf);
+ 	if (msg && msg->result == RESULT_SUCCEED)
+-		may_unlinked = 1;
++		may_unlink_new = 1;
++        /* oldpath is also likely to disappear. Something could call stat() after 
++           real_rename so we need to mark as MAY_UNLINK too */
++	msg = pseudo_client_op(OP_MAY_UNLINK, 0, -1, olddirfd, oldpath, oldrc ? NULL : &oldbuf);
++	if (msg && msg->result == RESULT_SUCCEED)
++		may_unlink_old = 1;
++
+ 	msg = pseudo_client_op(OP_STAT, 0, -1, olddirfd, oldpath, oldrc ? NULL : &oldbuf);
+ 	if (msg && msg->result == RESULT_SUCCEED)
+ 		old_db_entry = 1;
+ 
+ 	rc = real_renameat(olddirfd, oldpath, newdirfd, newpath);
+ 	save_errno = errno;
+-	if (may_unlinked) {
+-		if (rc == -1) {
+-			/* since we failed, that wasn't really unlinked -- put
+-			 * it back.
+-			 */
+-			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, newdirfd, newpath, &newbuf);
+-		} else {
+-			/* confirm that the file was removed */
+-			pseudo_client_op(OP_DID_UNLINK, 0, -1, newdirfd, newpath, &newbuf);
+-		}
+-	}
+ 	if (rc == -1) {
++		/* since we failed, that wasn't really unlinked -- put
++		 * it back.
++		 */
++		if (may_unlink_new)
++			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, newdirfd, newpath, &newbuf);
++		if (may_unlink_old)
++			pseudo_client_op(OP_CANCEL_UNLINK, 0, -1, olddirfd, oldpath, &oldbuf);
+ 		/* and we're done. */
+ 		errno = save_errno;
+ 		return rc;
+ 	}
++
++	/* confirm that the file was removed */
++	if (may_unlink_new)
++		pseudo_client_op(OP_DID_UNLINK, 0, -1, newdirfd, newpath, &newbuf);
++	/* OP_DID_UNLINK for oldpath is handled by the server */
+ 	save_errno = errno;
+ 
+ 	/* rename(3) is not mv(1).  rename(file, dir) fails; you must provide
+diff --git a/ports/unix/wrapfuncs.in b/ports/unix/wrapfuncs.in
+index bd2706f..7724fc7 100644
+--- a/ports/unix/wrapfuncs.in
++++ b/ports/unix/wrapfuncs.in
+@@ -10,6 +10,8 @@ int dup(int fd); /* noignore_path=1 */
+ int chdir(const char *path); /* noignore_path=1 */
+ int fchdir(int dirfd); /* noignore_path=1 */
+ int access(const char *path, int mode);
++int faccessat(int dirfd, const char *path, int mode, int flags);
++int faccessat2(int dirfd, const char *path, int mode, int flags);
+ FTS *fts_open(char * const *path_argv, int options, int (*compar)(const FTSENT **, const FTSENT **)); /* inode64=1 */
+ int ftw(const char *path, int (*fn)(const char *, const struct stat *, int), int nopenfd);
+ int nftw(const char *path, int (*fn)(const char *, const struct stat *, int, struct FTW *), int nopenfd, int flag);
+diff --git a/pseudo.c b/pseudo.c
+index f2e2f87..528fe1b 100644
+--- a/pseudo.c
++++ b/pseudo.c
+@@ -688,14 +688,13 @@ pseudo_op(pseudo_msg_t *msg, const char *program, const char *tag, char **respon
+ 				break;
+ 			}
+ 			if (mismatch) {
+-				/* a mismatch, but we were planning to delete
+-				 * the file, so it must have gotten deleted
+-				 * already.
+-				 */
+ 				if (by_ino.deleting != 0) {
+-					pseudo_debug(PDBGF_FILE, "inode mismatch for '%s' -- old one was marked for deletion, deleting.\n",
++					/* a mismatch, likely a race but we were planning to
++					 * delete the file, or are in the middle of a rename
++					 * so continue, need the old entry for a rename.
++					 */
++					pseudo_debug(PDBGF_FILE, "inode mismatch for '%s' -- old one was marked for deletion.\n",
+ 						msg->path);
+-					pdb_did_unlink_file(path_by_ino, &by_ino, by_ino.deleting);
+ 				} else {
+ 					pseudo_diag("path mismatch [%d link%s]: ino %llu db '%s' req '%s'.\n",
+ 						msg->nlink,
+diff --git a/pseudo_db.c b/pseudo_db.c
+index ebf6e08..6c48cc8 100644
+--- a/pseudo_db.c
++++ b/pseudo_db.c
+@@ -2020,8 +2020,8 @@ int
+ pdb_rename_file(const char *oldpath, pseudo_msg_t *msg) {
+ 	static sqlite3_stmt *update_exact, *update_sub;
+ 	int rc;
+-	char *sql_update_exact = "UPDATE files SET path = ? WHERE path = ?;";
+-	char *sql_update_sub = "UPDATE files SET path = replace(path, ?, ?) "
++	char *sql_update_exact = "UPDATE files SET path = ?, deleting = 0 WHERE path = ?;";
++	char *sql_update_sub = "UPDATE files SET path = replace(path, ?, ?), deleting = 0 "
+ 			       "WHERE (path > (? || '/') AND path < (? || '0'));";
+ 
+ 	if (!file_db && get_dbs()) {
+-- 
+2.30.1
+
