@@ -59,6 +59,7 @@ RDEPENDS_${PN}-utils = " \
     git \
     git-perltools \
     ldd \
+    ripgrep \
     rsync \
     squashfs-tools \
     sshfs-fuse \
