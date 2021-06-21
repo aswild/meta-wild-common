@@ -50,6 +50,7 @@ RDEPENDS_${PN}-python3 = " \
 
 PACKAGES += "${PN}-utils"
 RDEPENDS_${PN}-utils = " \
+    bat \
     dosfstools \
     e2fsprogs \
     e2fsprogs-mke2fs \
