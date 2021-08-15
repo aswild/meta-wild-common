@@ -6,9 +6,10 @@ LIC_FILES_CHKSUM = " \
     file://LICENSE-APACHE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
-PV = "0.18.1"
-SRCREV = "3aea51455b8acf553f4481996f93d7e219130c2b"
-SRC_URI = "git://github.com/sharkdp/bat"
+PV = "0.18.2"
+SRCREV = "589df6792fe406f91b00db5e24d35393c6527e6b"
+SRC_URI = "git://github.com/sharkdp/bat \
+           file://0001-Update-git2-dependency-to-fix-incompatibility-with-R.patch"
 S = "${WORKDIR}/git"
 
 inherit cargo
