@@ -2,16 +2,16 @@
 
 DESCRIPTION = "htop process viewer"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=4099d367cd5e59b6d4fc1ee33accb891"
+LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 DEPENDS = "ncurses lmsensors"
 # htop uses dlopen rather than direct linking for libsensors
 RDEPENDS_${PN} = "lmsensors-libsensors"
 
-SRCREV = "ce6d60e7def146c13d0b8bca4642e7401a0a8995"
-PV = "3.0.5"
+SRCREV = "29983ff83a7f2c900fadb10e6cb570d167df2d80"
+PV = "3.1.0"
 
-SRC_URI = "git://github.com/htop-dev/htop \
+SRC_URI = "git://github.com/htop-dev/htop;protocol=https;nobranch=1 \
            file://htoprc \
 "
 
