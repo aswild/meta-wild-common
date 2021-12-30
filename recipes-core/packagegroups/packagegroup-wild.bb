@@ -59,6 +59,7 @@ RDEPENDS_${PN}-utils = " \
     fd-find \
     git \
     git-perltools \
+    gptfdisk \
     ldd \
     ripgrep \
     rsync \
