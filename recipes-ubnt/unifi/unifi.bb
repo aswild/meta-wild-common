@@ -12,8 +12,8 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://unifi.env \
 "
 
-PV = "6.5.55"
-SRC_URI[sha256sum] = "97fcf42c60f29c5d295c5d61ec617de261f7eac854188b27182f5a754e2eccdb"
+PV = "7.1.66"
+SRC_URI[sha256sum] = "c2e777164eccbe9db35164438a4907138dae72a4d8c1540ed54f185a81826709"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
