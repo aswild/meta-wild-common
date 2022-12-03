@@ -8,8 +8,8 @@ DEPENDS = "ncurses lmsensors"
 # htop uses dlopen rather than direct linking for libsensors
 RDEPENDS_${PN} = "lmsensors-libsensors"
 
-SRCREV = "29983ff83a7f2c900fadb10e6cb570d167df2d80"
-PV = "3.1.0"
+SRCREV = "4e6ec4a0873c56ca9de63eadf730c5bd677bd8da"
+PV = "3.2.1"
 
 SRC_URI = "git://github.com/htop-dev/htop;protocol=https;nobranch=1 \
            file://htoprc \
