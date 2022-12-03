@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 TAGVER = "V0.08.12"
-SRC_URI = "git://kernel.ubuntu.com/cking/stress-ng.git;tag=${TAGVER}"
+SRC_URI = "git://kernel.ubuntu.com/cking/stress-ng.git;tag=${TAGVER};branch=master"
 PV = "${TAGVER}+git${SRCPV}"
 
 DEPENDS = " \

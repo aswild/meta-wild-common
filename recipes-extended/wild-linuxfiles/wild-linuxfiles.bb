@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=7be1bf717db056fe85928318a0e68571"
 inherit allarch
 
 # gitsm:// fetcher clones submodules
-SRC_URI = "gitsm://github.com/aswild/linuxfiles;branch=master"
+SRC_URI = "gitsm://github.com/aswild/linuxfiles;branch=master;protocol=https"
 SRCREV = "${AUTOREV}"
 PV = "1.0+git${SRCPV}"
 S = "${WORKDIR}/git"

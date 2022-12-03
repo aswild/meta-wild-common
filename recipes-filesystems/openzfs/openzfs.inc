@@ -6,7 +6,7 @@ PV = "2.1.4"
 SRCREV = "ad6bd2a2c7f666729a9320a5f540ac9b2ed11d16"
 
 SRC_URI = " \
-    git://github.com/openzfs/zfs;nobranch=1 \
+    git://github.com/openzfs/zfs;nobranch=1;protocol=https \
     file://zfs-remove-unneeded-components.patch \
 "
 

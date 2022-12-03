@@ -3,7 +3,7 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=751419260aa954499f7abaabaa882bbe"
 
 PV = "21"
-SRC_URI = "git://git.archlinux.org/arch-install-scripts.git;tag=v${PV} \
+SRC_URI = "git://git.archlinux.org/arch-install-scripts.git;tag=v${PV};branch=master \
            file://0001-set-HOME-to-root-if-needed.patch \
 "
 S = "${WORKDIR}/git"

@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = " \
 
 PV = "8.2.1+git${SRCPV}"
 SRCREV = "${AUTOREV}"
-SRC_URI = "git://github.com/aswild/fd"
+SRC_URI = "git://github.com/aswild/fd;branch=master;protocol=https"
 S = "${WORKDIR}/git"
 
 inherit cargo-wild

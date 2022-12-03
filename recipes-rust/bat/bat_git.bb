@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = " \
 
 PV = "0.22.1"
 SRCREV = "e5d95796141a719e208208182a5d3c2090a009c6"
-SRC_URI = "git://github.com/sharkdp/bat"
+SRC_URI = "git://github.com/sharkdp/bat;branch=master;protocol=https"
 S = "${WORKDIR}/git"
 
 inherit cargo-wild

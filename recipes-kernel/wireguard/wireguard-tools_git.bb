@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://../COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 PV = "1.0.20210315"
 SRCREV = "899668b620f35efe94f3f9e5d2b5bbf81693be79"
 
-SRC_URI = "git://git.zx2c4.com/wireguard-tools;protocol=https"
+SRC_URI = "git://git.zx2c4.com/wireguard-tools;protocol=https;branch=master"
 S = "${WORKDIR}/git/src"
 
 EXTRA_OEMAKE = " \

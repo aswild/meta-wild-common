@@ -4,7 +4,7 @@ LICENSE = "GPLv3"
 # no proper license file...
 LIC_FILES_CHKSUM = "file://.gitignore;md5=2af6d4cd4cf108d6c05ecea92050610e"
 
-SRC_URI = "git://github.com/bulletmark/edid-rw.git;branch=master"
+SRC_URI = "git://github.com/bulletmark/edid-rw.git;branch=master;protocol=https"
 SRCREV = "${AUTOREV}"
 PV = "1.0-${SRCPV}"
 

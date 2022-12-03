@@ -5,7 +5,7 @@ DEPENDS = "libpcre2 zlib xz"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=3b83ef96387f14655fc854ddc3c6bd57"
 
-SRC_URI = "git://github.com/aswild/the_silver_searcher;branch=master"
+SRC_URI = "git://github.com/aswild/the_silver_searcher;branch=master;protocol=https"
 SRCREV = "${AUTOREV}"
 PV = "2.2.0+git${SRCPV}"
 
