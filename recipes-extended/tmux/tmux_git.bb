@@ -4,8 +4,8 @@ LICENSE = "ISC"
 DEPENDS = "ncurses libevent bison-native"
 LIC_FILES_CHKSUM = "file://COPYING;md5=2b51ca98c264af11cf8d6238df0c8264"
 
-PV = "3.1b"
-SRCREV = "a10c4c60cb08a0e13e8c65b81a5c1328b1d4788d"
+PV = "3.3a"
+SRCREV = "0b355ae8114511e1ff6359272b164f1cdf718e80"
 SRC_URI = "git://github.com/tmux/tmux"
 
 S = "${WORKDIR}/git"
