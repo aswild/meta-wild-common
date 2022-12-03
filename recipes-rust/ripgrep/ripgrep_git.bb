@@ -12,7 +12,7 @@ SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/ripgrep"
 S = "${WORKDIR}/git"
 
-inherit cargo
+inherit cargo-wild
 DEPENDS += "asciidoc-native"
 
 do_install() {

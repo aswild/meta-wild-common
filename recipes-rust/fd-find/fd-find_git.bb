@@ -11,7 +11,7 @@ SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/fd"
 S = "${WORKDIR}/git"
 
-inherit cargo
+inherit cargo-wild
 
 do_install() {
     install -Dm755 ${CARGO_RELEASE_DIR}/fd ${D}${bindir}/fd

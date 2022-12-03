@@ -11,7 +11,7 @@ SRCREV = "e5d95796141a719e208208182a5d3c2090a009c6"
 SRC_URI = "git://github.com/sharkdp/bat"
 S = "${WORKDIR}/git"
 
-inherit cargo
+inherit cargo-wild
 
 do_install() {
     install -Dm755 ${CARGO_RELEASE_DIR}/bat ${D}${bindir}/bat
@@ -25,3 +25,6 @@ FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
 RDEPENDS:${PN}-zsh-completion = "zsh"
 
 RRECOMMENDS:${PN} += "${PN}-zsh-completion"
+
+# Don't warn about absolute paths in the binary
+WARN_QA:remove = "buildpaths"
