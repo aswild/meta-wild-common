@@ -2,10 +2,9 @@ SUMMARY = "A directory listing program displaying a depth indented list of files
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=393a5ca445f6965873eca0259a17f833"
 
-PV = "1.8.0"
+PV = "2.0.4"
 SRC_URI = "http://mama.indstate.edu/users/ice/${BPN}/src/${BP}.tgz"
-SRC_URI[md5sum] = "715191c7f369be377fc7cc8ce0ccd835"
-SRC_URI[sha256sum] = "715d5d4b434321ce74706d0dd067505bb60c5ea83b5f0b3655dae40aa6f9b7c2"
+SRC_URI[sha256sum] = "b0ea92197849579a3f09a50dbefc3d4708caf555d304a830e16e20b73b4ffa74"
 
 SRC_URI += "file://cross-compile.patch"
 
