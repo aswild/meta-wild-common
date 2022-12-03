@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = " \
     file://UNLICENSE;md5=7246f848faa4e9c9fc0ea91122d6e680 \
 "
 
-PV = "12.1.1+git${SRCPV}"
+PV = "13.0.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/ripgrep"
 S = "${WORKDIR}/git"
