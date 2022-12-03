@@ -2,16 +2,13 @@ SUMMARY = "Borg Backup"
 DESCRIPTION = "Deduplicating backup program with compression and authenticated encryption"
 HOMEPAGE = "https://www.borgbackup.org"
 LICENSE = "BSD-3-Clause"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=05e264dfb41374bd0f5c4c602e039705"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=4b81f01bf74e454e57a4097a5ab66874"
 
-SRC_URI = "https://github.com/borgbackup/borg/releases/download/${PV}/${BP}.tar.gz \
-           file://cross-compile.patch"
+PV = "1.2.2"
+SRC_URI = "https://github.com/borgbackup/borg/releases/download/${PV}/${BP}.tar.gz"
+SRC_URI[sha256sum] = "d730687443f1beb602b1d72bae36318f6f9654818fcdc50458540ec579e57260"
 
-PV = "1.1.13"
-SRC_URI[md5sum] = "a82d2bdf61bfaeebb90ac8ab1347657a"
-SRC_URI[sha256sum] = "164a8666a61071ce2fa6c60627c7646f12e3a8e74cd38f046be72f5ea91b3821"
-
-DEPENDS = "acl lz4 openssl xz zstd python3-setuptools-scm-native python3-cython-native"
+DEPENDS = "acl lz4 openssl xxhash xz zstd python3-setuptools-scm-native python3-cython-native"
 
 # borg has quite a few implicit dependencies, so to be safe we'll just include the
 # full standard library (python3-modules) rather than trying to figure out which
@@ -30,3 +27,4 @@ inherit python3native setuptools3
 export BORG_OPENSSL_PREFIX = "${STAGING_DIR_TARGET}${prefix}"
 export BORG_LIBLZ4_PREFIX  = "${STAGING_DIR_TARGET}${prefix}"
 export BORG_LIBZSTD_PREFIX  = "${STAGING_DIR_TARGET}${prefix}"
+export BORG_LIBXXHASH_PREFIX = "${STAGING_DIR_TARGET}${prefix}"
