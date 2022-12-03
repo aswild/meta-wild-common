@@ -1,3 +1,3 @@
-DISTRO_FEATURES_remove = "x11 alsa"
-MACHINE_FEATURES_remove = "alsa"
-DISTRO_FEATURES_BACKFILL_CONSIDERED_append = " pulseaudio"
+DISTRO_FEATURES:remove = "x11 alsa"
+MACHINE_FEATURES:remove = "alsa"
+DISTRO_FEATURES_BACKFILL_CONSIDERED:append = " pulseaudio"

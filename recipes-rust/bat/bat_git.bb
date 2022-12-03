@@ -21,7 +21,7 @@ do_install() {
 }
 
 PACKAGES += "${PN}-zsh-completion"
-FILES_${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS_${PN}-zsh-completion = "zsh"
+FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
+RDEPENDS:${PN}-zsh-completion = "zsh"
 
-RRECOMMENDS_${PN} += "${PN}-zsh-completion"
+RRECOMMENDS:${PN} += "${PN}-zsh-completion"

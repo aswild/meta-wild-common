@@ -7,7 +7,7 @@ PV = "2"
 SRC_URI = "file://unifi-cert-update.sh"
 S = "${WORKDIR}"
 
-RDEPENDS_${PN} = "bash openssl-bin unifi"
+RDEPENDS:${PN} = "bash openssl-bin unifi"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"

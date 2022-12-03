@@ -8,11 +8,11 @@ SRC_URI = "file://${BPN}.service \
            file://iptables-redirect.sh"
 S = "${WORKDIR}"
 
-RDEPENDS_${PN} = "iptables"
-RRECOMMENDS_${PN} = "kernel-module-iptable-nat"
+RDEPENDS:${PN} = "iptables"
+RRECOMMENDS:${PN} = "kernel-module-iptable-nat"
 
 inherit systemd
-SYSTEMD_SERVICE_${PN} = "${BPN}.service"
+SYSTEMD_SERVICE:${PN} = "${BPN}.service"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -22,4 +22,4 @@ do_install() {
     install -Dm644 ${BPN}.service ${D}${systemd_unitdir}/system/${BPN}.service
 }
 
-FILES_${PN} = "${libdir}/unifi/* ${systemd_unitdir}/system/*"
+FILES:${PN} = "${libdir}/unifi/* ${systemd_unitdir}/system/*"

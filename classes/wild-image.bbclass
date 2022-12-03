@@ -3,10 +3,10 @@
 inherit core-image
 
 # enable BCJ filters for squashfs xz
-IMAGE_CMD_squashfs-xz_append_x86 = " -Xbcj x86"
-IMAGE_CMD_squashfs-xz_append_x86-64 = " -Xbcj x86"
-IMAGE_CMD_squashfs-xz_append_arm = " -Xbcj arm,armthumb"
-IMAGE_CMD_squashfs-xz_append_aarch64 = " -Xbcj arm"
+IMAGE_CMD:squashfs-xz:append:x86 = " -Xbcj x86"
+IMAGE_CMD:squashfs-xz:append:x86-64 = " -Xbcj x86"
+IMAGE_CMD:squashfs-xz:append:arm = " -Xbcj arm,armthumb"
+IMAGE_CMD:squashfs-xz:append:aarch64 = " -Xbcj arm"
 
 # layer versions and build configuration in /etc/build
 inherit image-buildinfo
@@ -31,7 +31,7 @@ copy_ssh_host_keys() {
     fi
 }
 # prepend this command so that it runs before read_only_rootfs_hook
-ROOTFS_POSTPROCESS_COMMAND_prepend = "copy_ssh_host_keys; "
+ROOTFS_POSTPROCESS_COMMAND:prepend = "copy_ssh_host_keys; "
 
 wild_rootfs_postprocess() {
     # Yocto will install the kernel image to /boot, but we don't want that because
@@ -103,7 +103,7 @@ wild_rootfs_postprocess() {
         touch ${IMAGE_ROOTFS}${libdir}/jvm/dummy
     fi
 }
-ROOTFS_POSTPROCESS_COMMAND_append = " wild_rootfs_postprocess;"
+ROOTFS_POSTPROCESS_COMMAND:append = " wild_rootfs_postprocess;"
 
 # Don't spam DEPLOYDIR with testdata.json files
-ROOTFS_POSTPROCESS_COMMAND_remove = "write_image_test_data;"
+ROOTFS_POSTPROCESS_COMMAND:remove = "write_image_test_data;"

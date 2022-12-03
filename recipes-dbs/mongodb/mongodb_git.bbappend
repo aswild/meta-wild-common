@@ -2,7 +2,7 @@
 # making it hard to find real errors. Like, literally half of log.do_compile is g++ complaining
 # about -Wredundant-move.
 # Also compiling without debug info (-g0) saves ~7 minutes of build time and ~12GB of build objects
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI += "file://wild-build-flags.patch"
 
 # DEBUG_FLAGS propagates through various yocto variables into CFLAGS, CXXFLAGS, LDFLAGS, etc.
@@ -10,7 +10,7 @@ DEBUG_FLAGS:remove = "-g"
 DEBUG_FLAGS:prepend = "-g0 "
 
 # don't install a systemd service for mongodb, and sure as hell don't auto-start it
-do_install_append() {
+do_install:append() {
     rm -v ${D}${systemd_system_unitdir}/mongod.service
     # removing the service file leaves probably-empty directories that cause package QA errors.
     # this assumes systemd_system_unitdir=${nonarch_base_libdir}/systemd/system
@@ -19,4 +19,4 @@ do_install_append() {
     rmdir ${D}${nonarch_base_libdir} || true
 }
 
-SYSTEMD_SERVICE_${PN} = ""
+SYSTEMD_SERVICE:${PN} = ""

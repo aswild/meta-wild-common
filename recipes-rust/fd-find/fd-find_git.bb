@@ -23,7 +23,7 @@ do_install() {
 
 inherit bash-completion
 PACKAGES += "${PN}-zsh-completion"
-FILES_${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS_${PN}-zsh-completion = "zsh"
+FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
+RDEPENDS:${PN}-zsh-completion = "zsh"
 
-RRECOMMENDS_${PN} += "${PN}-bash-completion ${PN}-zsh-completion"
+RRECOMMENDS:${PN} += "${PN}-bash-completion ${PN}-zsh-completion"

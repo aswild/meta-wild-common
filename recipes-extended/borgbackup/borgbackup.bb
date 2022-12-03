@@ -16,8 +16,8 @@ DEPENDS = "acl lz4 openssl xxhash xz zstd python3-setuptools-scm-native python3-
 # setuptools is needed at runtime for the launcher scripts that get installed to
 # bindir.
 # The borg.testsuite module can't be removed because normal borg commands import it.
-RDEPENDS_${PN} = "python3 python3-modules python3-setuptools python3-msgpack"
-RRECOMMENDS_${PN} = "openssh-ssh"
+RDEPENDS:${PN} = "python3 python3-modules python3-setuptools python3-msgpack"
+RRECOMMENDS:${PN} = "openssh-ssh"
 
 inherit python3native setuptools3
 

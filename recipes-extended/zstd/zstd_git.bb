@@ -21,6 +21,6 @@ inherit cmake
 OECMAKE_SOURCEPATH = "${S}/build/cmake"
 
 PACKAGES =+ "libzstd"
-FILES_libzstd = "${libdir}/libzstd${SOLIBS}"
+FILES:libzstd = "${libdir}/libzstd${SOLIBS}"
 
 BBCLASSEXTEND = "native nativesdk"

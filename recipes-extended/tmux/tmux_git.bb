@@ -12,7 +12,7 @@ S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
 
-do_compile_prepend() {
+do_compile:prepend() {
     # used by autotools compat functions from AC_REPLACE_FUNCS, but directory
     # isn't created in Yocto automatically for some reason
     install -d ${B}/compat

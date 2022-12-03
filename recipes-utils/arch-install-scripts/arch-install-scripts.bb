@@ -19,9 +19,9 @@ do_install() {
 inherit allarch
 
 PACKAGES =+ "arch-chroot"
-SUMMARY_arch-chroot = "chroot helper script from Arch Linux"
-FILES_arch-chroot = "${bindir}/arch-chroot"
-RDEPENDS_arch-chroot = "bash util-linux-unshare"
+SUMMARY:arch-chroot = "chroot helper script from Arch Linux"
+FILES:arch-chroot = "${bindir}/arch-chroot"
+RDEPENDS:arch-chroot = "bash util-linux-unshare"
 
-FILES_${PN} += "${datadir}"
-RDEPENDS_${PN} = "bash arch-chroot"
+FILES:${PN} += "${datadir}"
+RDEPENDS:${PN} = "bash arch-chroot"

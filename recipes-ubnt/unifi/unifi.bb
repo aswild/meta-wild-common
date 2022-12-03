@@ -25,40 +25,40 @@ UNIFI_GID   ?= "${UNIFI_UID}"
 UNIFI_HOMEDIR ?= "/home/${UNIFI_USER}"
 
 # no package splitting
-FILES_${PN} = "${libdir}/${PN} \
+FILES:${PN} = "${libdir}/${PN} \
                ${systemd_unitdir}/system \
                ${sysconfdir}/default/unifi.env \
                ${UNIFI_HOMEDIR}"
 
 # unifi controller includes precompiled binaries
-INSANE_SKIP_${PN} = "already-stripped"
+INSANE_SKIP:${PN} = "already-stripped"
 
 # precompiled library links with libsystemd which generates a warning if
 # systemd isn't in DEPENDS, but we don't really need that dependency.
-WARN_QA_remove = "build-deps"
-ERROR_QA_remove = "build-deps"
+WARN_QA:remove = "build-deps"
+ERROR_QA:remove = "build-deps"
 
 # use rsync to install because, unlike cp, it supports --exclude
 DEPENDS = "rsync-native"
 
-RDEPENDS_${PN} = "openjre-8 mongodb bash"
-RRECOMMENDS_${PN} = "unifi-cert-update"
+RDEPENDS:${PN} = "openjre-8 mongodb bash"
+RRECOMMENDS:${PN} = "unifi-cert-update"
 
 inherit systemd
-SYSTEMD_SERVICE_${PN} = "unifi.service"
+SYSTEMD_SERVICE:${PN} = "unifi.service"
 
 inherit useradd
 GROUPADD_PACKAGES = "${PN}"
-GROUPADD_PARAM_${PN} = "--system --gid ${UNIFI_GID} ${UNIFI_USER}"
+GROUPADD_PARAM:${PN} = "--system --gid ${UNIFI_GID} ${UNIFI_USER}"
 USERADD_PACKAGES = "${PN}"
-USERADD_PARAM_${PN} = "--system --uid ${UNIFI_UID} --gid ${UNIFI_GID} --home-dir ${UNIFI_HOMEDIR} ${UNIFI_USER}"
+USERADD_PARAM:${PN} = "--system --uid ${UNIFI_UID} --gid ${UNIFI_GID} --home-dir ${UNIFI_HOMEDIR} ${UNIFI_USER}"
 
 # arch for prebuilt libraries
 NATIVEARCH = "invalid"
-NATIVEARCH_armv7a = "armv7"
-NATIVEARCH_armv7ve = "armv7"
-NATIVEARCH_aarch64 = "aarch64"
-NATIVEARCH_x86-64 = "x86_64"
+NATIVEARCH:armv7a = "armv7"
+NATIVEARCH:armv7ve = "armv7"
+NATIVEARCH:aarch64 = "aarch64"
+NATIVEARCH:x86-64 = "x86_64"
 
 S = "${WORKDIR}/UniFi"
 

@@ -3,4 +3,4 @@
 # remove the -dev package, so just remove the conflict and dev images will contain
 # both the normal and -static packages (which don't really conflict in a package-manager
 # sense of the word)
-RCONFLICTS_${PN}_remove = "${PN}-static"
+RCONFLICTS:${PN}:remove = "${PN}-static"

@@ -16,8 +16,8 @@ S = "${WORKDIR}/git"
 LINUXFILES_LOC ?= "${ROOT_HOME}/linuxfiles"
 
 # force including all git data too
-FILES_${PN} = "${ROOT_HOME}"
-ERROR_QA_remove = "file-rdeps"
+FILES:${PN} = "${ROOT_HOME}"
+ERROR_QA:remove = "file-rdeps"
 
 do_install() {
     set -x

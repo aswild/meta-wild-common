@@ -4,7 +4,7 @@ LICENSE = "MIT"
 inherit packagegroup
 
 PACKAGES += "${PN}-base"
-RDEPENDS_${PN}-base = " \
+RDEPENDS:${PN}-base = " \
     packagegroup-core-base-utils \
     packagegroup-core-full-cmdline-libs \
     packagegroup-core-full-cmdline-utils \
@@ -26,7 +26,7 @@ RDEPENDS_${PN}-base = " \
 "
 
 PACKAGES += "${PN}-core"
-RDEPENDS_${PN}-core = " \
+RDEPENDS:${PN}-core = " \
     ${PN}-base \
     htop \
     make \
@@ -40,7 +40,7 @@ RDEPENDS_${PN}-core = " \
 "
 
 PACKAGES += "${PN}-python3"
-RDEPENDS_${PN}-python3 = " \
+RDEPENDS:${PN}-python3 = " \
     python3 \
     python3-modules \
     python3-pip \
@@ -49,7 +49,7 @@ RDEPENDS_${PN}-python3 = " \
 "
 
 PACKAGES += "${PN}-utils"
-RDEPENDS_${PN}-utils = " \
+RDEPENDS:${PN}-utils = " \
     bat \
     dosfstools \
     e2fsprogs \
@@ -71,7 +71,7 @@ RDEPENDS_${PN}-utils = " \
 "
 
 PACKAGES += "${PN}-network-utils"
-RDEPENDS_${PN}-network-utils = " \
+RDEPENDS:${PN}-network-utils = " \
     bridge-utils \
     dhcpcd \
     ebtables \
@@ -81,7 +81,7 @@ RDEPENDS_${PN}-network-utils = " \
 "
 
 PACKAGES += "${PN}-full-cmdline"
-RDEPENDS_${PN}-full-cmdline = " \
+RDEPENDS:${PN}-full-cmdline = " \
     ${PN}-core \
     ${PN}-utils \
 "

@@ -8,7 +8,7 @@ SRC_URI = "git://github.com/bulletmark/edid-rw.git;branch=master"
 SRCREV = "${AUTOREV}"
 PV = "1.0-${SRCPV}"
 
-RDEPENDS_${PN} = "python-argparse python-smbus"
+RDEPENDS:${PN} = "python-argparse python-smbus"
 
 S = "${WORKDIR}/git"
 

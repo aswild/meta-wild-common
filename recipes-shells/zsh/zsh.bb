@@ -18,9 +18,9 @@ DEPENDS = " \
 "
 
 # pcre is dynamically loaded, so needs to explicitly be in RDEPENDS
-RDEPENDS_${PN} += "libpcre"
-RRECOMMENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
-RPROVIDES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', '/bin/zsh', '', d)}"
+RDEPENDS:${PN} += "libpcre"
+RRECOMMENDS:${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'systemd-zsh-completion', '', d)}"
+RPROVIDES:${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'usrmerge', '/bin/zsh', '', d)}"
 
 inherit autotools-brokensep gettext pkgconfig
 
@@ -52,13 +52,13 @@ do_configure() {
     oe_runconf
 }
 
-pkg_postinst_${PN}() {
+pkg_postinst:${PN}() {
     touch $D${sysconfdir}/shells
     grep -q "bin/zsh" $D${sysconfdir}/shells || echo /bin/zsh >>$D${sysconfdir}/shells
 }
 
-FILES_${PN} += "${sysconfdir}/zprofile"
-do_install_append() {
+FILES:${PN} += "${sysconfdir}/zprofile"
+do_install:append() {
     install -d ${D}${sysconfdir}
     echo "[[ -f ${sysconfdir}/profile ]] && . ${sysconfdir}/profile" >${D}${sysconfdir}/zprofile
 }

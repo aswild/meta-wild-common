@@ -1,2 +1,2 @@
 # I want systemd timers, not cron
-RDEPENDS_packagegroup-core-full-cmdline-sys-services_remove = "cronie"
+RDEPENDS:packagegroup-core-full-cmdline-sys-services:remove = "cronie"

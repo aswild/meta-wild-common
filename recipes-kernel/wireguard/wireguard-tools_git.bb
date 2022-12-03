@@ -25,6 +25,6 @@ do_install() {
     oe_runmake install
 }
 
-RDEPENDS_${PN} = "bash"
-RRECOMMENDS_${PN} = "kernel-module-wireguard"
-FILES_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system', '', d)}"
+RDEPENDS:${PN} = "bash"
+RRECOMMENDS:${PN} = "kernel-module-wireguard"
+FILES:${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '${systemd_unitdir}/system', '', d)}"

@@ -1,6 +1,6 @@
-FILES_${PN} += "${sysconfdir}/profile.d/lang.sh"
+FILES:${PN} += "${sysconfdir}/profile.d/lang.sh"
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${sysconfdir}/profile.d
     cat >${D}${sysconfdir}/profile.d/lang.sh <<_EOF
 export LANG=en_US.UTF-8

@@ -23,4 +23,4 @@ CONFIGUREOPT_DEPTRACK = ""
 
 inherit bash-completion
 PACKAGES += "${PN}-zsh-completion"
-FILES_${PN}-zsh-completion = "${datadir}/zsh/site-functions"
+FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"

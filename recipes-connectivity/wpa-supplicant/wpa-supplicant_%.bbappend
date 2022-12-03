@@ -1,1 +1,1 @@
-RRECOMMENDS_${PN} += "wpa-oneoff"
+RRECOMMENDS:${PN} += "wpa-oneoff"

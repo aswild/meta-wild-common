@@ -3,7 +3,7 @@ LICENSE = "MIT"
 
 inherit packagegroup
 
-RDEPENDS_${PN} = " \
+RDEPENDS:${PN} = " \
     edid-rw \
     i2c-tools \
     python-smbus \

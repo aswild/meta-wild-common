@@ -1,6 +1,6 @@
 # Enable systemd
-DISTRO_FEATURES_BACKFILL_CONSIDERED_append = " sysvinit"
-DISTRO_FEATURES_append = " systemd"
+DISTRO_FEATURES_BACKFILL_CONSIDERED:append = " sysvinit"
+DISTRO_FEATURES:append = " systemd"
 VIRTUAL-RUNTIME_init_manager = "systemd"
 VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 VIRTUAL-RUNTIME_login_manager = "systemd"

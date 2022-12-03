@@ -48,7 +48,7 @@ DEPLOY_IMG_NAME     = "${IMAGE_NAME}.usb.img"
 DEPLOY_IMG          = "${IMGDEPLOYDIR}/${DEPLOY_IMG_NAME}"
 DEPLOY_IMG_SYMLINK  = "${IMGDEPLOYDIR}/${IMAGE_BASENAME}-${MACHINE}.usb.img"
 
-IMAGE_CMD_grub-multiboot() {
+IMAGE_CMD:grub-multiboot() {
     FATDEST=${WORKDIR}/fatdest
     rm -rf $FATDEST
     install -d $FATDEST

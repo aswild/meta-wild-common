@@ -17,5 +17,5 @@ MODULES_INSTALL_TARGET = "module-install"
 
 inherit module
 
-RPROVIDES_${PN} = "kernel-module-wireguard"
-RRECOMMENDS_${PN} = "wireguard-tools"
+RPROVIDES:${PN} = "kernel-module-wireguard"
+RRECOMMENDS:${PN} = "wireguard-tools"

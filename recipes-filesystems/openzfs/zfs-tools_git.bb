@@ -13,9 +13,9 @@ EXTRA_OECONF = " \
 PACKAGECONFIG ?= "${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}"
 PACKAGECONFIG[systemd] = "--enable-systemd,--disable-systemd,systemd"
 
-FILES_${PN} += "${datadir}/zfs ${systemd_unitdir}"
-RRECOMMENDS_${PN} = "kernel-module-zfs"
+FILES:${PN} += "${datadir}/zfs ${systemd_unitdir}"
+RRECOMMENDS:${PN} = "kernel-module-zfs"
 
-do_install_append() {
+do_install:append() {
     rm -rf ${D}${libdir}/modules-load.d
 }
