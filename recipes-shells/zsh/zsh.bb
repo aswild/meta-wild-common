@@ -5,10 +5,9 @@ DESCRIPTION = "zsh shell"
 LICENSE = "zsh"
 LIC_FILES_CHKSUM = "file://LICENCE;md5=1a4c4cda3e8096d2fd483ff2f4514fec"
 
-PV = "5.8"
+PV = "5.9"
 SRC_URI = "${SOURCEFORGE_MIRROR}/${BPN}/${BP}.tar.xz"
-SRC_URI[md5sum] = "e02a5428620b3dd268800c7843b3dd4d"
-SRC_URI[sha256sum] = "dcc4b54cc5565670a65581760261c163d720991f0d06486da61f8d839b52de27"
+SRC_URI[sha256sum] = "9b8d1ecedd5b5e81fbf1918e876752a7dd948e05c1a0dba10ab863842d45acd5"
 
 DEPENDS = " \
     bison-native \
