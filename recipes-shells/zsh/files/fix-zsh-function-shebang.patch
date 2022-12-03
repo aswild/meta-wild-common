@@ -1,0 +1,20 @@
+Index: zsh-5.9/Functions/VCS_Info/test-repo-git-rebase-apply
+===================================================================
+--- zsh-5.9.orig/Functions/VCS_Info/test-repo-git-rebase-apply
++++ zsh-5.9/Functions/VCS_Info/test-repo-git-rebase-apply
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/zsh -f
++#!/usr/bin/zsh -f
+ #
+ # This script creates a test repository for testing the git backend's behaviour during rebase-apply operations.
+ #
+Index: zsh-5.9/Functions/VCS_Info/test-repo-git-rebase-merge
+===================================================================
+--- zsh-5.9.orig/Functions/VCS_Info/test-repo-git-rebase-merge
++++ zsh-5.9/Functions/VCS_Info/test-repo-git-rebase-merge
+@@ -1,4 +1,4 @@
+-#!/usr/local/bin/zsh -f
++#!/usr/bin/zsh -f
+ #
+ # This script creates a test repository for testing the git backend's behaviour during rebase-apply operations.
+ #
