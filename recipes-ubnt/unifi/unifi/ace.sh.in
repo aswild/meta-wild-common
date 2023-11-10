@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [[ -f @sysconfdir@/default/unifi.env ]]; then
+    . @sysconfdir@/default/unifi.env
+fi
+
+# A bunch of extra arguments taken from the official unifi.init script.
+# The --add-opens ones are especially important for not crashing on startup
+unifi_args=(
+    -Dfile.encoding=UTF-8
+    -Djava.awt.headless=true
+    -Dapple.awt.UIElement=true
+    -Dunifi.core.enabled=${UNIFI_CORE_ENABLED:-false}
+    ${UNIFI_JVM_OPTS:--XX:+UseParallelGC}
+    -XX:+ExitOnOutOfMemoryError
+    -XX:+CrashOnOutOfMemoryError
+    #-XX:ErrorFile=${BASEDIR}/logs/hs_err_pid%p.log
+    #-Dunifi.datadir=${DATADIR}
+    #-Dunifi.logdir=${LOGDIR}
+    #-Dunifi.rundir=${RUNDIR}
+    --add-opens 'java.base/java.lang=ALL-UNNAMED'
+    --add-opens 'java.base/java.time=ALL-UNNAMED'
+    --add-opens 'java.base/sun.security.util=ALL-UNNAMED'
+    --add-opens 'java.base/java.io=ALL-UNNAMED'
+    --add-opens 'java.rmi/sun.rmi.transport=ALL-UNNAMED'
+
+    ${JAVA_ARGS:-}
+)
+
+exec @bindir@/java "${unifi_args[@]}" -jar @libdir@/unifi/lib/ace.jar "$@"

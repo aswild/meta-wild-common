@@ -8,12 +8,13 @@ NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
 
 SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi-${PV}.unix.zip \
            file://LICENSE.ubnt \
+           file://ace.sh.in \
            file://unifi.service.in \
            file://unifi.env \
 "
 
-PV = "7.1.66"
-SRC_URI[sha256sum] = "c2e777164eccbe9db35164438a4907138dae72a4d8c1540ed54f185a81826709"
+PV = "7.5.187"
+SRC_URI[sha256sum] = "18fb1ca65069f766a56b7c54b80243ae7295693172c78935b67d35218fe62e39"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
@@ -41,7 +42,7 @@ ERROR_QA:remove = "build-deps"
 # use rsync to install because, unlike cp, it supports --exclude
 DEPENDS = "rsync-native"
 
-RDEPENDS:${PN} = "openjre-8 mongodb bash"
+RDEPENDS:${PN} = "openjdk-17-jre mongodb bash libsystemd"
 RRECOMMENDS:${PN} = "unifi-cert-update"
 
 inherit systemd
@@ -65,7 +66,7 @@ S = "${WORKDIR}/UniFi"
 do_configure[noexec] = "1"
 
 do_compile() {
-    for file in unifi.service; do
+    for file in ace.sh unifi.service; do
         sed -e "s|@base_bindir@|${base_bindir}|g" \
             -e "s|@bindir@|${bindir}|g" \
             -e "s|@libdir@|${libdir}|g" \
@@ -106,6 +107,7 @@ do_install() {
     chmod -R ugo+rX ${D}${libdir}/${PN}
 
     bbnote "Installing systemd service"
+    install -Dm755 ${WORKDIR}/ace.sh ${D}${libdir}/unifi/bin/ace.sh
     install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
     install -Dm644 ${WORKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
 }
