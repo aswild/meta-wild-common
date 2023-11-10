@@ -2,16 +2,21 @@ SUMMARY = "Cat clone with syntax highlighting and git integration"
 HOMEPAGE = "https://github.com/sharkdp/bat"
 LICENSE = "MIT | Apache-2.0"
 LIC_FILES_CHKSUM = " \
-    file://LICENSE-MIT;md5=1c0f908bd7bc4ba3a90fc3c0ed1037c9 \
+    file://LICENSE-MIT;md5=c46eaa1315aaa0c727a29b157ad9170a \
     file://LICENSE-APACHE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
-PV = "0.22.1"
-SRCREV = "e5d95796141a719e208208182a5d3c2090a009c6"
+PV = "0.24.0"
+SRCREV = "fc9546854f5a7b38823f4990453c6cde386bfd3b"
 SRC_URI = "git://github.com/sharkdp/bat;branch=master;protocol=https"
 S = "${WORKDIR}/git"
 
 inherit cargo-wild
+
+no_strip() {
+    sed -i '/^strip = true/d' ${S}/Cargo.toml
+}
+do_patch[postfuncs] += "no_strip"
 
 do_install() {
     install -Dm755 ${CARGO_RELEASE_DIR}/bat ${D}${bindir}/bat
