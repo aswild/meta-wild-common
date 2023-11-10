@@ -1,26 +1,25 @@
-diff --git a/Makefile.am b/Makefile.am
-index 34fe16ce41..c8a9e6a196 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -8,7 +8,7 @@ SUBDIRS += rpm
+Index: git/Makefile.am
+===================================================================
+--- git.orig/Makefile.am
++++ git/Makefile.am
+@@ -24,7 +24,6 @@ include $(srcdir)/%D%/contrib/Makefile.a
+ include $(srcdir)/%D%/etc/Makefile.am
+ include $(srcdir)/%D%/lib/Makefile.am
+ include $(srcdir)/%D%/man/Makefile.am
+-include $(srcdir)/%D%/tests/Makefile.am
+ if BUILD_LINUX
+ include $(srcdir)/%D%/udev/Makefile.am
+ endif
+Index: git/contrib/Makefile.am
+===================================================================
+--- git.orig/contrib/Makefile.am
++++ git/contrib/Makefile.am
+@@ -4,8 +4,6 @@ include $(srcdir)/%D%/zcp/Makefile.am
+ 
+ if BUILD_LINUX
+ include $(srcdir)/%D%/bpftrace/Makefile.am
+-include $(srcdir)/%D%/dracut/Makefile.am
+-include $(srcdir)/%D%/initramfs/Makefile.am
  endif
  
- if CONFIG_USER
--SUBDIRS += man scripts lib tests cmd etc contrib
-+SUBDIRS += man scripts lib cmd etc contrib
- if BUILD_LINUX
- SUBDIRS += udev
- endif
-diff --git a/contrib/Makefile.am b/contrib/Makefile.am
-index 5ec13ece53..b2e4270a26 100644
---- a/contrib/Makefile.am
-+++ b/contrib/Makefile.am
-@@ -2,7 +2,7 @@ include $(top_srcdir)/config/Shellcheck.am
- 
- SUBDIRS = bash_completion.d pyzfs zcp
- if BUILD_LINUX
--SUBDIRS += bpftrace dracut initramfs
-+SUBDIRS += bpftrace
- endif
  if PAM_ZFS_ENABLED
- SUBDIRS += pam_zfs_key
