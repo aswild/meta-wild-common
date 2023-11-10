@@ -7,6 +7,8 @@ inherit cargo rust
 # so that we let cargo fetch dependencies normally.
 CARGO_DISABLE_BITBAKE_VENDORING = "1"
 
+CARGO_BUILD_FLAGS:remove = "--frozen"
+
 # Bitbake disables network access on some tasks when the kernel supports it.
 # Nice feature, but not what we want here.
 do_compile[network] = "1"

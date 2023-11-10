@@ -22,10 +22,10 @@ ERROR_QA:remove = "file-rdeps"
 do_configure() {
     set -x
     # repack to pull in all objects from alternate locations
-    git checkout master
-    git repack -ad
-    git submodule foreach git repack -ad
-    find .git -path '*/objects/info/alternates' -exec rm -v {} \;
+    git -c gc.autoDetach=false checkout master
+    git -c gc.autoDetach=false repack -ad
+    git -c gc.autoDetach=false submodule foreach git repack -ad
+    find .git -path '*/objects/info/alternates' -exec rm -v {} +
 }
 
 do_install() {
@@ -36,7 +36,7 @@ do_install() {
     cp -rvT ${S} $installdir
 
     cd $installdir
-    make DESTDIR="${D}${ROOT_HOME}" SRCDIR="${LINUXFILES_LOC}" install
+    make DESTDIR="${D}${ROOT_HOME}" SRCDIR="linuxfiles" install
 
     # create .bash_profile to source .bashrc
     echo '[[ -f $HOME/.bashrc ]] && . $HOME/.bashrc' >${D}${ROOT_HOME}/.bash_profile

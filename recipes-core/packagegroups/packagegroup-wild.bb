@@ -1,6 +1,10 @@
 DESCRIPTION = "Common packages to install"
 LICENSE = "MIT"
 
+# suppress "An allarch packagegroup shouldn't depend on packages which are dynamically renamed"
+# c.f. oe-core 5bf3e447d2 "package: Add sanity check for allarch packagegroups"
+PACKAGE_ARCH = "${TUNE_PKGARCH}"
+
 inherit packagegroup
 
 PACKAGES += "${PN}-base"

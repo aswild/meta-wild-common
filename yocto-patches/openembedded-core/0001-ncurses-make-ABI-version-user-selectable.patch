@@ -1,4 +1,4 @@
-From 6df0aaacef10c8e11d8634f5a25be8a009efeb65 Mon Sep 17 00:00:00 2001
+From 84581f00e7baa22de82027b2fdf081398c5c304b Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Sat, 20 Jan 2018 01:44:55 -0500
 Subject: [PATCH] ncurses: make ABI version user-selectable
@@ -12,8 +12,8 @@ for ABI v6.
 
 Signed-off-by: Allen Wild <allenwild93@gmail.com>
 ---
- meta/recipes-core/ncurses/ncurses.inc             | 14 +++++++++++---
- meta/recipes-core/ncurses/ncurses_6.3+20220423.bb |  2 +-
+ meta/recipes-core/ncurses/ncurses.inc    | 14 +++++++++++---
+ meta/recipes-core/ncurses/ncurses_6.4.bb |  2 +-
  2 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/meta/recipes-core/ncurses/ncurses.inc b/meta/recipes-core/ncurses/ncurses.inc
@@ -63,19 +63,19 @@ index 367f3b19f4..ffe753ea57 100644
          fi
          if [ -d "${D}${includedir}/ncurses" ]; then
              for f in `find ${D}${includedir}/ncurses -name "*.h"`
-diff --git a/meta/recipes-core/ncurses/ncurses_6.3+20220423.bb b/meta/recipes-core/ncurses/ncurses_6.3+20220423.bb
-index ca5fa32572..5a33065cd6 100644
---- a/meta/recipes-core/ncurses/ncurses_6.3+20220423.bb
-+++ b/meta/recipes-core/ncurses/ncurses_6.3+20220423.bb
-@@ -8,7 +8,7 @@ SRC_URI += "file://0001-tic-hang.patch \
+diff --git a/meta/recipes-core/ncurses/ncurses_6.4.bb b/meta/recipes-core/ncurses/ncurses_6.4.bb
+index 388cd8d407..752ec0d1e4 100644
+--- a/meta/recipes-core/ncurses/ncurses_6.4.bb
++++ b/meta/recipes-core/ncurses/ncurses_6.4.bb
+@@ -9,7 +9,7 @@ SRC_URI += "file://0001-tic-hang.patch \
  # commit id corresponds to the revision in package version
- SRCREV = "20db1fb41ec91cd8a1f528e770362092c5403378"
+ SRCREV = "79b9071f2be20a24c7be031655a5638f6032f29f"
  S = "${WORKDIR}/git"
 -EXTRA_OECONF += "--with-abi-version=5"
 +EXTRA_OECONF += "--with-abi-version=${NCURSES_ABI_VERSION}"
  UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+(\.\d+)+)$"
- UPSTREAM_VERSION_UNKNOWN = "1"
  
+ # This is needed when using patchlevel versions like 6.1+20181013
 -- 
-2.38.1
+2.42.1
 
