@@ -2,7 +2,7 @@ SUMMARY = "Script to import LetsEncrypt certs into the unifi controller"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://unifi-cert-update.sh;endline=3;md5=bc340cda2ec2853046b575068daebde0"
 
-PV = "2"
+PV = "3"
 
 SRC_URI = "file://unifi-cert-update.sh"
 S = "${WORKDIR}"

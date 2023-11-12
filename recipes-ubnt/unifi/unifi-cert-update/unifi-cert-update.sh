@@ -13,9 +13,6 @@ ROOT_CA=/etc/ssl/certs/ISRG_Root_X1.pem
 #ROOT_CA=/etc/ssl/certs/DST_Root_CA_X3.pem
 PASSWORD=aircontrolenterprise
 
-: ${JAVA_HOME:=/usr/lib/jvm/openjre-8}
-KEYTOOL=$JAVA_HOME/bin/keytool
-
 if [[ -t 1 ]]; then
     BLD=$'\033[1;37m'
     NC=$'\033[0m'
@@ -46,11 +43,11 @@ msg "Backing up existing keystore"
 vrun cp $KEYSTORE ${KEYSTORE}.bak.$(date "+%Y%m%d%H%M%S")
 
 msg "Removing existing cert from Unifi keystore"
-vrun $KEYTOOL -delete -alias unifi -keystore $KEYSTORE \
+vrun keytool -delete -alias unifi -keystore $KEYSTORE \
      -deststorepass $PASSWORD || true
 
 msg "Importing new cert into Unifi keystore"
-vrun $KEYTOOL -trustcacerts -importkeystore \
+vrun keytool -trustcacerts -importkeystore \
      -deststorepass $PASSWORD -destkeypass $PASSWORD \
      -destkeystore $KEYSTORE -srckeystore $pkcstmp \
      -srcstoretype PKCS12 -srcstorepass $PASSWORD \
@@ -67,9 +64,9 @@ pushd $UNIFI_DIR
 # As a workaround, remove newlines and it works. Fortunately it can read
 # from pipes.
 # See https://community.ubnt.com/t5/UniFi-Routing-Switching/SSL-error-when-importing-SSL-certificates/td-p/2491355
-echo "+ $JAVA_HOME/bin/java -jar lib/ace.jar import_cert" \
+echo "+ /usr/lib/unifi/bin/ace.sh import_cert" \
      "$certdir/cert.pem $certdir/chain.pem $ROOT_CA"
-vrun $JAVA_HOME/bin/java -jar lib/ace.jar import_cert \
+vrun /usr/lib/unifi/bin/ace.sh import_cert \
                          <(tr -d '\n' <$certdir/cert.pem) \
                          <(tr -d '\n' <$certdir/chain.pem) \
                          <(tr -d '\n' <$ROOT_CA)
