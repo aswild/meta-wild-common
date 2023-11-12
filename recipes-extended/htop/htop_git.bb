@@ -1,15 +1,15 @@
 # htop Yocto recipe
 
 DESCRIPTION = "htop process viewer"
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-or-later"
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 DEPENDS = "ncurses lmsensors"
 # htop uses dlopen rather than direct linking for libsensors
 RDEPENDS:${PN} = "lmsensors-libsensors"
 
-SRCREV = "4e6ec4a0873c56ca9de63eadf730c5bd677bd8da"
-PV = "3.2.1"
+SRCREV = "55c10eccd71b6b016a50237bc8c8508b7bf66783"
+PV = "3.2.2"
 
 SRC_URI = "git://github.com/htop-dev/htop;protocol=https;nobranch=1 \
            file://htoprc \
