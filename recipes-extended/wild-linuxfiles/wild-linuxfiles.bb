@@ -21,10 +21,17 @@ ERROR_QA:remove = "file-rdeps"
 
 do_configure() {
     set -x
-    # repack to pull in all objects from alternate locations
-    git -c gc.autoDetach=false checkout master
-    git -c gc.autoDetach=false repack -ad
-    git -c gc.autoDetach=false submodule foreach git repack -ad
+    # get the correct branch
+    git checkout master
+
+    # delete refs/pull/xxx refs that might be fetched from github
+    git for-each-ref --format='delete %(refname)' 'refs/pull/**' | git update-ref --stdin
+    git gc --aggressive --prune=now
+
+    # same thing for submodules
+    git submodule foreach --recursive \
+        "git for-each-ref --format='delete %(refname)' 'refs/pull/**' | git update-ref --stdin && git gc --aggressive --prune=now"
+
     find .git -path '*/objects/info/alternates' -exec rm -v {} +
 }
 
