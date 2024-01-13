@@ -10,7 +10,6 @@ LICENSE = "GPL-2.0-with-classpath-exception"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0-with-classpath-exception;md5=6133e6794362eff6641708cfcc075b80"
 
 COMPATIBLE_HOST = "(x86_64|arm|aarch64).*-linux"
-OVERRIDES = "${TARGET_ARCH}"
 
 X11_RDEPENDS = " \
   libx11 (>= 1.7) \
@@ -37,8 +36,8 @@ JVM_RDEPENDS:arm = " \
   zlib (>= 1.2) \
   ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPENDS}', '', d)} \
 "
-JVM_CHECKSUM:x86_64 = "c37f729200b572884b8f8e157852c739be728d61d9a1da0f920104876d324733"
-JVM_RDEPENDS:x86_64 = " \
+JVM_CHECKSUM:x86-64 = "c37f729200b572884b8f8e157852c739be728d61d9a1da0f920104876d324733"
+JVM_RDEPENDS:x86-64 = " \
   alsa-lib (>= 0.9) \
   freetype (>= 2.11) \
   glibc (>= 2.17) \
@@ -52,7 +51,7 @@ API_RELEASE_NAME = "jdk-${PV}"
 API_OS = "linux"
 API_ARCH:aarch64 = "aarch64"
 API_ARCH:arm = "arm"
-API_ARCH:x86_64 = "x64"
+API_ARCH:x86-64 = "x64"
 API_IMAGE_TYPE = "jre"
 API_JVM_IMPL = "hotspot"
 API_HEAP_SIZE ?= "normal"
