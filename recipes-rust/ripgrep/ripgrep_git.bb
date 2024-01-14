@@ -7,24 +7,28 @@ LIC_FILES_CHKSUM = " \
     file://UNLICENSE;md5=7246f848faa4e9c9fc0ea91122d6e680 \
 "
 
-PV = "13.0.0+git${SRCPV}"
-SRCREV = "06d61b4bf23c1184e7593406e4c86d577603800d"
+PV = "14.1.0+git${SRCPV}"
+SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/ripgrep;branch=master;protocol=https"
 S = "${WORKDIR}/git"
 
-inherit cargo-wild
-DEPENDS += "asciidoc-native"
+BBCLASSEXTEND += "native"
+DEPENDS:append:class-target = " ${BPN}-native (= ${PV})"
 
-do_configure:prepend() {
-    sed -i '/^rust-version/d' ${S}/Cargo.toml
-}
+inherit cargo-wild
+
+RG_EXE = "rg"
+RG_EXE:class-native = "${CARGO_RELEASE_DIR}/rg"
 
 do_install() {
     install -Dm755 ${CARGO_RELEASE_DIR}/rg ${D}${bindir}/rg
-    local out_dir="$(${S}/ci/cargo-out-dir ${CARGO_RELEASE_DIR})"
-    install -Dm644 $out_dir/rg.1 ${D}${mandir}/man1/rg.1
-    install -Dm644 $out_dir/rg.bash ${D}${datadir}/bash-completion/completions/rg
-    install -Dm644 ${S}/complete/_rg ${D}${datadir}/zsh/site-functions/_rg
+
+    install -d ${D}${mandir}/man1
+    ${RG_EXE} --no-config --generate man >${D}${mandir}/man1/rg.1
+    install -d ${D}${datadir}/bash-completion/completions
+    ${RG_EXE} --no-config --generate complete-bash >${D}${datadir}/bash-completion/completions/rg
+    install -d ${D}${datadir}/zsh/site-functions
+    ${RG_EXE} --no-config --generate complete-zsh >${D}${datadir}/zsh/site-functions/_rg
 }
 
 inherit bash-completion
