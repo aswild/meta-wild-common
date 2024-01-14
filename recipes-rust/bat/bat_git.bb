@@ -21,15 +21,13 @@ do_patch[postfuncs] += "no_strip"
 do_install() {
     install -Dm755 ${CARGO_RELEASE_DIR}/bat ${D}${bindir}/bat
     local out_dir="$(ls -td "${CARGO_RELEASE_DIR}/build/"bat-*/out | head -n1)"
+    install -Dm644 $out_dir/assets/completions/bat.bash ${D}${datadir}/bash-completion/completions/bat
     install -Dm644 $out_dir/assets/completions/bat.zsh ${D}${datadir}/zsh/site-functions/_bat
     install -Dm644 $out_dir/assets/manual/bat.1 ${D}${mandir}/man1/bat.1
 }
 
-PACKAGES += "${PN}-zsh-completion"
-FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS:${PN}-zsh-completion = "zsh"
-
-RRECOMMENDS:${PN} += "${PN}-zsh-completion"
+inherit bash-completion zsh-completion
+RRECOMMENDS:${PN} += "${PN}-bash-completion ${PN}-zsh-completion"
 
 # Don't warn about absolute paths in the binary
 WARN_QA:remove = "buildpaths"

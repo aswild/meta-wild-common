@@ -29,9 +29,5 @@ do_install() {
     install -Dm644 ${S}/doc/fd.1 ${D}${mandir}/man1/fd.1
 }
 
-inherit bash-completion
-PACKAGES += "${PN}-zsh-completion"
-FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS:${PN}-zsh-completion = "zsh"
-
+inherit bash-completion zsh-completion
 RRECOMMENDS:${PN} += "${PN}-bash-completion ${PN}-zsh-completion"

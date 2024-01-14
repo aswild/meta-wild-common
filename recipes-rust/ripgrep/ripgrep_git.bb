@@ -31,9 +31,5 @@ do_install() {
     ${RG_EXE} --no-config --generate complete-zsh >${D}${datadir}/zsh/site-functions/_rg
 }
 
-inherit bash-completion
-PACKAGES += "${PN}-zsh-completion"
-FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS:${PN}-zsh-completion = "zsh"
-
+inherit bash-completion zsh-completion
 RRECOMMENDS:${PN} += "${PN}-bash-completion ${PN}-zsh-completion"

@@ -21,6 +21,4 @@ EXTRA_OECONF = " \
 "
 CONFIGUREOPT_DEPTRACK = ""
 
-inherit bash-completion
-PACKAGES += "${PN}-zsh-completion"
-FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
+inherit bash-completion zsh-completion
