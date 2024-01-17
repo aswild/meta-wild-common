@@ -79,6 +79,7 @@ RDEPENDS:${PN}-network-utils = " \
     ebtables \
     iperf3 \
     iptables \
+    nftables \
     tcpdump \
 "
 
