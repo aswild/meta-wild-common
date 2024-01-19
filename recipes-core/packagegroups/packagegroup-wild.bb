@@ -76,7 +76,6 @@ PACKAGES += "${PN}-network-utils"
 RDEPENDS:${PN}-network-utils = " \
     bridge-utils \
     dhcpcd \
-    ebtables \
     iperf3 \
     iptables \
     nftables \
