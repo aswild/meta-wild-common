@@ -9,7 +9,7 @@ HOMEPAGE = "https://adoptium.net"
 LICENSE = "GPL-2.0-with-classpath-exception"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0-with-classpath-exception;md5=6133e6794362eff6641708cfcc075b80"
 
-COMPATIBLE_HOST = "(x86_64|arm|aarch64).*-linux"
+COMPATIBLE_HOST = "(x86_64|aarch64).*-linux"
 
 X11_RDEPENDS = " \
   libx11 (>= 1.7) \
@@ -19,7 +19,7 @@ X11_RDEPENDS = " \
   libxtst (>= 1.2) \
 "
 
-JVM_CHECKSUM:aarch64 = "05b192f81ed478178ba953a2a779b67fc5a810acadb633ad69f8c4412399edb8"
+JVM_CHECKSUM:aarch64 = "9dfe4c56463690ae67d22268980d8861eb46b907d7914f8f2e6fc7b25778c8ec"
 JVM_RDEPENDS:aarch64 = " \
   alsa-lib (>= 0.9) \
   freetype (>= 2.11) \
@@ -27,16 +27,16 @@ JVM_RDEPENDS:aarch64 = " \
   zlib (>= 1.2) \
   ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPENDS}', '', d)} \
 "
-JVM_CHECKSUM:arm = "5ae1f8cae358e41083a6b44f53c6f0daeb657f83c293da6c8733f68278e13703"
-JVM_RDEPENDS:arm = " \
-  alsa-lib (>= 0.9) \
-  freetype (>= 2.11) \
-  glibc (>= 2.17) \
-  libatomic (>= 1.0) \
-  zlib (>= 1.2) \
-  ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPENDS}', '', d)} \
-"
-JVM_CHECKSUM:x86-64 = "c37f729200b572884b8f8e157852c739be728d61d9a1da0f920104876d324733"
+#JVM_CHECKSUM:arm = "2e06401aa3aa7a825d73a6af8e9462449b1a86e7705b793dc8ec90423b602ee2"
+#JVM_RDEPENDS:arm = " \
+#  alsa-lib (>= 0.9) \
+#  freetype (>= 2.11) \
+#  glibc (>= 2.17) \
+#  libatomic (>= 1.0) \
+#  zlib (>= 1.2) \
+#  ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPENDS}', '', d)} \
+#"
+JVM_CHECKSUM:x86-64 = "2e06401aa3aa7a825d73a6af8e9462449b1a86e7705b793dc8ec90423b602ee2"
 JVM_RDEPENDS:x86-64 = " \
   alsa-lib (>= 0.9) \
   freetype (>= 2.11) \
@@ -50,7 +50,7 @@ RDEPENDS:${PN} = "${JVM_RDEPENDS}"
 API_RELEASE_NAME = "jdk-${PV}"
 API_OS = "linux"
 API_ARCH:aarch64 = "aarch64"
-API_ARCH:arm = "arm"
+#API_ARCH:arm = "arm"
 API_ARCH:x86-64 = "x64"
 API_IMAGE_TYPE = "jre"
 API_JVM_IMPL = "hotspot"
