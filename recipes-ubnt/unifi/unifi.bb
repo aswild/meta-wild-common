@@ -102,9 +102,10 @@ do_install() {
     ln -sfvT ${bindir}/mongod ${D}${libdir}/${PN}/bin/mongod
 
     # somehow I got an image where most of the files had mode 600 and owned by root.
-    # Make sure the unifi user can read everything
+    # Make sure the unifi user can read everything. Use find for only files and directories,
+    # because 'chmod -R' chokes on broken symlinks (probably pseudo related).
     bbnote "Fixing permissions"
-    chmod -R ugo+rX ${D}${libdir}/${PN}
+    find ${D}${libdir}/${PN} \( -type f -o -type d \) -exec chmod ugo+rX {} +
 
     bbnote "Installing systemd service"
     install -Dm755 ${WORKDIR}/ace.sh ${D}${libdir}/unifi/bin/ace.sh
