@@ -20,3 +20,6 @@ do_install:append() {
 }
 
 SYSTEMD_SERVICE:${PN} = ""
+
+# Don't warn about absolute paths in the binary
+WARN_QA:remove = "buildpaths"
