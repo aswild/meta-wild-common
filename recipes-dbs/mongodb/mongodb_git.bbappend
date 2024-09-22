@@ -3,7 +3,10 @@
 # about -Wredundant-move.
 # Also compiling without debug info (-g0) saves ~7 minutes of build time and ~12GB of build objects
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI += "file://wild-build-flags.patch"
+SRC_URI += " \
+    file://wild-build-flags.patch \
+    file://wild-python3.12-build.patch \
+"
 
 # DEBUG_FLAGS propagates through various yocto variables into CFLAGS, CXXFLAGS, LDFLAGS, etc.
 DEBUG_FLAGS:remove = "-g"
@@ -23,3 +26,6 @@ SYSTEMD_SERVICE:${PN} = ""
 
 # Don't warn about absolute paths in the binary
 WARN_QA:remove = "buildpaths"
+
+# un-skip this recipe, python 3.12 issues are patched here
+SKIP_RECIPE[mongodb] = ""
