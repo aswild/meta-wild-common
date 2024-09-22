@@ -16,6 +16,10 @@ do_compile[network] = "1"
 # compatibility with meta-rust-bin
 CARGO_RELEASE_DIR = "${B}/target/${CARGO_TARGET_SUBDIR}"
 
+# Let PACKAGECONFIG add 'cargo build' arguments, for example
+# PACKAGECONFIG[pcre2] = "--features=pcre2,,libpcre2"
+CARGO_BUILD_FLAGS:append = " ${PACKAGECONFIG_CONFARGS}"
+
 # TODO - CARGO_HOME is unique per recipe in ${WORKDIR}/cargo_home, which means
 # every recipe fetches its own copy of the crates.io index. Can this be shared
 # somehow? CARGO_HOME/config needs to be unique because it's got all the recipe

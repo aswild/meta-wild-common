@@ -15,7 +15,11 @@ S = "${WORKDIR}/git"
 BBCLASSEXTEND += "native"
 DEPENDS:append:class-target = " ${BPN}-native (= ${PV})"
 
-inherit cargo-wild
+inherit cargo-wild pkgconfig
+
+PACKAGECONFIG ?= "pcre2"
+PACKAGECONFIG:class-native = ""
+PACKAGECONFIG[pcre2] = "--features=pcre2,,libpcre2"
 
 RG_EXE = "rg"
 RG_EXE:class-native = "${CARGO_RELEASE_DIR}/rg"
