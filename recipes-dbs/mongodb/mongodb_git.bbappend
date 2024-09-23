@@ -2,7 +2,7 @@
 # making it hard to find real errors. Like, literally half of log.do_compile is g++ complaining
 # about -Wredundant-move.
 # Also compiling without debug info (-g0) saves ~7 minutes of build time and ~12GB of build objects
-FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
 SRC_URI += " \
     file://wild-build-flags.patch \
     file://wild-python3.12-build.patch \
