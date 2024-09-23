@@ -1,28 +1,34 @@
-SUMMARY = "mongodb"
+SUMMARY = "The MongoDB Database"
 LICENSE = "SSPL-1"
 LIC_FILES_CHKSUM = "file://LICENSE-Community.txt;md5=3a865f27f11f43ecbe542d9ea387dcf1"
-DEPENDS = "openssl libpcap zlib boost curl python3 \
-           python3-pip-native \
+DEPENDS = " \
+    openssl libpcap zlib boost curl libpcre2 python3 \
+    python3-setuptools-native \
+    python3-pyyaml-native python3-cheetah-native \
+    python3-psutil-native python3-regex-native \
+    python3-pymongo-native \
 "
-olddepends = "\
-           python3-setuptools-native \
-           python3-pyyaml-native python3-cheetah-native \
-           python3-psutil-native python3-regex-native \
-           "
 
-inherit scons dos2unix siteinfo python3native systemd useradd
+inherit scons siteinfo python3native systemd useradd
 
 PV = "7.0.14"
 SRCREV = "1b488fa20bdc54915b89f3a6ef981742adbe8cb2"
-SRC_URI = "git://github.com/mongodb/mongo.git;branch=v7.0;protocol=https"
+SRC_URI = " \
+    git://github.com/mongodb/mongo.git;branch=v7.0;protocol=https \
+    file://0001-Tell-scons-to-use-build-settings-from-environment-va.patch \
+    file://arm64-support.patch \
+    file://mongodb7-disable-tooling-metrics.patch \
+    file://mongodb7-python3.12-build.patch \
+"
+
 S = "${WORKDIR}/git"
 
-CVE_STATUS[CVE-2014-8180] = "not-applicable-config: Not affecting our configuration so it can be safely ignored."
-CVE_STATUS[CVE-2017-2665] = "not-applicable-config: Not affecting our configuration so it can be safely ignored."
+CVE_STATUS[CVE-2014-8180] = "not-applicable-config: Not affecting our configuration."
+CVE_STATUS[CVE-2017-2665] = "not-applicable-config: Not affecting our configuration."
 
 COMPATIBLE_HOST ?= '(x86_64|i.86|powerpc64|arm|aarch64).*-linux'
 
-PACKAGECONFIG ??= "tcmalloc system-pcre"
+PACKAGECONFIG ??= "tcmalloc nodebug"
 # gperftools compilation fails for arm below v7 because of missing support of
 # dmb operation. So we use system-allocator instead of tcmalloc
 PACKAGECONFIG:remove:armv6 = "tcmalloc"
@@ -32,7 +38,8 @@ PACKAGECONFIG:remove:riscv32 = "tcmalloc"
 
 PACKAGECONFIG[tcmalloc] = "--use-system-tcmalloc,--allocator=system,gperftools,"
 PACKAGECONFIG[shell] = ",--js-engine=none,,"
-PACKAGECONFIG[system-pcre] = "--use-system-pcre,,libpcre,"
+PACKAGECONFIG[mongos] = ""
+PACKAGECONFIG[nodebug] = ""
 
 MONGO_ARCH ?= "${HOST_ARCH}"
 MONGO_ARCH:powerpc64le = "ppc64le"
@@ -40,84 +47,60 @@ WIREDTIGER ?= "off"
 WIREDTIGER:x86-64 = "on"
 WIREDTIGER:aarch64 = "on"
 
-# ld.gold: fatal error: build/59f4f0dd/mongo/mongod: Structure needs cleaning
-LDFLAGS:append:x86:libc-musl = " -fuse-ld=bfd"
-LDFLAGS:remove:toolchain-clang = "-fuse-ld=bfd"
+# Disable building with debug info to save time and disk space
+DEBUG_FLAGS:remove = "${@bb.utils.contains('PACKAGECONFIG', 'nodebug', '-g', '', d)}"
+DEBUG_FLAGS:prepend = "${@bb.utils.contains('PACKAGECONFIG', 'nodebug', '-g0 ', '', d)}"
 
-EXTRA_OESCONS = "PREFIX=${prefix} \
-                 DESTDIR=${D} \
-                 MAXLINELENGTH='2097152' \
-                 LIBPATH=${STAGING_LIBDIR} \
-                 LINKFLAGS='${LDFLAGS}' \
-                 CXXFLAGS='${CXXFLAGS}' \
-                 TARGET_ARCH=${MONGO_ARCH} \
-                 MONGO_VERSION=${PV} \
-                 OBJCOPY=${OBJCOPY} \
-                 --ssl \
-                 --disable-warnings-as-errors \
-                 --use-system-zlib \
-                 --nostrip \
-                 --endian=${@oe.utils.conditional('SITEINFO_ENDIANNESS', 'le', 'little', 'big', d)} \
-                 --use-hardware-crc32=${@bb.utils.contains('TUNE_FEATURES', 'crc', 'on', 'off', d)} \
-                 --wiredtiger='${WIREDTIGER}' \
-                 --separate-debug \
-                 ${PACKAGECONFIG_CONFARGS}"
+EXTRA_OESCONS = " \
+    LIBPATH='${STAGING_LIBDIR}' \
+    LINKFLAGS='${LDFLAGS}' \
+    CXXFLAGS='${CXXFLAGS}' \
+    TARGET_ARCH='${MONGO_ARCH}' \
+    MONGO_VERSION='${PV}' \
+    OBJCOPY='${OBJCOPY}' \
+    --ssl \
+    --disable-warnings-as-errors \
+    --use-system-pcre2 \
+    --use-system-zlib \
+    --endian=${@oe.utils.conditional('SITEINFO_ENDIANNESS', 'le', 'little', 'big', d)} \
+    --use-hardware-crc32=${@bb.utils.contains('TUNE_FEATURES', 'crc', 'on', 'off', d)} \
+    --wiredtiger='${WIREDTIGER}' \
+    --separate-debug \
+    --link-model=static \
+    --linker=gold \
+    ${PACKAGECONFIG_CONFARGS} \
+"
 
-USERADD_PACKAGES = "${PN}"
-USERADD_PARAM:${PN} = "--system --no-create-home --home-dir /var/run/${BPN} --shell /bin/false --user-group ${BPN}"
+# What build targets do we call during do_compile?
+SCONS_BUILD_TARGETS = " \
+    install-mongod \
+    ${@bb.utils.contains('PACKAGECONFIG', 'shell', 'install-mongo', '', d)} \
+    ${@bb.utils.contains('PACKAGECONFIG', 'mongos', 'install-mongos', '', d)} \
+"
 
-do_configure[network] = "1"
-
-do_configure:prepend() {
-    #rm -rf ${B}/venv
-    mkdir -p ${WORKDIR}/pip-cache
-
-    # TODO MAKE THIS A PATCH
-    sed -i '/^setuptools/d' ${S}/etc/pip/components/compile.req
-
-    #${PYTHON} -m venv --system-site-packages ${B}/venv
-    #${PYTHON} -m venv ${B}/venv
-    #. ${B}/venv/bin/activate
-    (
-        export AR="${BUILD_AR}"
-        export AS="${BUILD_AS}"
-        export CC="${BUILD_CC}"
-        export CCLD="${BUILD_CCLD}"
-        export CPP="${BUILD_CPP}"
-        export CXX="${BUILD_CXX}"
-        export FC="${BUILD_FC}"
-        export LD="${BUILD_LD}"
-        export NM="${BUILD_NM}"
-        export RANLIB="${BUILD_RANLIB}"
-        export STRIP="${BUILD_STRIP}"
-        export CFLAGS="${BUILD_CFLAGS}"
-        export CPPFLAGS="${BUILD_CPPFLAGS}"
-        export CXXFLAGS="${BUILD_CXXFLAGS}"
-        export LDFLAGS="${BUILD_LDFLAGS}"
-        #which pip
-        #which python
-        #python -m ensurepip
-        pip3 install --cache-dir=${WORKDIR}/pip-cache 'cython<3.0.0' # PyYAML 5.4 doesn't build with cython3
-        pip3 install --cache-dir=${WORKDIR}/pip-cache -r ${S}/etc/pip/compile-requirements.txt
-    )
+mozjs_symlink_arm64() {
+    ln -sfT aarch64 ${S}/src/third_party/mozjs/platform/arm64
 }
-
-do_compile() {
-    #. ${B}/venv/bin/activate
-    scons_do_compile
-}
+do_patch[postfuncs] += "mozjs_symlink_arm64"
 
 scons_do_compile() {
-    ${STAGING_BINDIR_NATIVE}/scons ${PARALLEL_MAKE} ${EXTRA_OESCONS} install-mongod ||
+    # like the scons.bbclass version but include "$@" so we can customize build targets
+    ${STAGING_BINDIR_NATIVE}/scons --directory=${S} ${PARALLEL_MAKE} \
+            PREFIX=${prefix} prefix=${prefix} ${EXTRA_OESCONS} "$@" || \
         die "scons build execution failed."
 }
 
-scons_do_install() {
+do_compile() {
+    scons_do_compile ${SCONS_BUILD_TARGETS}
+}
+
+do_install() {
     # install binaries
     install -d ${D}${bindir}
+    local i
     for i in mongod mongos mongo; do
-        if [ -f ${B}/build/*/mongo/$i ]; then
-            install -m 0755 ${B}/build/*/mongo/$i ${D}${bindir}
+        if [ -f ${B}/build/install/${bindir}/$i ]; then
+            install -m 0755 ${B}/build/install/${bindir}/$i ${D}${bindir}
         else
             bbnote "$i does not exist"
         fi
@@ -132,26 +115,40 @@ scons_do_install() {
     install -m 0644 ${S}/debian/mongod.service ${D}${systemd_system_unitdir}
 
     # install mongo data folder
-    install -m 755 -d ${D}${localstatedir}/lib/${BPN}
-    chown ${BPN}:${BPN} ${D}${localstatedir}/lib/${BPN}
+    install -m 755 -d ${D}${localstatedir}/lib/mongodb
+    chown mongodb:mongodb ${D}${localstatedir}/lib/mongodb
 
     # Create /var/log/mongodb in runtime.
     if [ "${@bb.utils.filter('DISTRO_FEATURES', 'systemd', d)}" ]; then
         install -d ${D}${nonarch_libdir}/tmpfiles.d
-        echo "d ${localstatedir}/log/${BPN} 0755 ${BPN} ${BPN} -" > ${D}${nonarch_libdir}/tmpfiles.d/${BPN}.conf
+        echo "d ${localstatedir}/log/mongodb 0755 mongodb mongodb -" \
+            > ${D}${nonarch_libdir}/tmpfiles.d/mongodb.conf
     fi
     if [ "${@bb.utils.filter('DISTRO_FEATURES', 'sysvinit', d)}" ]; then
         install -d ${D}${sysconfdir}/default/volatiles
-        echo "d ${BPN} ${BPN} 0755 ${localstatedir}/log/${BPN} none" > ${D}${sysconfdir}/default/volatiles/99_${BPN}
+        echo "d mongodb mongodb 0755 ${localstatedir}/log/mongodb none" \
+            > ${D}${sysconfdir}/default/volatiles/99_mongodb
     fi
 }
 
-CONFFILES:${PN} = "${sysconfdir}/mongod.conf"
-
-SYSTEMD_SERVICE:${PN} = "mongod.service"
-
-FILES:${PN} += "${nonarch_libdir}/tmpfiles.d"
-
 RDEPENDS:${PN} += "tzdata-core"
 
-SKIP_RECIPE[mongodb] ?= "Needs porting to python 3.12"
+PROVIDES += "mongodb"
+RPROVIDES:${PN} += "mongodb"
+RCONFLICTS:${PN} += "mongodb"
+
+# Package the config and service files separately
+PACKAGES =+ "${PN}-service"
+RDEPENDS:${PN}-service = "${PN}"
+RPROVIDES:${PN}-service = "mongodb-service"
+FILES:${PN}-service = " \
+    ${sysconfdir} \
+    ${nonarch_libdir}/tmpfiles.d \
+    ${systemd_system_unitdir} \
+    ${localstatedir}/lib/mongodb \
+"
+
+USERADD_PACKAGES = "${PN}-service"
+USERADD_PARAM:${PN}-service = "--system --no-create-home --home-dir /var/run/mongodb --shell /bin/false --user-group mongodb"
+CONFFILES:${PN}-service = "${sysconfdir}/mongod.conf"
+SYSTEMD_SERVICE:${PN}-service = "mongod.service"

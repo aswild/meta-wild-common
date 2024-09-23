@@ -1,0 +1,53 @@
+From 298d958148f1fb2bb7725fed15c68c09677c14c9 Mon Sep 17 00:00:00 2001
+From: Vincent Prince <vincent.prince.fr@gmail.com>
+Date: Mon, 16 Sep 2019 13:37:10 +0200
+Subject: [PATCH 05/10] Add alises for arm64 which is same as aarch64
+
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+Signed-off-by: Vincent Prince <vincent.prince.fr@gmail.com>
+
+Upstream-Status: Pending
+---
+ SConstruct                                      | 1 +
+ src/third_party/IntelRDFPMathLib20U1/SConscript | 2 +-
+ src/third_party/wiredtiger/SConscript           | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct
++++ git/SConstruct
+@@ -1856,6 +1856,7 @@ if endian == "auto":
+ 
+ processor_macros = {
+     'aarch64': {'endian': 'little', 'check': '(defined(__arm64__) || defined(__aarch64__))'},
++    'arm64': {'endian': 'little', 'check': '(defined(__arm64__) || defined(__aarch64__))'},
+     'emscripten': {'endian': 'little', 'check': '(defined(__EMSCRIPTEN__))'},
+     'ppc64le': {'endian': 'little', 'check': '(defined(__powerpc64__))'},
+     'riscv64': {'endian': 'little', 'check': '(defined(__riscv)) && (__riscv_xlen == 64)'},
+Index: git/src/third_party/IntelRDFPMathLib20U1/SConscript
+===================================================================
+--- git.orig/src/third_party/IntelRDFPMathLib20U1/SConscript
++++ git/src/third_party/IntelRDFPMathLib20U1/SConscript
+@@ -311,7 +311,7 @@ if processor == 'i386' or processor == '
+ elif processor == 'arm':
+     cpp_defines['IA32'] = '1'
+     cpp_defines['ia32'] = '1'
+-elif processor == "aarch64":
++elif processor == "aarch64" or processor == 'arm64':
+     cpp_defines['efi2'] = '1'
+     cpp_defines['EFI2'] = '1'
+ # Using 64 bit little endian
+Index: git/src/third_party/wiredtiger/SConscript
+===================================================================
+--- git.orig/src/third_party/wiredtiger/SConscript
++++ git/src/third_party/wiredtiger/SConscript
+@@ -177,7 +177,7 @@ env.AutoInstall(
+ condition_map = {
+     'POSIX_HOST': not env.TargetOSIs('windows'),
+     'WINDOWS_HOST': env.TargetOSIs('windows'),
+-    'ARM64_HOST': env['TARGET_ARCH'] == 'aarch64',
++    'ARM64_HOST': env['TARGET_ARCH'] in ('aarch64', 'arm64'),
+     'POWERPC_HOST': env['TARGET_ARCH'] == 'ppc64le',
+     'RISCV64_HOST': env['TARGET_ARCH'] == 'riscv64',
+     'X86_HOST': env['TARGET_ARCH'] == 'x86_64',

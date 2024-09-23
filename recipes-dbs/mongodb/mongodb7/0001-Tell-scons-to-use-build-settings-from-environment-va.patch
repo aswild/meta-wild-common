@@ -1,0 +1,72 @@
+From 8295bb6a60896fed54d6450bca091aea4eea4fb2 Mon Sep 17 00:00:00 2001
+From: Vincent Prince <vincent.prince.fr@gmail.com>
+Date: Mon, 16 Sep 2019 13:21:44 +0200
+Subject: [PATCH 01/10] Tell scons to use build settings from environment
+ variables
+
+Signed-off-by: Sven Ebenfeld <sven.ebenfeld@gmail.com>
+Signed-off-by: Vincent Prince <vincent.prince.fr@gmail.com>
+
+Upstream-Status: Pending
+---
+ SConstruct | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct
++++ git/SConstruct
+@@ -848,6 +848,7 @@ def variable_arch_converter(val):
+         'amd64': 'x86_64',
+         'emt64': 'x86_64',
+         'x86': 'i386',
++        'aarch64': 'arm64',
+     }
+     val = val.lower()
+ 
+@@ -986,6 +987,7 @@ env_vars.Add(
+ env_vars.Add(
+     'CC',
+     help='Selects the C compiler to use',
++    default=os.getenv('CC'),
+ )
+ 
+ env_vars.Add(
+@@ -1022,6 +1024,7 @@ env_vars.Add(
+ env_vars.Add(
+     'CXX',
+     help='Selects the C++ compiler to use',
++    default=os.getenv('CXX'),
+ )
+ 
+ env_vars.Add(
+@@ -1355,6 +1358,12 @@ env_vars.Add(
+     default='.',
+ )
+ 
++env_vars.Add(
++    'prefix',
++    help='Final installation location of files. Will be made into a sub dir of $DESTDIR',
++    default='.',
++)
++
+ # Exposed to be able to cross compile Android/*nix from Windows without ending up with the .exe suffix.
+ env_vars.Add(
+     'PROGSUFFIX',
+@@ -1650,6 +1659,7 @@ if get_option('build-tools') == 'next':
+     SCons.Tool.DefaultToolpath.insert(0, os.path.abspath('site_scons/site_tools/next'))
+ 
+ env = Environment(variables=env_vars, **envDict)
++env.PrependENVPath('PATH', os.getenv('PATH'))
+ del envDict
+ env.AddMethod(lambda env, name, **kwargs: add_option(name, **kwargs), 'AddOption')
+ 
+@@ -3032,7 +3042,7 @@ if env.TargetOSIs('posix'):
+     env.Append(
+         CCFLAGS=[
+             "-fasynchronous-unwind-tables",
+-            "-g2" if not env.TargetOSIs('emscripten') else "-g",
++            #"-g2" if not env.TargetOSIs('emscripten') else "-g", # let yocto define debug flags
+             "-Wall",
+             "-Wsign-compare",
+             "-Wno-unknown-pragmas",
