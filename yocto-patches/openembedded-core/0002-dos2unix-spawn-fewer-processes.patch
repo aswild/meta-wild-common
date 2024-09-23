@@ -1,0 +1,29 @@
+From 3e6e7aa14d8c77ac4a45bde2396d32d10a0d2d73 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Mon, 23 Sep 2024 09:37:10 -0400
+Subject: [PATCH] dos2unix: spawn fewer processes
+
+Use find's `-exec ... {} +` mode to pass a bunch of file names to
+a single dos2unix process rather than spawning one new process for each
+file. This speeds things up significantly on recipes which have lots of
+source files.
+---
+ meta/classes-recipe/dos2unix.bbclass | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/classes-recipe/dos2unix.bbclass b/meta/classes-recipe/dos2unix.bbclass
+index 18e89b1cf2..d872eed5eb 100644
+--- a/meta/classes-recipe/dos2unix.bbclass
++++ b/meta/classes-recipe/dos2unix.bbclass
+@@ -14,7 +14,7 @@ do_convert_crlf_to_lf[depends] += "dos2unix-native:do_populate_sysroot"
+ 
+ # Convert CRLF line terminators to LF
+ do_convert_crlf_to_lf () {
+-	find ${S} -type f -exec dos2unix {} \;
++	find ${S} -type f -exec dos2unix {} +
+ }
+ 
+ addtask convert_crlf_to_lf after do_unpack before do_patch
+-- 
+2.39.5
+
