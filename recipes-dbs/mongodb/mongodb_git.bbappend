@@ -1,3 +1,6 @@
+# un-skip this recipe, python 3.12 issues are patched here
+SKIP_RECIPE[mongodb] = ""
+
 # Patch out -Wredundant-move, this warning is triggered all over the place and clutters up the log,
 # making it hard to find real errors. Like, literally half of log.do_compile is g++ complaining
 # about -Wredundant-move.
@@ -12,20 +15,40 @@ SRC_URI += " \
 DEBUG_FLAGS:remove = "-g"
 DEBUG_FLAGS:prepend = "-g0 "
 
-# don't install a systemd service for mongodb, and sure as hell don't auto-start it
-do_install:append() {
-    rm -v ${D}${systemd_system_unitdir}/mongod.service
-    # removing the service file leaves probably-empty directories that cause package QA errors.
-    # this assumes systemd_system_unitdir=${nonarch_base_libdir}/systemd/system
-    rmdir ${D}${systemd_system_unitdir}
-    rmdir ${D}${nonarch_base_libdir}/systemd
-    rmdir ${D}${nonarch_base_libdir} || true
+# Don't build mongos
+SCONS_BUILD_TARGETS = "install-mongod"
+
+scons_do_compile() {
+    # like the scons.bbclass version but include "$@" so we can customize build targets
+    ${STAGING_BINDIR_NATIVE}/scons --directory=${S} ${PARALLEL_MAKE} \
+            PREFIX=${prefix} prefix=${prefix} ${EXTRA_OESCONS} "$@" || \
+        die "scons build execution failed."
 }
 
+do_compile() {
+    scons_do_compile ${SCONS_BUILD_TARGETS}
+}
+
+# package service and conf files into ${PN}-service, leaving only core binaies in the main package
+PACKAGES =+ "${PN}-service"
+RDEPENDS:${PN}-service = "${PN}"
+FILES:${PN}-service = " \
+    ${sysconfdir} \
+    ${nonarch_libdir}/tmpfiles.d \
+    ${systemd_system_unitdir} \
+    ${localstatedir}/lib/${BPN} \
+"
+
+FILES:${PN}:remove = "${nonarch_libdir}/tmpfiles.d"
+
+USERADD_PACKAGES = "${PN}-service"
+USERADD_PARAM:${PN}-service = "${USERADD_PARAM:${PN}}"
+
+CONFFILES:${PN} = ""
+CONFFILES:${PN}-service = "${sysconfdir}/mongod.conf"
+
 SYSTEMD_SERVICE:${PN} = ""
+SYSTEMD_SERVICE:${PN}-service = "mongod.service"
 
 # Don't warn about absolute paths in the binary
 WARN_QA:remove = "buildpaths"
-
-# un-skip this recipe, python 3.12 issues are patched here
-SKIP_RECIPE[mongodb] = ""
