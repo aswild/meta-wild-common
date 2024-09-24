@@ -1,0 +1,54 @@
+Index: git/buildscripts/moduleconfig.py
+===================================================================
+--- git.orig/buildscripts/moduleconfig.py
++++ git/buildscripts/moduleconfig.py
+@@ -27,7 +27,7 @@ MongoDB SConscript files do.
+ __all__ = ('discover_modules', 'discover_module_directories', 'configure_modules',
+            'register_module_test')  # pylint: disable=undefined-all-variable
+ 
+-import imp
++import importlib
+ import inspect
+ import os
+ 
+@@ -68,16 +68,17 @@ def discover_modules(module_root, allowe
+ 
+         try:
+             print("adding module: %s" % (name))
+-            fp = open(build_py, "r")
+-            try:
+-                module = imp.load_module("module_" + name, fp, build_py,
+-                                         (".py", "r", imp.PY_SOURCE))
+-                if getattr(module, "name", None) is None:
+-                    module.name = name
+-                found_modules.append(module)
+-                found_module_names.append(name)
+-            finally:
+-                fp.close()
++            module_name = f"module_{name}"
++            # "Importing a source file directly" example from python importlib docs
++            spec = importlib.util.spec_from_file_location(module_name, build_py)
++            module = importlib.util.module_from_spec(spec)
++            sys.modules[module_name] = module
++            spec.loader.exec_module(module)
++
++            if getattr(module, "name", None) is None:
++                module.name = name
++            found_modules.append(module)
++            found_module_names.append(name)
+         except (FileNotFoundError, IOError):
+             pass
+ 
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct
++++ git/SConstruct
+@@ -5573,7 +5573,7 @@ if get_option('ninja') != 'disabled':
+ 
+             with open(variables_file, 'r') as file:
+                 data = file.read()
+-                pattern = "exec\\(open\\(['\"](.*)['\"]\, ['\"][a-z]+['\"]\\).read\\(\\)\\)"
++                pattern = "exec\\(open\\(['\"](.*)['\"], ['\"][a-z]+['\"]\\).read\\(\\)\\)"
+                 nested_files = re.findall(pattern, data)
+                 for file_name in nested_files:
+                     variable_files.extend(find_nested_variable_files(file_name))
