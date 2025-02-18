@@ -22,7 +22,7 @@ inherit autotools pkgconfig
 EXTRA_OECONF = "--enable-unicode HTOP_NCURSESW_CONFIG_SCRIPT='pkg-config htop'"
 
 do_install:append() {
-    install -Dm644 ${WORKDIR}/htoprc ${D}${sysconfdir}/htoprc
+    install -Dm644 ${UNPACKDIR}/htoprc ${D}${sysconfdir}/htoprc
 }
 
 FILES:${PN} += " \

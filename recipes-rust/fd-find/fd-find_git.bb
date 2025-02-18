@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = " \
     file://LICENSE-APACHE;md5=35be2e0efac68ea4480eac769e7618a2 \
 "
 
-PV = "9.0.0+git${SRCPV}"
+PV = "10.2.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/fd;branch=master;protocol=https"
 S = "${WORKDIR}/git"

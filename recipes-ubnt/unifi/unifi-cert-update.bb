@@ -5,7 +5,8 @@ LIC_FILES_CHKSUM = "file://unifi-cert-update.sh;endline=3;md5=bc340cda2ec2853046
 PV = "3"
 
 SRC_URI = "file://unifi-cert-update.sh"
-S = "${WORKDIR}"
+S = "${WORKDIR}/sources"
+UNPACKDIR = "${S}"
 
 RDEPENDS:${PN} = "bash openssl-bin unifi"
 

@@ -72,7 +72,7 @@ do_compile() {
             -e "s|@libdir@|${libdir}|g" \
             -e "s|@sysconfdir@|${sysconfdir}|g" \
             -e "s|@UNIFI_USER@|${UNIFI_USER}|g" \
-            ${WORKDIR}/$file.in >${WORKDIR}/$file
+            ${UNPACKDIR}/$file.in >${UNPACKDIR}/$file
     done
 }
 
@@ -108,7 +108,7 @@ do_install() {
     find ${D}${libdir}/${PN} \( -type f -o -type d \) -exec chmod ugo+rX {} +
 
     bbnote "Installing systemd service"
-    install -Dm755 ${WORKDIR}/ace.sh ${D}${libdir}/unifi/bin/ace.sh
-    install -Dm644 ${WORKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
-    install -Dm644 ${WORKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
+    install -Dm755 ${UNPACKDIR}/ace.sh ${D}${libdir}/unifi/bin/ace.sh
+    install -Dm644 ${UNPACKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
+    install -Dm644 ${UNPACKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
 }
