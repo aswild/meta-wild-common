@@ -6,8 +6,8 @@ LIC_FILES_CHKSUM = " \
     file://LICENSE-APACHE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
-PV = "0.24.0"
-SRCREV = "fc9546854f5a7b38823f4990453c6cde386bfd3b"
+PV = "0.25.0"
+SRCREV = "25f4f96ea3afb6fe44552f3b38ed8b1540ffa1b3"
 SRC_URI = "git://github.com/sharkdp/bat;branch=master;protocol=https"
 S = "${WORKDIR}/git"
 
