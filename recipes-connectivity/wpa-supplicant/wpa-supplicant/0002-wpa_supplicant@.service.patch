@@ -1,0 +1,12 @@
+Index: wpa_supplicant-2.11/wpa_supplicant/systemd/wpa_supplicant.service.arg.in
+===================================================================
+--- wpa_supplicant-2.11.orig/wpa_supplicant/systemd/wpa_supplicant.service.arg.in
++++ wpa_supplicant-2.11/wpa_supplicant/systemd/wpa_supplicant.service.arg.in
+@@ -4,6 +4,7 @@ Requires=sys-subsystem-net-devices-%i.de
+ After=sys-subsystem-net-devices-%i.device
+ Before=network.target
+ Wants=network.target
++ConditionPathExists=/etc/wpa_supplicant/wpa_supplicant-%I.conf
+ 
+ # NetworkManager users will probably want the dbus version instead.
+ 
