@@ -3,8 +3,8 @@ SUMMARY = "UniFi SDN Controller"
 
 # The package doesn't ship with a license file
 LICENSE = "UBIQUITI"
-LIC_FILES_CHKSUM = "file://../LICENSE.ubnt;md5=d0b4702d3eb46e97d80d14dd16338b76"
-NO_GENERIC_LICENSE[UBIQUITI] = "../LICENSE.ubnt"
+LIC_FILES_CHKSUM = "file://../sources-unpack/LICENSE.ubnt;md5=d0b4702d3eb46e97d80d14dd16338b76"
+NO_GENERIC_LICENSE[UBIQUITI] = "../sources-unpack/LICENSE.ubnt"
 
 SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi-${PV}.unix.zip \
            file://LICENSE.ubnt \
