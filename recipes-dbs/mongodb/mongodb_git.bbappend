@@ -50,5 +50,6 @@ CONFFILES:${PN}-service = "${sysconfdir}/mongod.conf"
 SYSTEMD_SERVICE:${PN} = ""
 SYSTEMD_SERVICE:${PN}-service = "mongod.service"
 
-# Don't warn about absolute paths in the binary
+# Don't complain about absolute paths in the binary
 WARN_QA:remove = "buildpaths"
+ERROR_QA:remove = "buildpaths"
