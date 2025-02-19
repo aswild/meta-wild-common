@@ -1,0 +1,35 @@
+From d02933a6bcd35ebb10b14fdca781c71bd1d2954c Mon Sep 17 00:00:00 2001
+From: Nathan Scott <nathans@redhat.com>
+Date: Wed, 17 Jan 2024 14:04:24 +1100
+Subject: [PATCH] Undo too-aggressive code collapsing from tree mode
+ refactoring
+
+While abstracting processes from row display, code relating to
+row parent sorting was moved to row-level that in fact must be
+done at process-level (using the Row_compareByParent_Base call
+circumvented this unintentially).
+
+Resolves #1378
+---
+ Process.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/Process.c b/Process.c
+index a36ab6c7..1497503f 100644
+--- a/Process.c
++++ b/Process.c
+@@ -902,7 +902,10 @@ int Process_compare(const void* v1, const void* v2) {
+ }
+ 
+ int Process_compareByParent(const Row* r1, const Row* r2) {
+-   int result = Row_compareByParent_Base(r1, r2);
++   int result = SPACESHIP_NUMBER(
++      r1->isRoot ? 0 : Row_getGroupOrParent(r1),
++      r2->isRoot ? 0 : Row_getGroupOrParent(r2)
++   );
+ 
+    if (result != 0)
+       return result;
+-- 
+2.48.1
+

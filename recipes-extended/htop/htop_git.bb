@@ -12,6 +12,10 @@ SRCREV = "68c970c7ef4a0682760ed570b3d82388ae7ccf54"
 PV = "3.3.0"
 
 SRC_URI = "git://github.com/htop-dev/htop;protocol=https;nobranch=1 \
+           file://0001-Fix-the-display-of-number-of-running-tasks.patch \
+           file://0002-Undo-too-aggressive-code-collapsing-from-tree-mode-r.patch \
+           file://0003-Clicking-on-column-headers-needs-to-also-update-the-.patch \
+           file://0004-Disable-basename-matching-for-kernel-threads.patch \
            file://htoprc \
 "
 

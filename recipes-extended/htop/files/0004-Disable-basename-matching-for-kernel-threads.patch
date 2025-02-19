@@ -1,0 +1,41 @@
+From e3021cd444d4f3498163ee4bde1a7a8912365559 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Sat, 27 Jan 2024 23:22:31 +0100
+Subject: [PATCH] Disable basename matching for kernel threads
+
+Kernel threads are commonly not based on an executable and their cmdline
+therefore just a human readable string.
+On Linux this string might contain slashes, e.g. kworker/7:5H-ttm, which
+cause Process_writeCommand() to print only the trailing parts if the
+option *Show Program Path* is disabled.
+
+Reported-and-Suggested-By: mmrmaximuzz
+Fixes: #1391
+---
+ Process.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/Process.c b/Process.c
+index 1497503f..9179c0ea 100644
+--- a/Process.c
++++ b/Process.c
+@@ -1038,8 +1038,14 @@ void Process_updateCmdline(Process* this, const char* cmdline, int basenameStart
+ 
+    free(this->cmdline);
+    this->cmdline = cmdline ? xStrdup(cmdline) : NULL;
+-   this->cmdlineBasenameStart = (basenameStart || !cmdline) ? basenameStart : skipPotentialPath(cmdline, basenameEnd);
+-   this->cmdlineBasenameEnd = basenameEnd;
++   if (Process_isKernelThread(this)) {
++      /* kernel threads have no basename */
++      this->cmdlineBasenameStart = 0;
++      this->cmdlineBasenameEnd = 0;
++   } else {
++      this->cmdlineBasenameStart = (basenameStart || !cmdline) ? basenameStart : skipPotentialPath(cmdline, basenameEnd);
++      this->cmdlineBasenameEnd = basenameEnd;
++   }
+ 
+    this->mergedCommand.lastUpdate = 0;
+ }
+-- 
+2.48.1
+
