@@ -42,7 +42,7 @@ ERROR_QA:remove = "build-deps"
 # use rsync to install because, unlike cp, it supports --exclude
 DEPENDS = "rsync-native"
 
-RDEPENDS:${PN} = "openjdk-17-jre mongodb bash libsystemd"
+RDEPENDS:${PN} = "openjdk-21-jre mongodb bash libsystemd"
 RRECOMMENDS:${PN} = "unifi-cert-update"
 
 inherit systemd
