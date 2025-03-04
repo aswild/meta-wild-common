@@ -2,29 +2,35 @@ SUMMARY = "The MongoDB Database"
 LICENSE = "SSPL-1"
 LIC_FILES_CHKSUM = "file://LICENSE-Community.txt;md5=3a865f27f11f43ecbe542d9ea387dcf1"
 DEPENDS = " \
-    openssl libpcap zlib boost curl libpcre2 python3 \
-    python3-setuptools-native \
-    python3-pyyaml-native python3-cheetah-native \
-    python3-psutil-native python3-regex-native \
+    boost \
+    curl \
+    libpcap \
+    libpcre2 \
+    openssl \
+    python3 \
+    python3-cheetah-native \
+    python3-git-native \
+    python3-psutil-native \
     python3-pymongo-native \
+    python3-pyyaml-native \
+    python3-regex-native \
+    python3-setuptools-native \
+    zlib \
 "
 
-inherit scons siteinfo python3native systemd useradd
+inherit dos2unix scons siteinfo python3native systemd useradd
 
-PV = "7.0.14"
-SRCREV = "1b488fa20bdc54915b89f3a6ef981742adbe8cb2"
+PV = "8.0.4"
+SRCREV = "3921bf537153dbdd3f9181aceb61ea0e4a057471"
 SRC_URI = " \
-    git://github.com/mongodb/mongo.git;branch=v7.0;protocol=https \
+    git://github.com/mongodb/mongo.git;branch=v8.0;protocol=https \
     file://0001-Tell-scons-to-use-build-settings-from-environment-va.patch \
     file://arm64-support.patch \
-    file://mongodb7-disable-tooling-metrics.patch \
-    file://mongodb7-python3.12-build.patch \
+    file://mongodb8-python3.12-build.patch \
+    file://mongodb8-disable-unneeded-build-cruft.patch \
 "
 
 S = "${WORKDIR}/git"
-
-CVE_STATUS[CVE-2014-8180] = "not-applicable-config: Not affecting our configuration."
-CVE_STATUS[CVE-2017-2665] = "not-applicable-config: Not affecting our configuration."
 
 COMPATIBLE_HOST ?= '(x86_64|i.86|powerpc64|arm|aarch64).*-linux'
 
@@ -36,7 +42,7 @@ PACKAGECONFIG:remove:libc-musl = "tcmalloc"
 PACKAGECONFIG:remove:riscv64 = "tcmalloc"
 PACKAGECONFIG:remove:riscv32 = "tcmalloc"
 
-PACKAGECONFIG[tcmalloc] = "--use-system-tcmalloc,--allocator=system,gperftools,"
+PACKAGECONFIG[tcmalloc] = "--use-system-tcmalloc-gperf,--allocator=system,gperftools,"
 PACKAGECONFIG[shell] = ",--js-engine=none,,"
 PACKAGECONFIG[mongos] = ""
 PACKAGECONFIG[nodebug] = ""
@@ -50,6 +56,9 @@ WIREDTIGER:aarch64 = "on"
 # Disable building with debug info to save time and disk space
 DEBUG_FLAGS:remove = "${@bb.utils.contains('PACKAGECONFIG', 'nodebug', '-g', '', d)}"
 DEBUG_FLAGS:prepend = "${@bb.utils.contains('PACKAGECONFIG', 'nodebug', '-g0 ', '', d)}"
+
+# Suppress some noisy warnings
+CXXFLAGS += "-Wno-interference-size -Wno-attributes"
 
 EXTRA_OESCONS = " \
     LIBPATH='${STAGING_LIBDIR}' \
@@ -71,6 +80,10 @@ EXTRA_OESCONS = " \
     ${PACKAGECONFIG_CONFARGS} \
 "
 
+# Skip cleaning in do_configure. Cleaning isn't actually broken, but builds take so long that we
+# want to be able to do them incrementally after e.g. fixing patches.
+CLEANBROKEN = "1"
+
 # What build targets we want during do_compile
 SCONS_BUILD_TARGETS = " \
     install-mongod \
@@ -78,10 +91,11 @@ SCONS_BUILD_TARGETS = " \
     ${@bb.utils.contains('PACKAGECONFIG', 'mongos', 'install-mongos', '', d)} \
 "
 
-mozjs_symlink_arm64() {
+symlink_arm64() {
     ln -sfT aarch64 ${S}/src/third_party/mozjs/platform/arm64
+    ln -sfT build_linux_aarch64 ${S}/src/third_party/snappy/platform/build_linux_arm64
 }
-do_patch[postfuncs] += "mozjs_symlink_arm64"
+do_patch[postfuncs] += "symlink_arm64"
 
 scons_do_compile() {
     # like the scons.bbclass version but include "$@" so we can customize build targets
@@ -152,3 +166,7 @@ USERADD_PACKAGES = "${PN}-service"
 USERADD_PARAM:${PN}-service = "--system --no-create-home --home-dir /var/run/mongodb --shell /bin/false --user-group mongodb"
 CONFFILES:${PN}-service = "${sysconfdir}/mongod.conf"
 SYSTEMD_SERVICE:${PN}-service = "mongod.service"
+
+# Don't complain about absolute paths in the binary
+WARN_QA:remove = "buildpaths"
+ERROR_QA:remove = "buildpaths"

@@ -17,7 +17,7 @@ Index: git/SConstruct
 ===================================================================
 --- git.orig/SConstruct
 +++ git/SConstruct
-@@ -1856,6 +1856,7 @@ if endian == "auto":
+@@ -1904,6 +1904,7 @@ if endian == "auto":
  
  processor_macros = {
      'aarch64': {'endian': 'little', 'check': '(defined(__arm64__) || defined(__aarch64__))'},
@@ -42,7 +42,7 @@ Index: git/src/third_party/wiredtiger/SConscript
 ===================================================================
 --- git.orig/src/third_party/wiredtiger/SConscript
 +++ git/src/third_party/wiredtiger/SConscript
-@@ -177,7 +177,7 @@ env.AutoInstall(
+@@ -187,7 +187,7 @@ env.AutoInstall('$PREFIX_INCLUDEDIR', so
  condition_map = {
      'POSIX_HOST': not env.TargetOSIs('windows'),
      'WINDOWS_HOST': env.TargetOSIs('windows'),

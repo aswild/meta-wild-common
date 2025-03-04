@@ -43,7 +43,7 @@ Index: git/SConstruct
 ===================================================================
 --- git.orig/SConstruct
 +++ git/SConstruct
-@@ -5573,7 +5573,7 @@ if get_option('ninja') != 'disabled':
+@@ -5765,7 +5765,7 @@ if get_option('ninja') != 'disabled':
  
              with open(variables_file, 'r') as file:
                  data = file.read()
@@ -52,3 +52,16 @@ Index: git/SConstruct
                  nested_files = re.findall(pattern, data)
                  for file_name in nested_files:
                      variable_files.extend(find_nested_variable_files(file_name))
+Index: git/src/mongo/installer/msi/SConscript
+===================================================================
+--- git.orig/src/mongo/installer/msi/SConscript
++++ git/src/mongo/installer/msi/SConscript
+@@ -51,7 +51,7 @@ sourcesList = [
+ buildDir = env.Dir("$BUILD_DIR").path
+ toolBuildDir = buildDir + r'\mongo'
+ 
+-enterprisebase = 'src\mongo\db\modules\enterprise'
++enterprisebase = r'src\mongo\db\modules\enterprise'
+ enterpriseToolBuildDir = buildDir + r'\mongo\db\modules\enterprise'
+ 
+ # Set up parameters to pass to wix -

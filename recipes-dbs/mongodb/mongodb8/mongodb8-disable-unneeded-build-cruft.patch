@@ -1,0 +1,62 @@
+Index: git/SConstruct
+===================================================================
+--- git.orig/SConstruct
++++ git/SConstruct
+@@ -25,7 +25,6 @@ from pkg_resources import parse_version
+ 
+ import SCons
+ import SCons.Script
+-from mongo_tooling_metrics.lib.top_level_metrics import SConsToolingMetrics
+ from site_scons.mongo import build_profiles
+ 
+ # This must be first, even before EnsureSConsVersion, if
+@@ -1732,16 +1731,6 @@ env.PrependENVPath('PATH', os.getenv('PA
+ del envDict
+ env.AddMethod(lambda env, name, **kwargs: add_option(name, **kwargs), 'AddOption')
+ 
+-# The placement of this is intentional. Here we setup an atexit method to store tooling metrics.
+-# We should only register this function after env, env_vars and the parser have been properly initialized.
+-SConsToolingMetrics.register_metrics(
+-    utc_starttime=datetime.utcnow(),
+-    artifact_dir=env.Dir('$BUILD_DIR').get_abspath(),
+-    env_vars=env_vars,
+-    env=env,
+-    parser=_parser,
+-)
+-
+ if get_option('build-metrics'):
+     env['BUILD_METRICS_ARTIFACTS_DIR'] = '$BUILD_ROOT/$VARIANT_DIR'
+     env.Tool('build_metrics')
+Index: git/site_scons/site_tools/integrate_bazel.py
+===================================================================
+--- git.orig/site_scons/site_tools/integrate_bazel.py
++++ git/site_scons/site_tools/integrate_bazel.py
+@@ -4,7 +4,7 @@ import hashlib
+ from io import StringIO
+ import json
+ import os
+-import distro
++#import distro
+ import platform
+ import queue
+ import shlex
+@@ -15,8 +15,8 @@ import textwrap
+ import threading
+ from typing import List, Dict, Set, Tuple, Any
+ import urllib.request
+-import requests
+-from retry import retry
++#import requests
++#from retry import retry
+ import sys
+ 
+ import SCons
+@@ -477,7 +477,7 @@ def generate_bazel_info_for_ninja(env: S
+     env["NINJA_BAZEL_INPUTS"] = ninja_bazel_ins
+ 
+ 
+-@retry(tries=5, delay=3)
++#@retry(tries=5, delay=3)
+ def download_path_with_retry(*args, **kwargs):
+     urllib.request.urlretrieve(*args, **kwargs)
+ 
