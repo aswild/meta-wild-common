@@ -83,7 +83,7 @@ wild_rootfs_postprocess() {
         find ${IMAGE_ROOTFS}${systemd_unitdir} -name '*.service' -type f | while read service; do
             if grep -q '^StateDirectory' $service; then
                 install -d ${service}.d
-                echo -e '[Unit]\nAfter=var-volatile-lib.service' >${service}.d/var-volatile-lib.conf
+                printf '[Unit]\nAfter=var-volatile-lib.service\n' >${service}.d/var-volatile-lib.conf
             fi
         done
     fi
