@@ -1,32 +1,23 @@
 # un-skip this recipe, python 3.12 issues are patched here
 SKIP_RECIPE[mongodb] = ""
 
-# Patch out -Wredundant-move, this warning is triggered all over the place and clutters up the log,
-# making it hard to find real errors. Like, literally half of log.do_compile is g++ complaining
-# about -Wredundant-move.
-# Also compiling without debug info (-g0) saves ~7 minutes of build time and ~12GB of build objects
 FILESEXTRAPATHS:prepend := "${THISDIR}/${BPN}:"
-SRC_URI += " \
-    file://wild-build-flags.patch \
-    file://wild-python3.12-build.patch \
-"
 
-# DEBUG_FLAGS propagates through various yocto variables into CFLAGS, CXXFLAGS, LDFLAGS, etc.
-DEBUG_FLAGS:remove = "-g"
-DEBUG_FLAGS:prepend = "-g0 "
+# Patch out some extremely noisy compiler warnings, and remove hard-coded -ggdb
+SRC_URI += "file://wild-build-flags.patch"
+# Fix moduleconfig.py for python 3.12
+SRC_URI += "file://wild-python3.12-build.patch"
+# Fix build with scons 4.9, call= in CheckLibWithHeader should always have been a kwarg
+SRC_URI += "file://wild-scons-4.9.patch"
 
-# Don't build mongos
-SCONS_BUILD_TARGETS = "install-mongod"
+# Compiling without debug info (-g0) saves ~25% build time and ~8.5GB of build objects.
+# DEBUG_LEVELFLAG -> FULL_OPTIMIZATION -> SELECTED_OPTIMIZATION -> TARGET_C(XX)FLAGS
+DEBUG_LEVELFLAG = "-g0"
 
+# only build mongod, not mongos
 scons_do_compile() {
-    # like the scons.bbclass version but include "$@" so we can customize build targets
-    ${STAGING_BINDIR_NATIVE}/scons --directory=${S} ${PARALLEL_MAKE} \
-            PREFIX=${prefix} prefix=${prefix} ${EXTRA_OESCONS} "$@" || \
+    ${STAGING_BINDIR_NATIVE}/scons ${PARALLEL_MAKE} ${EXTRA_OESCONS} install-mongod || \
         die "scons build execution failed."
-}
-
-do_compile() {
-    scons_do_compile ${SCONS_BUILD_TARGETS}
 }
 
 # package service and conf files into ${PN}-service, leaving only core binaies in the main package

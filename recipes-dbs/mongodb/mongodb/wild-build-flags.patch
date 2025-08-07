@@ -2,7 +2,7 @@ Index: git/SConstruct
 ===================================================================
 --- git.orig/SConstruct
 +++ git/SConstruct
-@@ -2105,7 +2105,7 @@ if env.TargetOSIs('posix'):
+@@ -2217,7 +2217,7 @@ if env.TargetOSIs('posix'):
      env.Append( CCFLAGS=["-fno-omit-frame-pointer",
                           "-fno-strict-aliasing",
                           "-fasynchronous-unwind-tables",
@@ -11,13 +11,16 @@ Index: git/SConstruct
                           "-pthread",
                           "-Wall",
                           "-Wsign-compare",
-@@ -2508,7 +2508,8 @@ def doConfigure(myenv):
+@@ -2643,7 +2643,11 @@ def doConfigure(myenv):
  
          # Warn about redundant moves, such as moving a local variable in a return that is different
          # than the return type.
 -        AddToCXXFLAGSIfSupported(myenv, "-Wredundant-move")
 +        # WILD: suppress this warning, it's very noisy and makes it hard to find real compile errors.
 +        AddToCXXFLAGSIfSupported(myenv, "-Wno-redundant-move")
++        # WILD: also suppress some more noisy warnings
++        AddToCXXFLAGSIfSupported(myenv, "-Wno-c++20-compat")
++        AddToCXXFLAGSIfSupported(myenv, "-Wno-interference-size")
  
          # Disable warning about variables that may not be initialized
          # Failures are triggered in the case of boost::optional in GCC 4.8.x
