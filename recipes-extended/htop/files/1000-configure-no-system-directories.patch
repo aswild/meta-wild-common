@@ -1,0 +1,48 @@
+diff --git a/configure.ac b/configure.ac
+index 9f2f46b3..14929bba 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -810,7 +810,7 @@ case "$enable_unwind" in
+       AC_CHECK_LIB([unwind], [backtrace], [], [enable_unwind=no])
+       AC_CHECK_HEADERS([libunwind.h], [], [
+          old_CFLAGS="$CFLAGS"
+-         CFLAGS="$CFLAGS -I/usr/include/libunwind"
++         CFLAGS="$CFLAGS -I=/usr/include/libunwind"
+          AC_CHECK_HEADERS([libunwind/libunwind.h], [], [
+             enable_unwind=no
+             CFLAGS="$old_CFLAGS"
+@@ -822,7 +822,7 @@ case "$enable_unwind" in
+    yes)
+       AC_CHECK_LIB([unwind], [backtrace], [], [AC_MSG_ERROR([can not find required library libunwind])])
+       AC_CHECK_HEADERS([libunwind.h], [], [
+-         AM_CFLAGS="$AM_CFLAGS -I/usr/include/libunwind"
++         AM_CFLAGS="$AM_CFLAGS -I=/usr/include/libunwind"
+          AC_CHECK_HEADERS([libunwind/libunwind.h], [], [AC_MSG_ERROR([can not find required header file libunwind.h])])
+       ])
+       ;;
+@@ -980,14 +980,14 @@ case "$enable_delayacct" in
+          enable_delayacct=no
+       else
+          old_CFLAGS="$CFLAGS"
+-         CFLAGS="$CFLAGS -I/usr/include/libnl3"
++         CFLAGS="$CFLAGS -I=/usr/include/libnl3"
+          AC_CHECK_HEADERS([netlink/attr.h netlink/handlers.h netlink/msg.h], [enable_delayacct=yes], [enable_delayacct=no])
+          CFLAGS="$old_CFLAGS"
+       fi
+       ;;
+    yes)
+       old_CFLAGS="$CFLAGS"
+-      CFLAGS="$CFLAGS -I/usr/include/libnl3"
++      CFLAGS="$CFLAGS -I=/usr/include/libnl3"
+       AC_CHECK_HEADERS([netlink/attr.h netlink/handlers.h netlink/msg.h], [], [AC_MSG_ERROR([can not find required header files netlink/attr.h, netlink/handlers.h, netlink/msg.h])])
+       CFLAGS="$old_CFLAGS"
+       ;;
+@@ -997,7 +997,7 @@ case "$enable_delayacct" in
+ esac
+ if test "$enable_delayacct" = yes; then
+   AC_DEFINE([HAVE_DELAYACCT], [1], [Define if delay accounting support should be enabled.])
+-  AM_CFLAGS="$AM_CFLAGS -I/usr/include/libnl3"
++  AM_CFLAGS="$AM_CFLAGS -I=/usr/include/libnl3"
+ fi
+ AM_CONDITIONAL([HAVE_DELAYACCT], [test "$enable_delayacct" = yes])
+ 
