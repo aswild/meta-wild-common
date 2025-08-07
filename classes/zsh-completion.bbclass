@@ -2,4 +2,4 @@
 
 PACKAGES += "${PN}-zsh-completion"
 FILES:${PN}-zsh-completion = "${datadir}/zsh/site-functions"
-RDEPENDS:${PN}-zsh-completion = "zsh"
+RRECOMMENDS:${PN}-zsh-completion:class-target = "zsh"
