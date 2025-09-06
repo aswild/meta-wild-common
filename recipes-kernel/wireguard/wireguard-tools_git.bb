@@ -1,10 +1,10 @@
 DESCRIPTION = "Fast and secure kernelspace VPN, userspace tools"
 HOMEPAGE = "https://www.wireguard.com"
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://../COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-PV = "1.0.20210914"
-SRCREV = "3ba6527130c502144e7388b900138bca6260f4e8"
+PV = "1.0.20250521"
+SRCREV = "e2ecaaa739144997ccff89d6ad6ec81698ea6ced"
 
 SRC_URI = "git://git.zx2c4.com/wireguard-tools;protocol=https;nobranch=1"
 S = "${WORKDIR}/git/src"
