@@ -11,6 +11,7 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://ace.sh.in \
            file://unifi.service.in \
            file://unifi.env \
+           file://tmpfiles-unifi.conf \
 "
 
 PV = "9.4.19"
@@ -27,6 +28,7 @@ UNIFI_HOMEDIR ?= "/home/${UNIFI_USER}"
 
 # no package splitting
 FILES:${PN} = "${libdir}/${PN} \
+               ${libdir}/tmpfiles.d/unifi.conf \
                ${systemd_unitdir}/system \
                ${sysconfdir}/default/unifi.env \
                ${UNIFI_HOMEDIR}"
@@ -111,4 +113,5 @@ do_install() {
     install -Dm755 ${UNPACKDIR}/ace.sh ${D}${libdir}/unifi/bin/ace.sh
     install -Dm644 ${UNPACKDIR}/unifi.service ${D}${systemd_unitdir}/system/unifi.service
     install -Dm644 ${UNPACKDIR}/unifi.env ${D}${sysconfdir}/default/unifi.env
+    install -Dm644 ${UNPACKDIR}/tmpfiles-unifi.conf ${D}${libdir}/tmpfiles.d/unifi.conf
 }
