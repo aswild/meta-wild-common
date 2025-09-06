@@ -2,7 +2,7 @@ require openzfs.inc
 
 SUMMARY = "OpenZFS for Linux"
 
-inherit autotools module python3native pkgconfig
+inherit autotools-brokensep module python3native pkgconfig
 
 # OpenZFS builds kernel modules using autoconf. It's both clever and cursed.
 EXTRA_OECONF = " \
