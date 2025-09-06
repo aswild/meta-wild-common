@@ -77,13 +77,20 @@ wild_rootfs_postprocess() {
     # to do that (via var-volatile-lib.service which comes before local-fs.target), but
     # some of these units (like systemd-rfkill) use DefaultDependencies=no, so we need
     # an explicit dependency.
+    # Similarly, PrivateTmp requires /var/volatile to be mounted, such as by systemd-resolved.
     if [ -d ${IMAGE_ROOTFS}${systemd_unitdir} ] && \
        ${@bb.utils.contains('IMAGE_FEATURES', 'read-only-rootfs', 'true', 'false', d)}; then
         local service
         find ${IMAGE_ROOTFS}${systemd_unitdir} -name '*.service' -type f | while read service; do
-            if grep -q '^StateDirectory' $service; then
-                install -d ${service}.d
-                printf '[Unit]\nAfter=var-volatile-lib.service\n' >${service}.d/var-volatile-lib.conf
+            if grep -q '^DefaultDependencies=no' $service; then
+                if grep -q '^StateDirectory' $service; then
+                    install -d ${service}.d
+                    printf '[Unit]\nAfter=var-volatile-lib.service\n' >${service}.d/var-volatile-lib.conf
+                fi
+                if grep -q '^PrivateTmp=' $service; then
+                    install -d ${service}.d
+                    printf '[Unit]\nRequiresMountsFor=/var/volatile\n' >${service}.d/var-volatile.conf
+                fi
             fi
         done
     fi
