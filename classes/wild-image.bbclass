@@ -114,3 +114,6 @@ ROOTFS_POSTPROCESS_COMMAND:append = " wild_rootfs_postprocess"
 
 # Don't spam DEPLOYDIR with testdata.json files
 ROOTFS_POSTPROCESS_COMMAND:remove = "write_image_test_data"
+
+# I'd rather have accurate build timestamps than full reproducibility
+ROOTFS_POSTPROCESS_COMMAND:remove = "rootfs_reproducible reproducible_final_image_task"
