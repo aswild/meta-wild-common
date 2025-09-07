@@ -31,7 +31,7 @@ copy_ssh_host_keys() {
     fi
 }
 # prepend this command so that it runs before read_only_rootfs_hook
-ROOTFS_POSTPROCESS_COMMAND:prepend = "copy_ssh_host_keys; "
+ROOTFS_POSTPROCESS_COMMAND:prepend = "copy_ssh_host_keys "
 
 wild_rootfs_postprocess() {
     # Yocto will install the kernel image to /boot, but we don't want that because
@@ -110,7 +110,7 @@ wild_rootfs_postprocess() {
         touch ${IMAGE_ROOTFS}${libdir}/jvm/dummy
     fi
 }
-ROOTFS_POSTPROCESS_COMMAND:append = " wild_rootfs_postprocess;"
+ROOTFS_POSTPROCESS_COMMAND:append = " wild_rootfs_postprocess"
 
 # Don't spam DEPLOYDIR with testdata.json files
-ROOTFS_POSTPROCESS_COMMAND:remove = "write_image_test_data;"
+ROOTFS_POSTPROCESS_COMMAND:remove = "write_image_test_data"
