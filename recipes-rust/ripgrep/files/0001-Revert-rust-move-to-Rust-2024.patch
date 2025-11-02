@@ -1,0 +1,230 @@
+From 056f5053b586ebf7f46f997e1b6a1035b9ffd327 Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 2 Nov 2025 16:07:18 -0500
+Subject: [PATCH 1/2] Revert "rust: move to Rust 2024"
+
+Yocto Walnascar is Rust 1.84, which is just one too old for the 2024
+edition.
+
+This reverts commit a60e62d9ac559b1468d4dd27b80a7b662a600e0c.
+---
+ Cargo.toml                          | 3 +--
+ crates/cli/Cargo.toml               | 2 +-
+ crates/core/flags/hiargs.rs         | 4 ++--
+ crates/globset/Cargo.toml           | 2 +-
+ crates/grep/Cargo.toml              | 2 +-
+ crates/ignore/Cargo.toml            | 2 +-
+ crates/matcher/Cargo.toml           | 2 +-
+ crates/pcre2/Cargo.toml             | 2 +-
+ crates/printer/Cargo.toml           | 2 +-
+ crates/printer/src/hyperlink/mod.rs | 4 ++--
+ crates/regex/Cargo.toml             | 2 +-
+ crates/regex/src/ban.rs             | 2 +-
+ crates/searcher/Cargo.toml          | 2 +-
+ fuzz/Cargo.toml                     | 2 +-
+ 14 files changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/Cargo.toml b/Cargo.toml
+index c3bbfcd..216687d 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -24,8 +24,7 @@ exclude = [
+ ]
+ build = "build.rs"
+ autotests = false
+-edition = "2024"
+-rust-version = "1.85"
++edition = "2021"
+ 
+ [[bin]]
+ bench = false
+diff --git a/crates/cli/Cargo.toml b/crates/cli/Cargo.toml
+index 4bd3e89..ed15ef3 100644
+--- a/crates/cli/Cargo.toml
++++ b/crates/cli/Cargo.toml
+@@ -11,7 +11,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/cli"
+ readme = "README.md"
+ keywords = ["regex", "grep", "cli", "utility", "util"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [dependencies]
+ bstr = { version = "1.6.2", features = ["std"] }
+diff --git a/crates/core/flags/hiargs.rs b/crates/core/flags/hiargs.rs
+index be8aa27..8768cbf 100644
+--- a/crates/core/flags/hiargs.rs
++++ b/crates/core/flags/hiargs.rs
+@@ -810,7 +810,7 @@ impl HiArgs {
+                 attach_timestamps(haystacks, |md| md.created()).collect()
+             }
+         };
+-        with_timestamps.sort_by(|(_, t1), (_, t2)| {
++        with_timestamps.sort_by(|(_, ref t1), (_, ref t2)| {
+             let ordering = match (*t1, *t2) {
+                 // Both have metadata, do the obvious thing.
+                 (Some(t1), Some(t2)) => t1.cmp(&t2),
+@@ -1197,7 +1197,7 @@ fn types(low: &LowArgs) -> anyhow::Result<ignore::types::Types> {
+     let mut builder = ignore::types::TypesBuilder::new();
+     builder.add_defaults();
+     for tychange in low.type_changes.iter() {
+-        match *tychange {
++        match tychange {
+             TypeChange::Clear { ref name } => {
+                 builder.clear(name);
+             }
+diff --git a/crates/globset/Cargo.toml b/crates/globset/Cargo.toml
+index a4e2223..afcdb4d 100644
+--- a/crates/globset/Cargo.toml
++++ b/crates/globset/Cargo.toml
+@@ -13,7 +13,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/globset"
+ readme = "README.md"
+ keywords = ["regex", "glob", "multiple", "set", "pattern"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [lib]
+ name = "globset"
+diff --git a/crates/grep/Cargo.toml b/crates/grep/Cargo.toml
+index a7c986c..41c7ad8 100644
+--- a/crates/grep/Cargo.toml
++++ b/crates/grep/Cargo.toml
+@@ -11,7 +11,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/grep"
+ readme = "README.md"
+ keywords = ["regex", "grep", "egrep", "search", "pattern"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [dependencies]
+ grep-cli = { version = "0.1.11", path = "../cli" }
+diff --git a/crates/ignore/Cargo.toml b/crates/ignore/Cargo.toml
+index 5106de6..e136f54 100644
+--- a/crates/ignore/Cargo.toml
++++ b/crates/ignore/Cargo.toml
+@@ -12,7 +12,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/ignore"
+ readme = "README.md"
+ keywords = ["glob", "ignore", "gitignore", "pattern", "file"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [lib]
+ name = "ignore"
+diff --git a/crates/matcher/Cargo.toml b/crates/matcher/Cargo.toml
+index 9e8a9c8..74186a4 100644
+--- a/crates/matcher/Cargo.toml
++++ b/crates/matcher/Cargo.toml
+@@ -12,7 +12,7 @@ readme = "README.md"
+ keywords = ["regex", "pattern", "trait"]
+ license = "Unlicense OR MIT"
+ autotests = false
+-edition = "2024"
++edition = "2021"
+ 
+ [dependencies]
+ memchr = "2.6.3"
+diff --git a/crates/pcre2/Cargo.toml b/crates/pcre2/Cargo.toml
+index e509145..a5f6852 100644
+--- a/crates/pcre2/Cargo.toml
++++ b/crates/pcre2/Cargo.toml
+@@ -11,7 +11,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/pcre2"
+ readme = "README.md"
+ keywords = ["regex", "grep", "pcre", "backreference", "look"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2018"
+ 
+ [dependencies]
+ grep-matcher = { version = "0.1.7", path = "../matcher" }
+diff --git a/crates/printer/Cargo.toml b/crates/printer/Cargo.toml
+index 07c12ed..141d309 100644
+--- a/crates/printer/Cargo.toml
++++ b/crates/printer/Cargo.toml
+@@ -12,7 +12,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/printer"
+ readme = "README.md"
+ keywords = ["grep", "pattern", "print", "printer", "sink"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [features]
+ default = ["serde"]
+diff --git a/crates/printer/src/hyperlink/mod.rs b/crates/printer/src/hyperlink/mod.rs
+index 52862bf..e2b74fb 100644
+--- a/crates/printer/src/hyperlink/mod.rs
++++ b/crates/printer/src/hyperlink/mod.rs
+@@ -482,7 +482,7 @@ impl FormatBuilder {
+         let err_invalid_scheme = HyperlinkFormatError {
+             kind: HyperlinkFormatErrorKind::InvalidScheme,
+         };
+-        let Some(Part::Text(part)) = self.parts.first() else {
++        let Some(Part::Text(ref part)) = self.parts.first() else {
+             return Err(err_invalid_scheme);
+         };
+         let Some(colon) = part.find_byte(b':') else {
+@@ -538,7 +538,7 @@ impl Part {
+         values: &Values,
+         dest: &mut Vec<u8>,
+     ) {
+-        match *self {
++        match self {
+             Part::Text(ref text) => dest.extend_from_slice(text),
+             Part::Host => dest.extend_from_slice(
+                 env.host.as_ref().map(|s| s.as_bytes()).unwrap_or(b""),
+diff --git a/crates/regex/Cargo.toml b/crates/regex/Cargo.toml
+index c0a4f35..442fbd2 100644
+--- a/crates/regex/Cargo.toml
++++ b/crates/regex/Cargo.toml
+@@ -11,7 +11,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/regex"
+ readme = "README.md"
+ keywords = ["regex", "grep", "search", "pattern", "line"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [dependencies]
+ bstr = "1.6.2"
+diff --git a/crates/regex/src/ban.rs b/crates/regex/src/ban.rs
+index 87991ab..1bd62e2 100644
+--- a/crates/regex/src/ban.rs
++++ b/crates/regex/src/ban.rs
+@@ -9,7 +9,7 @@ pub(crate) fn check(expr: &Hir, byte: u8) -> Result<(), Error> {
+     assert!(byte.is_ascii(), "ban byte must be ASCII");
+     let ch = char::from(byte);
+     let invalid = || Err(Error::new(ErrorKind::Banned(byte)));
+-    match *expr.kind() {
++    match expr.kind() {
+         HirKind::Empty => {}
+         HirKind::Literal(hir::Literal(ref lit)) => {
+             if lit.iter().find(|&&b| b == byte).is_some() {
+diff --git a/crates/searcher/Cargo.toml b/crates/searcher/Cargo.toml
+index b84fb43..b6b0386 100644
+--- a/crates/searcher/Cargo.toml
++++ b/crates/searcher/Cargo.toml
+@@ -11,7 +11,7 @@ repository = "https://github.com/BurntSushi/ripgrep/tree/master/crates/searcher"
+ readme = "README.md"
+ keywords = ["regex", "grep", "egrep", "search", "pattern"]
+ license = "Unlicense OR MIT"
+-edition = "2024"
++edition = "2021"
+ 
+ [dependencies]
+ bstr = { version = "1.6.2", default-features = false, features = ["std"] }
+diff --git a/fuzz/Cargo.toml b/fuzz/Cargo.toml
+index 0756263..ed71db5 100644
+--- a/fuzz/Cargo.toml
++++ b/fuzz/Cargo.toml
+@@ -2,7 +2,7 @@
+ name = "fuzz"
+ version = "0.0.1"
+ publish = false
+-edition = "2024"
++edition = "2021"
+ 
+ [package.metadata]
+ cargo-fuzz = true
+-- 
+2.51.2
+
