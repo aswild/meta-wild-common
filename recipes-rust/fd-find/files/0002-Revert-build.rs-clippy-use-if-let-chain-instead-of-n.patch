@@ -1,0 +1,39 @@
+From 825b7cb9781b7daa659f3ca7c36cc21756e3ceca Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sat, 14 Mar 2026 13:52:03 -0400
+Subject: [PATCH 2/3] Revert "build.rs: clippy: use if-let chain instead of
+ nested ifs"
+
+This reverts commit 5b06b0060f8277c9d571fde49eae273ac65a72ec.
+---
+ build.rs | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/build.rs b/build.rs
+index 6fc4888..e807ff1 100644
+--- a/build.rs
++++ b/build.rs
+@@ -7,13 +7,13 @@ fn main() {
+             .arg("--dirty=+")
+             .stderr(std::process::Stdio::inherit())
+             .output();
+-        if let Ok(out) = git_describe_out
+-            && out.status.success()
+-        {
+-            // stringify output, strip whitespace, and strip a leading 'v'
+-            let git_version = String::from_utf8_lossy(&out.stdout);
+-            let git_version_trimmed = git_version.trim().trim_start_matches('v');
+-            println!("cargo:rustc-env=FD_GIT_VERSION={git_version_trimmed}");
++        if let Ok(out) = git_describe_out {
++            if out.status.success() {
++                // stringify output, strip whitespace, and strip a leading 'v'
++                let git_version = String::from_utf8_lossy(&out.stdout);
++                let git_version_trimmed = git_version.trim().trim_start_matches('v');
++                println!("cargo:rustc-env=FD_GIT_VERSION={git_version_trimmed}");
++            }
+         }
+         println!("cargo:rerun-if-changed=.git/index");
+         println!("cargo:rerun-if-changed=.git/HEAD");
+-- 
+2.53.0
+
