@@ -14,8 +14,8 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://tmpfiles-unifi.conf \
 "
 
-PV = "9.5.21"
-SRC_URI[sha256sum] = "3f4892d0710069be5dacb34997cddfe46e220bca5db429e5388d69cb2b693b13"
+PV = "10.1.85"
+SRC_URI[sha256sum] = "162da943df0135be5cc74b45ecf716ce5f944ceeea6b9cac0c4e0759e7d0955a"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
@@ -58,8 +58,6 @@ USERADD_PARAM:${PN} = "--system --uid ${UNIFI_UID} --gid ${UNIFI_GID} --home-dir
 
 # arch for prebuilt libraries
 NATIVEARCH = "invalid"
-NATIVEARCH:armv7a = "armv7"
-NATIVEARCH:armv7ve = "armv7"
 NATIVEARCH:aarch64 = "aarch64"
 NATIVEARCH:x86-64 = "x86_64"
 

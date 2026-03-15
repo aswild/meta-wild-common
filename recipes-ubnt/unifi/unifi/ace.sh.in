@@ -12,7 +12,8 @@ unifi_args=(
     -Dfile.encoding=UTF-8
     -Djava.awt.headless=true
     -Dapple.awt.UIElement=true
-    -Dunifi.core.enabled=${UNIFI_CORE_ENABLED:-false}
+    -Dunifi.core.enabled="${UNIFI_CORE_ENABLED:-false}"
+    -Dunifi.mongodb.service.enabled="${UNIFI_MONGODB_SERVICE_ENABLED:-false}"
     ${UNIFI_JVM_OPTS:--XX:+UseParallelGC}
     -XX:+ExitOnOutOfMemoryError
     -XX:+CrashOnOutOfMemoryError

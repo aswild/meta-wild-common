@@ -6,10 +6,14 @@ After=network-online.target time-sync.target
 [Service]
 User=@UNIFI_USER@
 WorkingDirectory=@libdir@/unifi
+RuntimeDirectory=unifi
 LimitCORE=0
+Type=notify
+KillMode=process
+NotifyAccess=main
 ExecStart=@libdir@/unifi/bin/ace.sh start
-ExecStop=@libdir@/unifi/bin/ace.sh stop
 SuccessExitStatus=143
+RestartPreventExitStatus=2
 TimeoutSec=240
 Restart=on-failure
 
