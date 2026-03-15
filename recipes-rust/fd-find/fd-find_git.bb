@@ -10,12 +10,6 @@ PV = "10.2.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/fd;branch=master;protocol=https"
 
-SRC_URI += " \
-    file://0001-downgrade-dependencies-for-Rust-1.84.patch \
-    file://0002-Revert-build.rs-clippy-use-if-let-chain-instead-of-n.patch \
-    file://0003-Revert-build-msrv-Update-msrv-to-1.90.0.patch \
-"
-
 BBCLASSEXTEND += "native"
 DEPENDS:append:class-target = " ${BPN}-native (= ${PV})"
 

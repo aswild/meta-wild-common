@@ -6,8 +6,8 @@ LIC_FILES_CHKSUM = " \
     file://LICENSE-APACHE;md5=86d3f3a95c324c9479bd8986968f4327 \
 "
 
-PV = "0.25.0"
-SRCREV = "25f4f96ea3afb6fe44552f3b38ed8b1540ffa1b3"
+PV = "0.26.1"
+SRCREV = "979ba22628bc9d8171f2cffca2bd5c90c9fc0a9e"
 SRC_URI = "git://github.com/sharkdp/bat;branch=master;protocol=https"
 
 inherit cargo-wild

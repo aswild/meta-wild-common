@@ -1,0 +1,57 @@
+From 56e1f8df4761da60e41812fc32b1de797d1765e9 Mon Sep 17 00:00:00 2001
+From: Martin Jansa <martin.jansa@gmail.com>
+Date: Sat, 7 Mar 2026 10:09:06 +0100
+Subject: [PATCH] openat2: use const struct open_how
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+To match
+https://sourceware.org/cgit/glibc/commit/?id=0f0a5cd338998f4b603f52f3ce2163df0db7b814
+
+Otherwise it fails to build with glibc-2.43:
+
+In file included from pseudo_wrappers.c:300:
+pseudo_wrapfuncs.c: At top level:
+pseudo_wrapfuncs.c:11537:1: error: conflicting types for ‘openat2’; have ‘int(int,  const char *, struct open_how *, size_t)’ {aka ‘int(int,  const char *, struct open_how *, long unsigned int)’}
+11537 | openat2(int dirfd, const char *path, struct open_how *how, size_t size) {
+      | ^~~~~~~
+In file included from /usr/include/bits/fcntl-linux.h:492,
+                 from /usr/include/bits/fcntl.h:61,
+                 from /usr/include/fcntl.h:35,
+                 from pseudo_wrappers.c:23:
+/usr/include/bits/fcntl-linux-fortify.h:36:1: note: previous definition of ‘openat2’ with type ‘int(int,  const char *, const struct open_how *, long unsigned int)’
+   36 | openat2 (int __dfd, const char *__filename, const struct open_how *__how,
+      | ^~~~~~~
+make: *** [Makefile:162: pseudo_wrappers.o] Error 1
+
+Signed-off-by: Martin Jansa <martin.jansa@gmail.com>
+Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+---
+ ports/linux/openat2/guts/openat2.c | 2 +-
+ ports/linux/openat2/wrapfuncs.in   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ports/linux/openat2/guts/openat2.c b/ports/linux/openat2/guts/openat2.c
+index da01b31..366fb95 100644
+--- a/ports/linux/openat2/guts/openat2.c
++++ b/ports/linux/openat2/guts/openat2.c
+@@ -4,7 +4,7 @@
+  *
+  * SPDX-License-Identifier: LGPL-2.1-only
+  *
+- * int openat2(int dirfd, const char *path, struct open_how *how, size_t size)
++ * int openat2(int dirfd, const char *path, const struct open_how *how, size_t size)
+  *	int rc = -1;
+  */
+ 
+diff --git a/ports/linux/openat2/wrapfuncs.in b/ports/linux/openat2/wrapfuncs.in
+index 96ae8a7..2f1e716 100644
+--- a/ports/linux/openat2/wrapfuncs.in
++++ b/ports/linux/openat2/wrapfuncs.in
+@@ -1 +1 @@
+-int openat2(int dirfd, const char *path, struct open_how *how, size_t size);
++int openat2(int dirfd, const char *path, const struct open_how *how, size_t size);
+-- 
+2.53.0
+

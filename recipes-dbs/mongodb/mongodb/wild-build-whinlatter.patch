@@ -1,0 +1,34 @@
+This code hasn't changed, I have absolutely no idea how these were working before.
+
+Index: mongodb-4.4.24/src/mongo/db/storage/biggie/store.h
+===================================================================
+--- mongodb-4.4.24.orig/src/mongo/db/storage/biggie/store.h
++++ mongodb-4.4.24/src/mongo/db/storage/biggie/store.h
+@@ -810,10 +810,10 @@ private:
+         virtual ~Node() = default;
+ 
+         friend void swap(Node& first, Node& second) {
+-            std::swap(first.trieKey, second.trieKey);
+-            std::swap(first.depth, second.depth);
+-            std::swap(first.data, second.data);
+-            std::swap(first.children, second.children);
++            std::swap(first._trieKey, second._trieKey);
++            std::swap(first._depth, second._depth);
++            std::swap(first._data, second._data);
++            std::swap(first._children, second._children);
+         }
+ 
+         Node& operator=(const Node other) {
+Index: mongodb-4.4.24/src/third_party/boost-1.70.0/boost/thread/future.hpp
+===================================================================
+--- mongodb-4.4.24.orig/src/third_party/boost-1.70.0/boost/thread/future.hpp
++++ mongodb-4.4.24/src/third_party/boost-1.70.0/boost/thread/future.hpp
+@@ -4669,7 +4669,7 @@ namespace detail
+       }
+       run_it& operator=(BOOST_THREAD_RV_REF(run_it) x) BOOST_NOEXCEPT {
+         if (this != &x) {
+-          that_=x.that;
++          that_=x.that_;
+           x.that_.reset();
+         }
+         return *this;

@@ -6,8 +6,7 @@ RDEPENDS:${PN} = "bash wpa-supplicant wpa-supplicant-passphrase"
 
 PV = "1.0"
 SRC_URI = "file://wpa_oneoff.sh"
-S = "${UNPACKDIR}/sources"
-UNPACKDIR = "${S}"
+S = "${UNPACKDIR}"
 
 inherit allarch
 

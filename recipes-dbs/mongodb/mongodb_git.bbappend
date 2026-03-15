@@ -9,6 +9,8 @@ SRC_URI += "file://wild-build-flags.patch"
 SRC_URI += "file://wild-python3.12-build.patch"
 # Fix build with scons 4.9, call= in CheckLibWithHeader should always have been a kwarg
 SRC_URI += "file://wild-scons-4.9.patch"
+# Misc C++ build errors that seem totally unrelated to newer deps.
+SRC_URI += "file://wild-build-whinlatter.patch"
 
 # Compiling without debug info (-g0) saves ~25% build time and ~8.5GB of build objects.
 # DEBUG_LEVELFLAG -> FULL_OPTIMIZATION -> SELECTED_OPTIMIZATION -> TARGET_C(XX)FLAGS

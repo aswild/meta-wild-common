@@ -11,9 +11,6 @@ PV = "14.1.1+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/ripgrep;branch=master;protocol=https"
 
-SRC_URI += "file://0001-Revert-rust-move-to-Rust-2024.patch \
-            file://0002-hold-back-pcre2-crates-for-Rust-2021-compatibility.patch"
-
 BBCLASSEXTEND += "native"
 DEPENDS:append:class-target = " ${BPN}-native (= ${PV})"
 

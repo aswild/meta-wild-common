@@ -6,8 +6,7 @@ PV = "1"
 
 SRC_URI = "file://${BPN}.service \
            file://iptables-redirect.sh"
-S = "${UNPACKDIR}/sources"
-UNPACKDIR = "${S}"
+S = "${UNPACKDIR}"
 
 RDEPENDS:${PN} = "iptables"
 RRECOMMENDS:${PN} = "kernel-module-iptable-nat"
