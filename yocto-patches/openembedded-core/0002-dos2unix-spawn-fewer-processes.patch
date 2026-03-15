@@ -1,7 +1,7 @@
-From 3e6e7aa14d8c77ac4a45bde2396d32d10a0d2d73 Mon Sep 17 00:00:00 2001
+From f84715409c2b8f85d766a3e2f606120227b300c2 Mon Sep 17 00:00:00 2001
 From: Allen Wild <allenwild93@gmail.com>
 Date: Mon, 23 Sep 2024 09:37:10 -0400
-Subject: [PATCH] dos2unix: spawn fewer processes
+Subject: [PATCH 2/2] dos2unix: spawn fewer processes
 
 Use find's `-exec ... {} +` mode to pass a bunch of file names to
 a single dos2unix process rather than spawning one new process for each
@@ -25,5 +25,5 @@ index 18e89b1cf2..d872eed5eb 100644
  
  addtask convert_crlf_to_lf after do_unpack before do_patch
 -- 
-2.39.5
+2.53.0
 
