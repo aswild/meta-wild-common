@@ -12,8 +12,6 @@ SRC_URI[backport.sha256sum] = "ad177e697e84f88ee91f7cb6a9ab3a47100665155107abc8c
 
 DEPENDS = "mbedtls fuse"
 
-S = "${WORKDIR}/git"
-
 inherit cmake
 # disable Ruby bindings
 EXTRA_OECMAKE = "-DWITH_RUBY=OFF"

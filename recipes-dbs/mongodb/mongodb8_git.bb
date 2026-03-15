@@ -30,8 +30,6 @@ SRC_URI = " \
     file://mongodb8-disable-unneeded-build-cruft.patch \
 "
 
-S = "${WORKDIR}/git"
-
 COMPATIBLE_HOST ?= '(x86_64|i.86|powerpc64|arm|aarch64).*-linux'
 
 PACKAGECONFIG ??= "tcmalloc nodebug"

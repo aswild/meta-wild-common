@@ -10,4 +10,3 @@ SRC_URI = " \
     file://zfs-remove-unneeded-components.patch \
 "
 
-S = "${WORKDIR}/git"

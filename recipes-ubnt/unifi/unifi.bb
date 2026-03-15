@@ -61,7 +61,7 @@ NATIVEARCH = "invalid"
 NATIVEARCH:aarch64 = "aarch64"
 NATIVEARCH:x86-64 = "x86_64"
 
-S = "${WORKDIR}/UniFi"
+S = "${UNPACKDIR}/UniFi"
 
 do_configure[noexec] = "1"
 

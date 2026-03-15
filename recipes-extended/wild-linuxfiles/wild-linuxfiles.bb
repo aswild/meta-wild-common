@@ -10,7 +10,6 @@ inherit allarch
 SRC_URI = "gitsm://github.com/aswild/linuxfiles;branch=master;protocol=https"
 SRCREV = "${AUTOREV}"
 PV = "1.0+git${SRCPV}"
-S = "${WORKDIR}/git"
 
 # where on the rootfs to install to
 LINUXFILES_LOC ?= "${ROOT_HOME}/linuxfiles"

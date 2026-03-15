@@ -6,7 +6,6 @@ PV = "28"
 SRC_URI = "git://gitlab.archlinux.org/archlinux/arch-install-scripts.git;protocol=https;tag=v${PV};branch=master \
            file://0001-set-HOME-to-root-if-needed.patch \
 "
-S = "${WORKDIR}/git"
 
 DEPENDS = "m4-native"
 EXTRA_OEMAKE = "V=1 PREFIX='${prefix}'"

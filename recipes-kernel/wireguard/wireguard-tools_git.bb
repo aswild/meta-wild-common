@@ -7,7 +7,7 @@ PV = "1.0.20250521"
 SRCREV = "e2ecaaa739144997ccff89d6ad6ec81698ea6ced"
 
 SRC_URI = "git://git.zx2c4.com/wireguard-tools;protocol=https;nobranch=1"
-S = "${WORKDIR}/git/src"
+S = "${UNPACKDIR}/git/src"
 
 EXTRA_OEMAKE = " \
     V=1 \

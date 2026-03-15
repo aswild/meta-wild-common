@@ -10,8 +10,6 @@ PV = "1.0-${SRCPV}"
 
 RDEPENDS:${PN} = "python-argparse python-smbus"
 
-S = "${WORKDIR}/git"
-
 do_install() {
     install -D -m 0755 edid-rw ${D}${bindir}/edid-rw
 }

@@ -16,8 +16,6 @@ SRC_URI = "git://github.com/htop-dev/htop;protocol=https;nobranch=1 \
            file://htoprc \
 "
 
-S = "${WORKDIR}/git"
-
 inherit autotools pkgconfig
 
 EXTRA_OECONF = "--disable-unwind"

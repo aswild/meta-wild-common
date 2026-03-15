@@ -9,7 +9,6 @@ LIC_FILES_CHKSUM = " \
 PV = "10.2.0+git${SRCPV}"
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/aswild/fd;branch=master;protocol=https"
-S = "${WORKDIR}/git"
 
 SRC_URI += " \
     file://0001-downgrade-dependencies-for-Rust-1.84.patch \

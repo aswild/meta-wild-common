@@ -6,7 +6,7 @@ PV = "1"
 
 SRC_URI = "file://${BPN}.service \
            file://iptables-redirect.sh"
-S = "${WORKDIR}/sources"
+S = "${UNPACKDIR}/sources"
 UNPACKDIR = "${S}"
 
 RDEPENDS:${PN} = "iptables"
