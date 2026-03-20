@@ -14,8 +14,8 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://tmpfiles-unifi.conf \
 "
 
-PV = "10.1.85"
-SRC_URI[sha256sum] = "162da943df0135be5cc74b45ecf716ce5f944ceeea6b9cac0c4e0759e7d0955a"
+PV = "10.1.89"
+SRC_URI[sha256sum] = "84416f86f6f30326fb87b8b9a487add6bb6a9419459512100e90e12ae5ff56e3"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
