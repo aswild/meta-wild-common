@@ -14,8 +14,8 @@ SRC_URI = "https://dl.ubnt.com/unifi/${PV}/UniFi.unix.zip;downloadfilename=UniFi
            file://tmpfiles-unifi.conf \
 "
 
-PV = "10.1.89"
-SRC_URI[sha256sum] = "84416f86f6f30326fb87b8b9a487add6bb6a9419459512100e90e12ae5ff56e3"
+PV = "10.4.57"
+SRC_URI[sha256sum] = "7fa8424ad1fc43778872cd14df5a7f70602573d296f4b5a933025fec6df4f2e4"
 
 # Unifi controller Linux and group
 UNIFI_USER  ?= "${PN}"
@@ -44,7 +44,7 @@ ERROR_QA:remove = "build-deps"
 # use rsync to install because, unlike cp, it supports --exclude
 DEPENDS = "rsync-native"
 
-RDEPENDS:${PN} = "openjdk-21-jre mongodb bash libsystemd"
+RDEPENDS:${PN} = "openjdk-25-jre mongodb bash libsystemd"
 RRECOMMENDS:${PN} = "unifi-cert-update"
 
 inherit systemd

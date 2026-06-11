@@ -4,31 +4,19 @@
 #
 # Adapted from the recipes in https://github.com/lucimber/meta-openjdk-temurin
 
-SUMMARY = "Prebuilt OpenJDK JRE for Java 21 offered by Adoptium."
+SUMMARY = "Prebuilt OpenJDK JRE for Java 25 offered by Adoptium."
 HOMEPAGE = "https://adoptium.net"
 LICENSE = "GPL-2.0-with-classpath-exception"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0-with-classpath-exception;md5=6133e6794362eff6641708cfcc075b80"
 
 COMPATIBLE_HOST = "(x86_64|aarch64).*-linux"
 
-JVM_CHECKSUM:aarch64 = "3ca84da7c4f57eee8d7e7f0645dc904a3a06456d32b37a4dd57a5e7527245250"
-JVM_CHECKSUM:x86-64 = "ea3b9bd464d6dd253e9a7accf59f7ccd2a36e4aa69640b7251e3370caef896a4"
+JVM_CHECKSUM:aarch64 = "d12d5b19ff7f6c4a99fd4f9eecede2c96e64df7d1f41cc84f2e9c9b38408600b"
+JVM_CHECKSUM:x86-64 = "487ad434d8b121ae3902d5ad9cb830cd8e1f75fefad6e2ba80f89d60e3db95d7"
 
-X11_RDEPENDS = " \
-  libx11 (>= 1.8) \
-  libxext (>= 1.3) \
-  libxi (>= 1.8) \
-  libxrender (>= 0.9) \
-  libxtst (>= 1.2) \
-"
-
-RDEPENDS:${PN} = " \
-  alsa-lib (>= 0.9) \
-  freetype (>= 2.13) \
-  glibc (>= 2.34) \
-  zlib (>= 1.2) \
-  ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPENDS}', '', d)} \
-"
+X11_DEPENDS = "libx11 libxext libxi libxrender libxtst"
+DEPENDS = "alsa-lib freetype zlib \
+           ${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_DEPENDS}', '', d)}"
 
 API_RELEASE_NAME = "jdk-${PV}"
 API_OS = "linux"
@@ -42,7 +30,7 @@ API_VENDOR = "eclipse"
 SRC_URI = "https://api.adoptium.net/v3/binary/version/${API_RELEASE_NAME}/${API_OS}/${API_ARCH}/${API_IMAGE_TYPE}/${API_JVM_IMPL}/${API_HEAP_SIZE}/${API_VENDOR};downloadfilename=${BPN}-${API_ARCH}-${PV}.tar.gz;subdir=${BPN}-${PV};striplevel=1"
 SRC_URI[sha256sum] = "${JVM_CHECKSUM}"
 
-libdir_jre = "${libdir}/jvm/openjdk-21-jre"
+libdir_jre = "${libdir}/jvm/openjdk-25-jre"
 
 # Prevent the packaging task from stripping out
 # debugging symbols, since there are none.
