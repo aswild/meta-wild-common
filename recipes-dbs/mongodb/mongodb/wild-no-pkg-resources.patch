@@ -1,0 +1,118 @@
+diff --git a/SConstruct b/SConstruct
+index 28b502ab06b..e72b6fbb0dd 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -16,7 +16,7 @@ import textwrap
+ import uuid
+ from glob import glob
+ 
+-from pkg_resources import parse_version
++from packaging.version import Version as parse_version
+ 
+ import SCons
+ 
+diff --git a/buildscripts/linter/runner.py b/buildscripts/linter/runner.py
+index 623a3c4295e..c3cc5520249 100644
+--- a/buildscripts/linter/runner.py
++++ b/buildscripts/linter/runner.py
+@@ -10,7 +10,8 @@ import site
+ import subprocess
+ import sys
+ import threading
+-import pkg_resources
++
++from packaging.version import Version as parse_version
+ 
+ from . import base
+ 
+@@ -33,7 +34,7 @@ def _check_version(linter, cmd_path, args):
+                 decoded_output, stderr)
+ 
+         pattern = r"\b(?:(%s) )?(?P<version>\S+)\b" % (linter.cmd_name)
+-        required_version = pkg_resources.parse_version(linter.required_version)
++        required_version = parse_version(linter.required_version)
+ 
+         match = re.search(pattern, decoded_output)
+         if match:
+@@ -41,7 +42,7 @@ def _check_version(linter, cmd_path, args):
+         else:
+             found_version = '0.0'
+ 
+-        if pkg_resources.parse_version(found_version) < required_version:
++        if parse_version(found_version) < required_version:
+             logging.info(
+                 "Linter %s has wrong version for '%s'. Expected >= '%s',"
+                 "Standard Output:\n'%s'\nStandard Error:\n%s", linter.cmd_name, cmd,
+diff --git a/buildscripts/resmokelib/commands/run.py b/buildscripts/resmokelib/commands/run.py
+index 83a4e96d1ce..88845faf850 100644
+--- a/buildscripts/resmokelib/commands/run.py
++++ b/buildscripts/resmokelib/commands/run.py
+@@ -8,8 +8,9 @@ import subprocess
+ import sys
+ import tarfile
+ import time
++from importlib import resources
+ 
+-import pkg_resources
++from packaging.version import Version as parse_version
+ import requests
+ 
+ try:
+@@ -34,6 +35,22 @@ from buildscripts.resmokelib.commands import interface
+ from buildscripts.resmokelib.core import process
+ from buildscripts.resmokelib.core import jasper_process
+ 
++# https://github.com/grpc/grpc/blob/master/tools/distrib/python/grpcio_tools/grpc_tools/protoc.py#L44
++def _get_resource_file_name(
++    package_or_requirement: str, resource_name: str
++) -> str:
++    """Obtain the filename for a resource on the file system."""
++    file_name = None
++    if sys.version_info >= (3, 9, 0):
++        file_name = (
++            resources.files(package_or_requirement) / resource_name
++        ).resolve()
++    else:
++        file_name = pkg_resources.resource_filename(
++            package_or_requirement, resource_name
++        )
++    return str(file_name)
++
+ 
+ class TestRunner(interface.Subcommand):  # pylint: disable=too-many-instance-attributes
+     """The main class to run tests with resmoke."""
+@@ -296,7 +313,7 @@ class TestRunner(interface.Subcommand):  # pylint: disable=too-many-instance-att
+         root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+         proto_file = os.path.join(root_dir, "buildscripts", "resmokelib", "core", "jasper.proto")
+         try:
+-            well_known_protos_include = pkg_resources.resource_filename("grpc_tools", "_proto")
++            well_known_protos_include = _get_resource_file_name("grpc_tools", "_proto")
+         except ImportError as exc:
+             raise ImportError("You must run: sys.executable + '-m pip install grpcio grpcio-tools "
+                               "googleapis-common-protos' to use --spawnUsing=jasper.") from exc
+diff --git a/site_scons/site_tools/ccache.py b/site_scons/site_tools/ccache.py
+index 2a894919f8d..de7b3221325 100644
+--- a/site_scons/site_tools/ccache.py
++++ b/site_scons/site_tools/ccache.py
+@@ -26,7 +26,7 @@ import re
+ import subprocess
+ 
+ import SCons
+-from pkg_resources import parse_version
++from packaging.version import Version as parse_version
+ 
+ # This is the oldest version of ccache that offers support for -gsplit-dwarf
+ _ccache_version_min = parse_version("3.2.3")
+diff --git a/site_scons/site_tools/icecream.py b/site_scons/site_tools/icecream.py
+index f9e436eb69c..154559188d1 100644
+--- a/site_scons/site_tools/icecream.py
++++ b/site_scons/site_tools/icecream.py
+@@ -25,7 +25,7 @@ import re
+ import subprocess
+ import urllib
+ 
+-from pkg_resources import parse_version
++from packaging.version import Version as parse_version
+ 
+ import SCons
+ 

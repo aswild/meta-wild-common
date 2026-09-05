@@ -1,0 +1,25 @@
+From a40cd0fff48a6fb5c736420c106f7ea9cb3bdeeb Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sat, 5 Sep 2026 14:49:43 -0400
+Subject: [PATCH 3/3] insane: skip build-deps QA checks in ptest packages
+
+---
+ meta/classes-global/insane.bbclass | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meta/classes-global/insane.bbclass b/meta/classes-global/insane.bbclass
+index feddfe0335..9039f328f2 100644
+--- a/meta/classes-global/insane.bbclass
++++ b/meta/classes-global/insane.bbclass
+@@ -816,7 +816,7 @@ def package_qa_check_rdepends(pkg, pkgdest, skip, taskdeps, packages, d):
+     if bb.data.inherits_class("kernel", d) or bb.data.inherits_class("module-base", d):
+         return
+ 
+-    if not "-dbg" in pkg and not "packagegroup-" in pkg and not "-image" in pkg:
++    if not "-dbg" in pkg and not "packagegroup-" in pkg and not "-image" in pkg and not "-ptest" in pkg:
+         localdata = bb.data.createCopy(d)
+         localdata.setVar('OVERRIDES', localdata.getVar('OVERRIDES') + ':' + pkg)
+ 
+-- 
+2.55.0
+
