@@ -42,7 +42,7 @@ do_install() {
     cp -rT ${S} $installdir
 
     cd $installdir
-    make DESTDIR="${D}${ROOT_HOME}" SRCDIR="${LINUXFILES_LOC}" links bashrc-append
+    make DESTDIR="${D}${ROOT_HOME}" links bashrc-append
 
     # create .bash_profile to source .bashrc
     echo '[[ -f $HOME/.bashrc ]] && . $HOME/.bashrc' >${D}${ROOT_HOME}/.bash_profile
