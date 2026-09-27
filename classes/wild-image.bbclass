@@ -109,6 +109,14 @@ wild_rootfs_postprocess() {
         install -d ${IMAGE_ROOTFS}${libdir}/jvm
         touch ${IMAGE_ROOTFS}${libdir}/jvm/dummy
     fi
+
+    # symlink python to python3 (I don't know why the default recipe doesn't do this).
+    _ibd="${IMAGE_ROOTFS}${bindir}"
+    if [ ! -e "$_ibd/python" -a \( -e "$_ibd/python3" -o -L "$_ibd/python3" \) ]; then
+        bbnote "Symlinking ${bindir}/python to python3"
+        ln -s python3 "${IMAGE_ROOTFS}${bindir}/python"
+    fi
+    unset _ibd
 }
 ROOTFS_POSTPROCESS_COMMAND:append = " wild_rootfs_postprocess"
 
