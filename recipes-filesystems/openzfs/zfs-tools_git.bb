@@ -1,7 +1,7 @@
 require openzfs.inc
 
 inherit autotools python3native pkgconfig bash-completion
-DEPENDS += "zlib util-linux libtirpc openssl"
+DEPENDS += "zlib util-linux libtirpc openssl curl"
 
 EXTRA_OECONF = " \
     --with-config=user \
