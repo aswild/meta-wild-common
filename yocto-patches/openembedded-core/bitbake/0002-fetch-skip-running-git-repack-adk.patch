@@ -1,0 +1,30 @@
+From e239d4d3ccf183507e0e384debeb00afb2c9ea0f Mon Sep 17 00:00:00 2001
+From: Allen Wild <allenwild93@gmail.com>
+Date: Sun, 27 Sep 2026 11:58:38 -0400
+Subject: [PATCH] fetch: skip running 'git repack -adk'
+
+Running a full repack on large git repos like the Linux kernel takes
+a lot of time and a ton of memory. Probably a version of 'git gc' would
+be more appropriate here, but I'm alright with just letting the fetch
+directories take up a bit more space than necessary.
+---
+ lib/bb/fetch2/git.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/bb/fetch2/git.py b/lib/bb/fetch2/git.py
+index 0649429e5..369183649 100644
+--- a/lib/bb/fetch2/git.py
++++ b/lib/bb/fetch2/git.py
+@@ -475,7 +475,8 @@ class Git(FetchMethod):
+                 bb.fetch2.check_network_access(d, fetch_cmd, ud.url)
+             progresshandler = GitProgressHandler(d)
+             runfetchcmd(fetch_cmd, d, log=progresshandler, workdir=ud.clonedir)
+-            runfetchcmd("%s repack -adk" % ud.basecmd, d, workdir=ud.clonedir)
++            # WILD: skip running git repack, it's stupid slow when fetching kernel sources and other large repos
++            #runfetchcmd("%s repack -adk" % ud.basecmd, d, workdir=ud.clonedir)
+             runfetchcmd("%s pack-refs --all" % ud.basecmd, d, workdir=ud.clonedir)
+             runfetchcmd("%s prune-packed" % ud.basecmd, d, workdir=ud.clonedir)
+             try:
+-- 
+2.55.0
+
